@@ -8,7 +8,7 @@ require (
 	github.com/vrischmann/envconfig v1.3.0
 	google.golang.org/grpc v1.41.0
 	google.golang.org/protobuf v1.27.1
-	gopkg.in/yaml.v2 v2.3.0
+	gopkg.in/yaml.v2 v2.4.0
 )
 
 require (
