@@ -1,8 +1,9 @@
 syntax = "proto3";
+
 option go_package = "./spec";
 
 service Speed {
-  rpc ControlSpeed(SendSpeed) returns (StatusCode){}
+  rpc ControlSpeed(SendSpeed) returns (StatusCode) {}
 }
 
 message SendSpeed {
