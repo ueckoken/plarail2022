@@ -45,7 +45,7 @@ speedControl_builtin:
 	protoc \
 	--go_out=builtin/speed/spec \
 	--go_opt=Mproto/speedControl.proto=. \
-	--go-grpc_out=builtin/speed \
+	--go-grpc_out=builtin/speed/spec \
 	--go-grpc_opt=Mproto/speedControl.proto=. \
 	-I./ \
 	proto/speedControl.proto
@@ -54,7 +54,7 @@ speedControlSpeed:
 	protoc \
 	--go_out=speed/spec \
 	--go_opt=Mproto/speedControl.proto=. \
-	--go-grpc_out=speed \
+	--go-grpc_out=speed/spec \
 	--go-grpc_opt=Mproto/speedControl.proto=. \
 	-I./ \
 	proto/speedControl.proto
@@ -63,7 +63,7 @@ speedControlPositioning:
 	protoc \
 	--go_out=positioning/spec \
 	--go_opt=Mproto/speedControl.proto=. \
-	--go-grpc_out=positioning \
+	--go-grpc_out=positioning/spec \
 	--go-grpc_opt=Mproto/speedControl.proto=. \
 	-I./ \
 	proto/speedControl.proto
