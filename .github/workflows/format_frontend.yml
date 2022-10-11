@@ -2,24 +2,26 @@ name: formatter
 on:
   push:
     paths:
-      - 'frontend/**/*'
+      - "frontend/**/*"
     branches-ignore:
-      - 'main'
-      - 'deployment'
-
-defaults:
-  run:
-    working-directory: 'frontend/'
+      - "main"
+      - "deployment"
 
 
 jobs:
   prettier:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: "frontend/"
     steps:
       - name: checkout
-        uses: actions/checkout@v2
-      - name: set up node
-        uses: actions/setup-node@v2
+        uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 16
+          cache: yarn
+          cache-dependency-path: ./frontend/yarn.lock
       - run: yarn install --frozen-lockfile
       - run: yarn fmt
       - name: Count changes
@@ -35,3 +37,24 @@ jobs:
           git commit -m 'format by prettier'
           git push
         if: steps.changes.outputs.count > 0
+
+  prettier-videocast:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: "frontend/videoCast"
+    steps:
+      - name: checkout
+        uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 14
+          cache: npm
+          cache-dependency-path: ./frontend/videoCast/package-lock.json
+      - run: npm ci
+      - run: npm run fmt
+      - uses: EndBug/add-and-commit@v9
+        with:
+          author_name: format BOT
+          author_email: bot@example.com
+          message: format by prettier

@@ -1,14 +1,12 @@
-FROM golang:1.17-bullseye as build
+FROM golang:1.19.2-bullseye as builder
 
+ENV CGO_ENABLED=0
 WORKDIR /positioning
-ADD . /positioning
+COPY ./go.mod ./go.sum /positioning/
+RUN go mod download
+COPY . /positioning
+RUN make build
 
-RUN go build -o /positioning/app ./cmd/main.go 
-
-FROM ubuntu:20.10
-
-RUN apt-get update
-
-COPY --from=build /positioning/app /app/app
-
-CMD ["/app/app"]
+FROM gcr.io/distroless/static-debian11:nonroot AS runner
+COPY --from=builder --chown=nonroot:nonroot /positioning/main /positioning
+ENTRYPOINT [ "/positioning" ]

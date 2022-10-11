@@ -1,13 +1,12 @@
-FROM golang:1.17-bullseye as build
+FROM golang:1.19.2-bullseye AS builder
 
+ENV CGO_ENABLED=0
 WORKDIR /control
-ADD . /control
+COPY ./go.mod ./go.sum /control/
+RUN go mod download
+COPY . /control
+RUN make build
 
-RUN go build -o /control/app ./cmd/main.go 
-
-
-FROM ubuntu:20.10
-
-COPY --from=build /control/app /app/app
-
-CMD ["/app/app"]
+FROM gcr.io/distroless/static-debian11:nonroot AS runner
+COPY --from=builder --chown=nonroot:nonroot /control/external /external
+ENTRYPOINT [ "/external" ]

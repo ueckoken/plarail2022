@@ -1,0 +1,22 @@
+name: WebRTC receiver and sender build test
+
+defaults:
+  run:
+    working-directory: ./frontend/videoCast
+
+on: push
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 14
+          cache: npm
+          cache-dependency-path: ./frontend/videoCast/package-lock.json
+      - name: dependency-install
+        run: npm ci
+      - name: build
+        run: npm run build

@@ -1,9 +1,10 @@
 package main
 
 import (
-	"github.com/prometheus/client_golang/prometheus"
 	"ueckoken/plarail2021-soft-speed/internal"
 	"ueckoken/plarail2021-soft-speed/pkg/train2IP"
+
+	"github.com/prometheus/client_golang/prometheus"
 )
 
 const namespace = "plarail2021_speed"

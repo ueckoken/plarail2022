@@ -3,12 +3,12 @@ name: compile_PB
 on:
   push:
     paths:
-      - 'backend/proto/*'
-      - '.github/workflows/compile-protocol-buffer.yml'
-      - 'backend/Makefile'
+      - "backend/proto/*"
+      - ".github/workflows/compile-protocol-buffer.yml"
+      - "backend/Makefile"
     branches-ignore:
-      - 'main'
-      - 'deployment'
+      - "main"
+      - "deployment"
 
 jobs:
   build:
@@ -16,13 +16,12 @@ jobs:
 
     steps:
       - name: checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Set up Go
-        uses: actions/setup-go@v2
+        uses: actions/setup-go@v3
         with:
-          go-version: 1.17
-
+          go-version: 1.19
       - name: add path
         run: |-
           echo "$RUNNER_TEMP/protoc/bin" >> $GITHUB_PATH

@@ -34,6 +34,7 @@ func (pos PositionReceiver) StartPositionReceiver() {
 
 	http.Handle("/registerPosition", p)
 	http.Handle("/subscribePosition", h)
+	log.Print("listening on :8080")
 	log.Fatal(http.ListenAndServe(":8080", nil))
 }
 

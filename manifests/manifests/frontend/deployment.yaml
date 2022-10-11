@@ -17,4 +17,4 @@ spec:
           image: ghcr.io/ueckoken/plarail2021-soft-frontend:b897376-1637561920 # {"$imagepolicy": "plarail2021:frontend"}
           imagePullPolicy: Always
           ports:
-            - containerPort: 80
+            - containerPort: 8080

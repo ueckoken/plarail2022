@@ -1,5 +1,5 @@
-const path = require("path");
-const webpack = require("webpack");
+const path = require("path")
+const webpack = require("webpack")
 
 module.exports = {
   entry: {
@@ -19,4 +19,4 @@ module.exports = {
       SENDER_TOKEN: JSON.stringify(process.env.SENDER_TOKEN),
     }),
   ],
-};
+}

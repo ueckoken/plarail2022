@@ -1,27 +1,42 @@
-<!doctype html>
+<!DOCTYPE html>
 <html>
-<head>
- <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
- <title>Hand Signaling</title>
- <script type="text/javascript" src="skyway_receiver_.js"></script>
-</head>
-<body>
-    <video id="video1" autoplay playsinline style="width: 160px; height: 120px; border: 1px solid black;"></video>
-    <video id="video2" autoplay playsinline style="width: 160px; height: 120px; border: 1px solid black;"></video>
-    <video id="video3" autoplay playsinline style="width: 160px; height: 120px; border: 1px solid black;"></video>
-    
-    <input type="button" onclick="connect();" value="Connect">
-    <input type="button" onclick="disconnect();" value="Disconnect">
-</body>
-<script type="text/javascript">
-    openVideoConnection("video1", "aaa");
-    openVideoConnection("video2", "bbb");
-    openVideoConnection("video3", "ccc");
-    connect = ()=>{
-        openVideoConnection("video1", "aaa");
-    };
-    disconnect = ()=>{
-        closeVideoConnection("aaa");
-    };
-</script>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <title>Hand Signaling</title>
+    <script type="text/javascript" src="skyway_receiver_.js"></script>
+  </head>
+  <body>
+    <video
+      id="video1"
+      autoplay
+      playsinline
+      style="width: 160px; height: 120px; border: 1px solid black"
+    ></video>
+    <video
+      id="video2"
+      autoplay
+      playsinline
+      style="width: 160px; height: 120px; border: 1px solid black"
+    ></video>
+    <video
+      id="video3"
+      autoplay
+      playsinline
+      style="width: 160px; height: 120px; border: 1px solid black"
+    ></video>
+
+    <input type="button" onclick="connect();" value="Connect" />
+    <input type="button" onclick="disconnect();" value="Disconnect" />
+  </body>
+  <script type="text/javascript">
+    openVideoConnection("video1", "aaa")
+    openVideoConnection("video2", "bbb")
+    openVideoConnection("video3", "ccc")
+    connect = () => {
+      openVideoConnection("video1", "aaa")
+    }
+    disconnect = () => {
+      closeVideoConnection("aaa")
+    }
+  </script>
 </html>

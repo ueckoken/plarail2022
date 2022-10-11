@@ -22,7 +22,7 @@ spec:
             - name: DB
               value: "host=127.0.0.1 user=gorm password=gorm dbname=gorm port=5432 sslmode=disable TimeZone=Asia/Tokyo"
         - name: postgresql
-          image: postgres:11.12
+          image: postgres:11.16
           imagePullPolicy: Always
           env:
             - name: POSTGRES_USER

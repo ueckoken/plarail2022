@@ -77,14 +77,13 @@ func (h *HttpServer) handleChanges() {
 }
 
 func (h *HttpServer) registerClient(cn chan clientHandler.ClientChannel) {
-	for {
-		select {
-		case n := <-cn:
+	for n := range cn {
+		func(h *HttpServer, n clientHandler.ClientChannel) {
 			h.Clients.mtx.Lock()
+			defer h.Clients.mtx.Unlock()
 			h.TotalClientConnection.With(prometheus.Labels{}).Inc()
 			h.Clients.Clients = append(h.Clients.Clients, n)
-			h.Clients.mtx.Unlock()
-		}
+		}(h, n)
 	}
 }
 

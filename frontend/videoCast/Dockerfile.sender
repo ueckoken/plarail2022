@@ -1,6 +1,12 @@
-FROM nginx
-RUN apt-get update && apt-get -y install nodejs npm
-COPY ./ /usr/share/nginx/html/
-COPY ./momo_sender.html /usr/share/nginx/html/index.html
+FROM node:14.20.1-buster-slim as builder
 
-CMD ["bash", "/usr/share/nginx/html/sender.sh"]
+WORKDIR /app
+COPY package.json package-lock.json /app/
+RUN npm ci
+
+COPY *.js /app/
+RUN npm run build
+
+FROM nginx:1.23.1-alpine
+COPY --from=builder /app/momo_sender_.js /usr/share/nginx/html/
+COPY ./momo_sender.html /usr/share/nginx/html/index.html

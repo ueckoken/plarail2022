@@ -2,9 +2,6 @@ package internal
 
 import (
 	"fmt"
-	"github.com/gorilla/websocket"
-	"github.com/prometheus/client_golang/prometheus"
-	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"log"
 	"net/http"
 	"sync"
@@ -12,6 +9,10 @@ import (
 	"ueckoken/plarail2021-soft-speed/pkg/sendSpeed"
 	"ueckoken/plarail2021-soft-speed/pkg/storeSpeed"
 	"ueckoken/plarail2021-soft-speed/pkg/train2IP"
+
+	"github.com/gorilla/websocket"
+	"github.com/prometheus/client_golang/prometheus"
+	"github.com/prometheus/client_golang/prometheus/promhttp"
 )
 
 type SpeedServer struct {
@@ -43,6 +44,7 @@ func (s SpeedServer) StartSpeed() {
 	prometheus.MustRegister(s.Speed)
 	http.Handle("/speed", s.ClientHandler)
 	http.Handle("/metrics", promhttp.Handler())
+	log.Println("listening on :8080")
 	log.Fatal(http.ListenAndServe(":8080", nil))
 }
 
@@ -79,12 +81,13 @@ func (s *SpeedServer) RegisterClient(cn chan Client) {
 }
 
 func (s *SpeedServer) HandleChange(cn chan storeSpeed.TrainConf) {
+	speed := sendSpeed.NewSendSpeed(&http.Client{})
 	for {
 		select {
 		case c := <-cn:
 			s.TotalCLientCommands.With(prometheus.Labels{}).Inc()
+			speed.Train = c
 			s.Speed.With(prometheus.Labels{}).Set(float64(c.GetSpeed()))
-			speed := sendSpeed.SendSpeed{Train: c}
 			err := speed.Send()
 			if err != nil {
 				log.Println(err)

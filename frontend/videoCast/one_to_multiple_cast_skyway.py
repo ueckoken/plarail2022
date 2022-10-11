@@ -6,15 +6,16 @@ import websockets
 import json
 import ssl
 import os
-address = "0.0.0.0"
-# cert = "C://Users/asika/OneDrive/ドキュメント/webRTC/vscode_live_server.cert.pem"
-# key = "C://Users/asika/OneDrive/ドキュメント/webRTC/vscode_live_server.key.pem"
+
+ADDRESS = "0.0.0.0"
+PORT = 8081
+MAX_CONNECT_NUM = 980
+# CERT = "C://Users/asika/OneDrive/ドキュメント/webRTC/vscode_live_server.cert.pem"
+# KEY = "C://Users/asika/OneDrive/ドキュメント/webRTC/vscode_live_server.key.pem"
 
 
-port = 8081
 connection_num = 0
 connections = []
-max_connect_num = 980
 if "SENDER_TOKEN" in os.environ:
     sender_token = os.environ["SENDER_TOKEN"]  # ["127.0.0.1"]
 else:
@@ -98,7 +99,7 @@ async def server(websocket, path):
             print("connect_receiver")
             if room["sender_socket"] is not None:
                 print("send")
-                if room["connect_num"] < max_connect_num:
+                if room["connect_num"] < MAX_CONNECT_NUM:
                     promise = websocket.send(
                         json.dumps({
                             "msg_type": "connect_receiver",
@@ -158,9 +159,9 @@ async def server(websocket, path):
 
 
 # ssl_context = ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER)
-# ssl_context.load_cert_chain(cert, keyfile=key)
+# ssl_context.load_cert_chain(CERT, keyfile=KEY)
 
-start_server = websockets.serve(server, address, port)  # , ssl=ssl_context)
+start_server = websockets.serve(server, ADDRESS, PORT)  # , ssl=ssl_context)
 # サーバー立ち上げ
 asyncio.get_event_loop().run_until_complete(start_server)
 asyncio.get_event_loop().run_forever()

@@ -1,24 +1,40 @@
-<!doctype html>
+<!DOCTYPE html>
 <html>
   <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    <link rel="shortcut icon" href="#">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link rel="shortcut icon" href="#" />
     <title>P2P配信用サイト</title>
   </head>
   <body>
     <h3>P2P配信用サイト</h3>
     <div>
-      <input type="button" onclick="connectMomo();" value="Connect momo">
-      <input type="button" onclick="disconnectMomo();" value="Disconnect momo">
+      <input type="button" onclick="connectMomo();" value="Connect momo" />
+      <input
+        type="button"
+        onclick="disconnectMomo();"
+        value="Disconnect momo"
+      />
 
-      <input type="button" onclick="connectCamera();" value="Connect camera">
-      <input type="button" onclick="disconnectCamera();" value="Disconnect camera">
+      <input type="button" onclick="connectCamera();" value="Connect camera" />
+      <input
+        type="button"
+        onclick="disconnectCamera();"
+        value="Disconnect camera"
+      />
 
-      <input type="button" onclick="connectReceiver();" value="Connect receiver">
-      <input type="button" onclick="disconnectReceiver();" value="Disconnect receiver">
+      <input
+        type="button"
+        onclick="connectReceiver();"
+        value="Connect receiver"
+      />
+      <input
+        type="button"
+        onclick="disconnectReceiver();"
+        value="Disconnect receiver"
+      />
 
       ルームid
-      <input type="text" id="room_id">
+      <input type="text" id="room_id" />
       ソース選択
       <select id="select_source">
         <option value="momo">momo</option>
@@ -27,11 +43,11 @@
     </div>
     <div>
       カメラ
-      <video id="local_video" autoplay style="border: 1px solid black;"></video>
+      <video id="local_video" autoplay style="border: 1px solid black"></video>
       MOMO
-      <video id="remote_video" autoplay style="border: 1px solid black;"></video>
+      <video id="remote_video" autoplay style="border: 1px solid black"></video>
     </div>
-    
+
     MOMOコーデック
     <select id="video_codec" onchange="onChangeVideoCodec()">
       <option value="none">none</option>
@@ -40,9 +56,13 @@
       <option value="VP9">VP9</option>
       <option value="AV1">AV1</option>
     </select>
-    カメラフレームレート(ideal)<input type="number" id="camera_framerate" value=10 />
-    カメラwidth(ideal)<input type="number" id="camera_width" value=300 />
-    カメラheight(ideal)<input type="number" id="camera_height" value=200 />
-    <script type='text/javascript' src='./momo_sender_.js'></script>
+    カメラフレームレート(ideal)<input
+      type="number"
+      id="camera_framerate"
+      value="10"
+    />
+    カメラwidth(ideal)<input type="number" id="camera_width" value="300" />
+    カメラheight(ideal)<input type="number" id="camera_height" value="200" />
+    <script type="text/javascript" src="./momo_sender_.js"></script>
   </body>
 </html>

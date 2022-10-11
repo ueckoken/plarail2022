@@ -67,6 +67,6 @@ func (d *StationDetail) GetAngle(state pb.RequestSync_State) (angle int, err err
 	return angle, nil
 }
 
-func (s *stations) Enumerate() []Station{
+func (s *stations) Enumerate() []Station {
 	return s.Stations
 }

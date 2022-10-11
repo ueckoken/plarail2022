@@ -1,4 +1,4 @@
-name: WebRTC test
+name: Frontend build and test
 
 defaults:
   run:
@@ -7,30 +7,23 @@ defaults:
 on: push
 
 jobs:
-  test:
+  lint:
     runs-on: ubuntu-latest
-
     steps:
-      - uses: actions/checkout@v2
-
-      - name: Login to GitHub Container Registry
-        uses: docker/login-action@v1 
+      - uses: actions/checkout@v3
+      - uses: actions/cache@v3
         with:
-          registry: ghcr.io
-          username: ${{ github.repository_owner }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: set tag
-        run: |-
-          export TIMESTUMP=$(date +%s)
-          export SHA=$(echo ${{ github.sha }} | cut -c1-7)
-          echo "IMAGE_TAG=$SHA-$TIMESTUMP" >> $GITHUB_ENV
-
-      - name: Build
-        uses: docker/build-push-action@v2
+          path: |
+            ${{ github.workspace }}/frontend/.next/cache
+          key: ${{ runner.os }}-nextjs-${{ hashFiles('./frontend/**/yarn.lock') }}-${{ hashFiles('./frontend/**.[jt]s', './frontend/**.[jt]sx') }}
+      - uses: actions/setup-node@v3
         with:
-          context: ./frontend/
-          file: ./frontend/Dockerfile
-          platforms: linux/amd64
-          push: false
-          tags: ghcr.io/ueckoken/plarail2022-frontend:${{ env.IMAGE_TAG }}
+          node-version: 16
+          cache: yarn
+          cache-dependency-path: ./frontend/yarn.lock
+      - name: dependency-install
+        run: yarn install --frozen-lockfile --immutable
+      - name: lint
+        run: yarn lint
+      - name: build
+        run: yarn build

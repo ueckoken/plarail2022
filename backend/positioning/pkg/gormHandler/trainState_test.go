@@ -27,9 +27,8 @@ func TestUpdate(t *testing.T) {
 	db.Store(ts)
 	tsO := db.FetchFromTrainId(123)
 	fmt.Println(tsO.States)
-	if !(ts.TrainId==tsO.States[0].TrainId) && !(ts.HallSensorName==tsO.States[0].HallSensorName){
+	if !(ts.TrainId == tsO.States[0].TrainId) && !(ts.HallSensorName == tsO.States[0].HallSensorName) {
 		t.Errorf("error")
 	}
 	t.Errorf("a")
 }
-

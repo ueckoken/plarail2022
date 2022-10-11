@@ -1,7 +1,9 @@
 FROM python:3.10-buster
 
-COPY ./one_to_multiple_cast_skyway.py /app.py
+WORKDIR /app
+COPY requirements.txt /app/
+RUN pip install -r requirements.txt
 
-RUN pip3 install websockets
+COPY ./one_to_multiple_cast_skyway.py /app/
 
-CMD ["python3", "/app.py"]
+CMD ["python3", "/app/one_to_multiple_cast_skyway.py"]

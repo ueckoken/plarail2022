@@ -73,34 +73,35 @@ func TestControlServer_unpackStations(t *testing.T) {
 		Stations                   station2espIp.Stations
 	}
 	f := fields{
-		Stations: &TestStations{Stations: []station2espIp.Station{
-			{
-				station2espIp.StationDetail{
-					Name:    "chofu_b1",
-					Address: "TEST_ADDR",
-					Pin:     1,
+		Stations: &TestStations{
+			Stations: []station2espIp.Station{
+				{
+					Station: station2espIp.StationDetail{
+						Name:    "chofu_b1",
+						Address: "TEST_ADDR",
+						Pin:     1,
+					},
+				}, {
+					Station: station2espIp.StationDetail{
+						Name:    "chofu_b2",
+						Address: "TEST_ADDR",
+						Pin:     2,
+					},
 				},
-			}, {
-				station2espIp.StationDetail{
-					Name:    "chofu_b2",
-					Address: "TEST_ADDR",
-					Pin:     2,
+				{
+					Station: station2espIp.StationDetail{
+						Name:    "TOKYO",
+						Address: "TEST_ADDR",
+						Pin:     1,
+					},
+				}, {
+					Station: station2espIp.StationDetail{
+						Name:    "chofu_b2",
+						Address: "TEST_ADDR",
+						Pin:     2,
+					},
 				},
-			},
-			{
-				station2espIp.StationDetail{
-					Name:    "TOKYO",
-					Address: "TEST_ADDR",
-					Pin:     1,
-				},
-			}, {
-				station2espIp.StationDetail{
-					Name:    "chofu_b2",
-					Address: "TEST_ADDR",
-					Pin:     2,
-				},
-			},
-		}}}
+			}}}
 	type args struct {
 		req *pb.Stations
 	}

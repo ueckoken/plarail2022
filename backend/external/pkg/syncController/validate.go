@@ -3,11 +3,12 @@ package syncController
 import (
 	_ "embed"
 	"fmt"
-	"gopkg.in/yaml.v2"
 	"reflect"
 	"ueckoken/plarail2021-soft-external/pkg/servo"
 	"ueckoken/plarail2021-soft-external/pkg/stationNameId"
 	"ueckoken/plarail2021-soft-external/spec"
+
+	"gopkg.in/yaml.v2"
 )
 
 type IValidator interface {
@@ -84,7 +85,7 @@ func (v *Validator) Validate(u StationState, ss []StationState) error {
 		return err
 	}
 	beforeAfter.after = allRuleOk(allRuleRes)
-	if beforeAfter.before == true && beforeAfter.after == false {
+	if beforeAfter.before && !beforeAfter.after {
 		n, _ := stationNameId.Id2Name(u.StationID)
 		return fmt.Errorf("validation %s error\n", n)
 	}
@@ -159,13 +160,11 @@ func matchRule(rules []string, ss []StationState, state int32) (status int, err 
 
 func searchAllRules(rules []Rule, ss []StationState) (ok []RuleSuite, err error) {
 	for _, rule := range rules {
-		isOnOk := UNDEFINED
-		isOffOk := UNDEFINED
 		isOnOk, err := matchRule(rule.On, ss, int32(spec.RequestSync_ON))
 		if err != nil {
 			return nil, err
 		}
-		isOffOk, err = matchRule(rule.Off, ss, int32(spec.RequestSync_OFF))
+		isOffOk, err := matchRule(rule.Off, ss, int32(spec.RequestSync_OFF))
 		if err != nil {
 			return nil, err
 		}

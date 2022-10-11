@@ -47,8 +47,7 @@ func (m ClientHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	var cChannel = ClientChannel{cSync, cDone}
 	m.ClientChannelSend <- cChannel
 	c.SetPongHandler(func(string) error {
-		c.SetReadDeadline(time.Now().Add(20 * time.Second))
-		return nil
+		return c.SetReadDeadline(time.Now().Add(20 * time.Second))
 	})
 	c.SetCloseHandler(func(code int, text string) error {
 		fmt.Println("connection closed")
@@ -76,6 +75,7 @@ func handleClientPing(ctx context.Context, c *websocket.Conn) {
 		select {
 		case <-ticker.C:
 			if err := c.WriteControl(websocket.PingMessage, []byte{}, time.Now().Add(1*time.Second)); err != nil {
+				log.Printf("err occured in clientHandler.handleClientPing, err=%s", err)
 			}
 		case <-ctx.Done():
 			ticker.Stop()

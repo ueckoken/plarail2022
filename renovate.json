@@ -1,0 +1,11 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": ["config:base", ":timezone(Asia/Tokyo)", ":prHourlyLimitNone"],
+  "labels": ["renovate"],
+  "kubernetes": {
+    "fileMatch": [".+\\.ya?ml$"]
+  },
+  "flux": {
+    "fileMatch": [".+\\.ya?ml$"]
+  }
+}

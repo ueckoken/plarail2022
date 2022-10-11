@@ -13,16 +13,16 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       - name: Set up Go
-        uses: actions/setup-go@v2
+        uses: actions/setup-go@v3
         with:
-          go-version: 1.17
-
+          go-version-file: ./backend/builtin/speed/go.mod
+          cache: true
+          cache-dependency-path: ./backend/builtin/speed/go.sum
       - name: Build Go binary
         run: |-
           make build_arm
-
       - name: Count changes
         id: changes
         run: |
