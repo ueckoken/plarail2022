@@ -5,14 +5,14 @@ go 1.19
 require (
 	github.com/ghodss/yaml v1.0.0
 	github.com/gorilla/websocket v1.5.0
-	google.golang.org/grpc v1.42.0
+	google.golang.org/grpc v1.50.0
 	google.golang.org/protobuf v1.28.1
 	gorm.io/driver/postgres v1.4.4
 	gorm.io/gorm v1.24.0
 )
 
 require (
-	github.com/golang/protobuf v1.5.0 // indirect
+	github.com/golang/protobuf v1.5.2 // indirect
 	github.com/jackc/chunkreader/v2 v2.0.1 // indirect
 	github.com/jackc/pgconn v1.13.0 // indirect
 	github.com/jackc/pgio v1.0.0 // indirect

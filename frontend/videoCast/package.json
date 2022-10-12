@@ -5,12 +5,12 @@
   "main": "main.js",
   "dependencies": {
     "@open-ayame/ayame-web-sdk": "^2022.0.0",
-    "skyway-js": "^4.4.1",
-    "webpack-cli": "^4.9.1"
+    "skyway-js": "^4.4.1"
   },
   "devDependencies": {
     "prettier": "2.7.1",
     "webpack": "5.74.0",
+    "webpack-cli": "4.10.0",
     "webpack-dev-server": "4.11.1"
   },
   "scripts": {

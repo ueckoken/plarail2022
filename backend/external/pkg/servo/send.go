@@ -3,12 +3,14 @@ package servo
 import (
 	"context"
 	"fmt"
-	grpcPrometheus "github.com/grpc-ecosystem/go-grpc-prometheus"
-	"google.golang.org/grpc"
-	"google.golang.org/grpc/status"
 	"time"
 	"ueckoken/plarail2021-soft-external/pkg/envStore"
 	pb "ueckoken/plarail2021-soft-external/spec"
+
+	grpcPrometheus "github.com/grpc-ecosystem/go-grpc-prometheus"
+	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials/insecure"
+	"google.golang.org/grpc/status"
 )
 
 const (
@@ -38,13 +40,13 @@ func NewCommand2Internal(state StationState, e *envStore.Env) *Command2Internal 
 // If you want join gRPC response Status Code and gRPC error msg, please use Command2Internal.trapResponseGrpcErr method.
 func (c2i *Command2Internal) sendRaw() (*pb.ResponseSync, error) {
 	// Set up a connection to the server.
-	ctx := context.Background()
-	ctx, cancel1 := context.WithTimeout(ctx, 1*time.Second)
+	ctx, cancel1 := context.WithTimeout(context.Background(), 1*time.Second)
 	defer cancel1()
 	conn, err := grpc.DialContext(
 		ctx,
 		c2i.env.InternalServer.Addr.String(),
-		grpc.WithInsecure(), grpc.WithBlock(),
+		grpc.WithTransportCredentials(insecure.NewCredentials()),
+		grpc.WithBlock(),
 		grpc.WithUnaryInterceptor(grpcPrometheus.UnaryClientInterceptor),
 	)
 	if err != nil {

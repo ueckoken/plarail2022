@@ -18,7 +18,7 @@ jobs:
           key: ${{ runner.os }}-nextjs-${{ hashFiles('./frontend/**/yarn.lock') }}-${{ hashFiles('./frontend/**.[jt]s', './frontend/**.[jt]sx') }}
       - uses: actions/setup-node@v3
         with:
-          node-version: 16
+          node-version-file: ./frontend/.nvmrc
           cache: yarn
           cache-dependency-path: ./frontend/yarn.lock
       - name: dependency-install
