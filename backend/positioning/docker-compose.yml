@@ -15,7 +15,7 @@ services:
   db:
     ports:
       - "5432:5432"
-    image: postgres:11.16
+    image: postgres:15.0
     environment:
     - "POSTGRES_USER=gormHandler"
     - "POSTGRES_PASSWORD=gormHandler"
