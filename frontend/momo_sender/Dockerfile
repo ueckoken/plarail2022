@@ -7,6 +7,6 @@ RUN npm ci
 COPY *.js /app/
 RUN npm run build
 
-FROM nginx:1.23.1-alpine
+FROM nginx:1.23.2-alpine
 COPY --from=builder /app/bundle.js /usr/share/nginx/html/
 COPY ./index.html /usr/share/nginx/html/
