@@ -2,7 +2,7 @@ name: Deploy WebRTC receiver testing
 
 defaults:
   run:
-    working-directory: ./frontend/
+    working-directory: ./frontend/skyway_receiver
 
 on:
   push:
@@ -30,8 +30,8 @@ jobs:
       - name: Build
         uses: docker/build-push-action@v3
         with:
-          context: ./frontend/videoCast/
-          file: ./frontend/videoCast/Dockerfile.receiver
+          context: ./frontend/skyway_receiver/
+          file: ./frontend/skyway_receiver/Dockerfile
           platforms: linux/amd64
           push: true
           tags: ghcr.io/ueckoken/plarail2022-receiver-test:${{ env.IMAGE_TAG }}

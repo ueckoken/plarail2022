@@ -3,7 +3,7 @@ package storeSpeed
 import (
 	"errors"
 	"sync"
-	pb "ueckoken/plarail2021-soft-speed/spec"
+	pb "ueckoken/plarail2022-speed/spec"
 )
 
 type Train struct {
@@ -67,7 +67,7 @@ func (s *speedStore) Get(t *Train) (speed TrainConf, err error) {
 			return r, nil
 		}
 	}
-	return nil, errors.New("Speed Record Not Found\n")
+	return nil, errors.New("Speed Record Not Found ")
 }
 
 func (s *speedStore) Update(t TrainConf) {
@@ -80,7 +80,6 @@ func (s *speedStore) Update(t TrainConf) {
 		}
 	}
 	s.speedList = append(s.speedList, t)
-	return
 }
 
 func (s *speedStore) GetAll() []TrainConf {

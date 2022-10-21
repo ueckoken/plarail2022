@@ -1,13 +1,12 @@
 package main
 
 import (
-	"fmt"
 	"log"
 	"os"
 	"time"
-	"ueckoken/plarail2021-soft-positioning/internal"
-	"ueckoken/plarail2021-soft-positioning/pkg/gormHandler"
-	"ueckoken/plarail2021-soft-positioning/pkg/trainState"
+	"ueckoken/plarail2022-positioning/internal"
+	"ueckoken/plarail2022-positioning/pkg/gormHandler"
+	"ueckoken/plarail2022-positioning/pkg/trainState"
 
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
@@ -15,7 +14,7 @@ import (
 
 func main() {
 	dbenv := os.Getenv("DB")
-	fmt.Println("DB:", dbenv)
+	log.Println("DB:", dbenv)
 	var d *gorm.DB
 	var err error
 	for {
@@ -29,7 +28,13 @@ func main() {
 		break
 	}
 	db := gormHandler.SQLHandler{Db: d}
-	db.Db.AutoMigrate(&trainState.State{})
-	r := internal.NewPositionReceiver(db, internal.NewApplicationStatus())
+	if err := db.Db.AutoMigrate(&trainState.State{}); err != nil {
+		log.Panicf("DB auto migrate failed, err=%s\n", err)
+	}
+	as, err := internal.NewApplicationStatus()
+	if err != nil {
+		log.Panicf("err=%s\n", err)
+	}
+	r := internal.NewPositionReceiver(db, as)
 	r.StartPositionReceiver()
 }

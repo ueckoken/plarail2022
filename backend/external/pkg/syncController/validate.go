@@ -4,9 +4,9 @@ import (
 	_ "embed"
 	"fmt"
 	"reflect"
-	"ueckoken/plarail2021-soft-external/pkg/servo"
-	"ueckoken/plarail2021-soft-external/pkg/stationNameId"
-	"ueckoken/plarail2021-soft-external/spec"
+	"ueckoken/plarail2022-external/pkg/servo"
+	"ueckoken/plarail2022-external/pkg/stationNameId"
+	"ueckoken/plarail2022-external/spec"
 
 	"gopkg.in/yaml.v2"
 )
@@ -86,8 +86,8 @@ func (v *Validator) Validate(u StationState, ss []StationState) error {
 	}
 	beforeAfter.after = allRuleOk(allRuleRes)
 	if beforeAfter.before && !beforeAfter.after {
-		n, _ := stationNameId.Id2Name(u.StationID)
-		return fmt.Errorf("validation %s error\n", n)
+		n, _ := stationNameId.ID2Name(u.StationID)
+		return fmt.Errorf("validation %s error ", n)
 	}
 	return nil
 }
@@ -100,7 +100,7 @@ func (v *Validator) getValidateTarget(u StationState) (*Station, error) {
 				return nil, err
 			}
 			if u.StationID == id {
-				targetSta = &s
+				*targetSta = s
 				break
 			}
 		}
@@ -125,10 +125,10 @@ func searchIndex(id int32, ss []StationState) (int, error) {
 			return i, nil
 		}
 	}
-	return -1, fmt.Errorf("index error\n")
+	return -1, fmt.Errorf("index error")
 }
 
-// matchRule
+// matchRule.
 func matchRule(rules []string, ss []StationState, state int32) (status int, err error) {
 	isSuiteRule := UNDEFINED
 	if rules == nil {

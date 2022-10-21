@@ -4,7 +4,7 @@ import (
 	"io"
 	"net/http"
 	"time"
-	"ueckoken/plarail2021-soft-internal/pkg/station2espIp"
+	"ueckoken/plarail2022-internal/pkg/station2espIp"
 
 	"github.com/prometheus/client_golang/prometheus"
 )

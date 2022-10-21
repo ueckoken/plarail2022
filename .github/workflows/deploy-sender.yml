@@ -2,7 +2,7 @@ name: Deploy WebRTC sender
 
 defaults:
   run:
-    working-directory: ./frontend/
+    working-directory: ./frontend/momo_sender
 
 on:
   push:
@@ -29,8 +29,8 @@ jobs:
       - name: Build
         uses: docker/build-push-action@v3
         with:
-          context: ./frontend/videoCast/
-          file: ./frontend/videoCast/Dockerfile.sender
+          context: ./frontend/momo_sender/
+          file: ./frontend/momo_sender/Dockerfile
           platforms: linux/amd64
           push: true
           tags: ghcr.io/ueckoken/plarail2022-webrtc-sender:${{ env.IMAGE_TAG }}

@@ -4,8 +4,8 @@ import (
 	"encoding/json"
 	"errors"
 	"net/http"
-	"ueckoken/plarail2021-soft-internal/pkg/Send2Json"
-	"ueckoken/plarail2021-soft-internal/pkg/station2espIp"
+	"ueckoken/plarail2022-internal/pkg/Send2Json"
+	"ueckoken/plarail2022-internal/pkg/station2espIp"
 )
 
 type sendData struct {
@@ -45,16 +45,14 @@ func NewSend2Node(c *http.Client, sta *station2espIp.StationDetail, state string
 				Angle: angle,
 			},
 		}
-	} else {
-		res := &send2nodeNoAngle{
-			Station: sta,
-			client:  c,
-			sendData: &sendDataNoAngle{
-				State: state,
-				Pin:   sta.Pin,
-			},
-		}
-		return res
+	}
+	return &send2nodeNoAngle{
+		Station: sta,
+		client:  c,
+		sendData: &sendDataNoAngle{
+			State: state,
+			Pin:   sta.Pin,
+		},
 	}
 }
 
@@ -67,7 +65,7 @@ func (s *send2nodeExistAngle) Send() error {
 	if err != nil {
 		return err
 	}
-	sender := Send2Json.NewSendJson(s.client, s.Station.Address, b)
+	sender := Send2Json.NewSendJSON(s.client, s.Station.Address, b)
 	err = sender.Send()
 	if err != nil {
 		return err
@@ -83,7 +81,7 @@ func (s *send2nodeNoAngle) Send() error {
 	if err != nil {
 		return err
 	}
-	sender := Send2Json.NewSendJson(s.client, s.Station.Address, b)
+	sender := Send2Json.NewSendJSON(s.client, s.Station.Address, b)
 	err = sender.Send()
 	if err != nil {
 		return err

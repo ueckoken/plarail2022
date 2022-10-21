@@ -5,10 +5,10 @@ import (
 	"log"
 	"sync"
 	"time"
-	"ueckoken/plarail2021-soft-external/pkg/envStore"
-	"ueckoken/plarail2021-soft-external/pkg/servo"
-	"ueckoken/plarail2021-soft-external/pkg/stationNameId"
-	"ueckoken/plarail2021-soft-external/spec"
+	"ueckoken/plarail2022-external/pkg/envStore"
+	"ueckoken/plarail2022-external/pkg/servo"
+	"ueckoken/plarail2022-external/pkg/stationNameId"
+	"ueckoken/plarail2022-external/spec"
 )
 
 type StationState struct {
@@ -29,8 +29,8 @@ func newStationKvs() *stationKVS {
 func (skvs *stationKVS) update(u StationState) error {
 	skvs.mtx.Lock()
 	defer skvs.mtx.Unlock()
-	//err := skvs.validator.Validate(u, skvs.stations)
-	var err error = nil
+	// err := skvs.validator.Validate(u, skvs.stations)
+	var err error
 	if err != nil {
 		return err
 	}

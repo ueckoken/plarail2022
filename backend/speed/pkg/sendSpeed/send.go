@@ -4,7 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"net/http"
-	"ueckoken/plarail2021-soft-speed/pkg/storeSpeed"
+	"ueckoken/plarail2022-speed/pkg/storeSpeed"
 )
 
 type SendSpeed struct {
@@ -22,17 +22,17 @@ func NewSendSpeed(client *http.Client) *SendSpeed {
 	}
 }
 func (s *SendSpeed) Send() error {
-	return s.sendJson()
+	return s.sendJSON()
 }
-func (s *SendSpeed) sendJson() error {
-	b, err := s.getJson()
+func (s *SendSpeed) sendJSON() error {
+	b, err := s.getJSON()
 	if err != nil {
 		return err
 	}
 	_, err = s.client.Post(s.Train.GetTrain().Addr, "application/json; charset=utf-8", bytes.NewReader(b))
 	return err
 }
-func (s *SendSpeed) getJson() ([]byte, error) {
+func (s *SendSpeed) getJSON() ([]byte, error) {
 	payload := sendElements{Speed: s.Train.GetSpeed()}
 	b, err := json.Marshal(payload)
 	if err != nil {

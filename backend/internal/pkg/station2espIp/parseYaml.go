@@ -3,17 +3,19 @@ package station2espIp
 import (
 	_ "embed"
 	"fmt"
+
+	pb "ueckoken/plarail2022-internal/spec"
+
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 	"gopkg.in/yaml.v2"
-	pb "ueckoken/plarail2021-soft-internal/spec"
 )
 
-type Stations interface {
+type IStations interface {
 	Detail(name string) (*StationDetail, error)
 	Enumerate() []Station
 }
-type stations struct {
+type Stations struct {
 	Stations []Station `yaml:"stations"`
 }
 type Station struct {
@@ -31,8 +33,8 @@ type StationDetail struct {
 //go:embed embed/station2espIp.yml
 var ConfigFile []byte
 
-func NewStations() (*stations, error) {
-	t := stations{}
+func NewStations() (*Stations, error) {
+	t := Stations{}
 	err := yaml.Unmarshal(ConfigFile, &t)
 	if err != nil {
 		return nil, err
@@ -40,7 +42,7 @@ func NewStations() (*stations, error) {
 	return &t, nil
 }
 
-func (s *stations) Detail(name string) (*StationDetail, error) {
+func (s *Stations) Detail(name string) (*StationDetail, error) {
 	for _, sta := range s.Stations {
 		if name == sta.Station.Name {
 			return &sta.Station, nil
@@ -67,6 +69,6 @@ func (d *StationDetail) GetAngle(state pb.RequestSync_State) (angle int, err err
 	return angle, nil
 }
 
-func (s *stations) Enumerate() []Station {
+func (s *Stations) Enumerate() []Station {
 	return s.Stations
 }

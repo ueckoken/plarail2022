@@ -1,0 +1,22 @@
+name: WebRTC sender build test
+
+defaults:
+  run:
+    working-directory: ./frontend/momo_sender
+
+on: push
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version-file: ./frontend/momo_sender/.nvmrc
+          cache: npm
+          cache-dependency-path: ./frontend/momo_sender/package-lock.json
+      - name: dependency-install
+        run: npm ci
+      - name: build
+        run: npm run build

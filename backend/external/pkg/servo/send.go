@@ -4,8 +4,8 @@ import (
 	"context"
 	"fmt"
 	"time"
-	"ueckoken/plarail2021-soft-external/pkg/envStore"
-	pb "ueckoken/plarail2021-soft-external/spec"
+	"ueckoken/plarail2022-external/pkg/envStore"
+	pb "ueckoken/plarail2022-external/spec"
 
 	grpcPrometheus "github.com/grpc-ecosystem/go-grpc-prometheus"
 	"google.golang.org/grpc"
@@ -91,9 +91,8 @@ func trapResponseGrpcErr(rs *pb.ResponseSync, grpcErr error) error {
 	case SUCCESS:
 		if grpcErr != nil {
 			return fmt.Errorf("gRPC Err: `%w`; gRPC Response status is `%s`", grpcErr, SUCCESS)
-		} else {
-			return nil
 		}
+		return nil
 	case FAILED:
 		return fmt.Errorf("gRPC Err: `%w`; gRPC Response status is `%s`", grpcErr, FAILED)
 	default:

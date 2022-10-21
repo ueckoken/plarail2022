@@ -1,9 +1,9 @@
 package main
 
 import (
-	"ueckoken/plarail2021-soft-external/internal"
-	"ueckoken/plarail2021-soft-external/pkg/envStore"
-	"ueckoken/plarail2021-soft-external/pkg/syncController"
+	"ueckoken/plarail2022-external/internal"
+	"ueckoken/plarail2022-external/pkg/envStore"
+	"ueckoken/plarail2022-external/pkg/syncController"
 
 	"github.com/prometheus/client_golang/prometheus"
 )
@@ -44,7 +44,7 @@ func main() {
 		[]string{},
 	)
 
-	httpServer := internal.HttpServer{
+	httpServer := internal.HTTPServer{
 		ClientHandler2syncController: clientHandler2syncController,
 		SyncController2clientHandler: syncController2clientHandler,
 		Environment:                  envVal,

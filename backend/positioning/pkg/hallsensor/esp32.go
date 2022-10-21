@@ -20,10 +20,12 @@ type Esp32Pins struct {
 	} `yaml:"esp32"`
 }
 
-func NewEsp32PinSetting() Esp32Pins {
+func NewEsp32PinSetting() (Esp32Pins, error) {
 	var y Esp32Pins
-	yaml.Unmarshal(esp32AndPins, &y)
-	return y
+	if err := yaml.Unmarshal(esp32AndPins, &y); err != nil {
+		return Esp32Pins{}, err
+	}
+	return y, nil
 }
 func (esp *Esp32Pins) Search(addr string, pin int) (name string, err error) {
 	for _, e := range esp.Esp32 {

@@ -1,14 +1,13 @@
 package internal
 
 import (
-	"fmt"
 	"log"
 	"net/http"
 	"sync"
 	"time"
-	"ueckoken/plarail2021-soft-positioning/pkg/gormHandler"
-	"ueckoken/plarail2021-soft-positioning/pkg/positionReceiver"
-	"ueckoken/plarail2021-soft-positioning/pkg/trainState"
+	"ueckoken/plarail2022-positioning/pkg/gormHandler"
+	"ueckoken/plarail2022-positioning/pkg/positionReceiver"
+	"ueckoken/plarail2022-positioning/pkg/trainState"
 )
 
 type PositionReceiver struct {
@@ -32,10 +31,18 @@ func (pos PositionReceiver) StartPositionReceiver() {
 	go pos.HandleChange(c)
 	go pos.UnregisterClient()
 
-	http.Handle("/registerPosition", p)
-	http.Handle("/subscribePosition", h)
+	mux := http.NewServeMux()
+	mux.Handle("/registerPosition", p)
+	mux.Handle("/subscribePosition", h)
 	log.Print("listening on :8080")
-	log.Fatal(http.ListenAndServe(":8080", nil))
+	srv := &http.Server{
+		Addr:              ":8080",
+		Handler:           mux,
+		ReadHeaderTimeout: 3 * time.Second,
+		ReadTimeout:       5 * time.Second,
+		WriteTimeout:      5 * time.Second,
+	}
+	log.Fatal(srv.ListenAndServe())
 }
 
 type ClientSet struct {
@@ -48,57 +55,51 @@ type Client struct {
 }
 
 func (pos *PositionReceiver) RegisterClient(cn chan ClientNotifier) {
-	for {
-		select {
-		case n := <-cn:
-			pos.clients.mtx.Lock()
-			pos.clients.clients = append(pos.clients.clients, Client{n})
-			pos.clients.mtx.Unlock()
-		}
+	for n := range cn {
+		pos.clients.mtx.Lock()
+		pos.clients.clients = append(pos.clients.clients, Client{n})
+		pos.clients.mtx.Unlock()
 	}
 }
 
 func (pos *PositionReceiver) HandleChange(cn chan trainState.State) {
-	for {
-		select {
-		case c := <-cn:
-			pos.db.Store(c)
-			if !pos.status.HallSensorSpec.CanPredict(c.HallSensorName) {
-				continue
-			}
-			//this should be sorted from old to new
-			data := pos.db.FetchFromTrainId(c.TrainId)
-			var duration []time.Duration
-			for i, d := range data.States {
-				if d.HallSensorName == c.HallSensorName {
-					n, err := pos.status.HallSensorSpec.Nexts(c.HallSensorName)
-					if err != nil {
-						log.Println(err)
-						continue
-					}
-					if len(n) != 1 {
-						continue
-					}
-					//can calculate duration
-					if n[0].GetName() == data.States[i+1].HallSensorName {
-						du := data.States[i+1].FetchedTimeStump.Sub(data.States[i].FetchedTimeStump)
-						duration = append(duration, du)
-					}
+	for c := range cn {
+		pos.db.Store(c)
+		if !pos.status.HallSensorSpec.CanPredict(c.HallSensorName) {
+			continue
+		}
+		// this should be sorted from old to new
+		data := pos.db.FetchFromTrainID(c.TrainID)
+		var duration []time.Duration
+		for i, d := range data.States {
+			if d.HallSensorName == c.HallSensorName {
+				n, err := pos.status.HallSensorSpec.Nexts(c.HallSensorName)
+				if err != nil {
+					log.Println(err)
+					continue
+				}
+				if len(n) != 1 {
+					continue
+				}
+				// can calculate duration
+				if n[0].GetName() == data.States[i+1].HallSensorName {
+					du := data.States[i+1].FetchedTimeStump.Sub(data.States[i].FetchedTimeStump)
+					duration = append(duration, du)
 				}
 			}
-			var sum float64
-			var count int
-			for _, t := range duration {
-				sum += t.Seconds()
-			}
-			avg := sum / float64(count)
-			dat := trainState.PositionAndSpeed{State: c, Speed: avg}
-			for _, client := range pos.clients.clients {
-				select {
-				case client.notifier.Notifier <- dat:
-				default:
-					fmt.Println("buffer is full...")
-				}
+		}
+		var sum float64
+		var count int
+		for _, t := range duration {
+			sum += t.Seconds()
+		}
+		avg := sum / float64(count)
+		dat := trainState.PositionAndSpeed{State: c, Speed: avg}
+		for _, client := range pos.clients.clients {
+			select {
+			case client.notifier.Notifier <- dat:
+			default:
+				log.Println("buffer is full...")
 			}
 		}
 	}

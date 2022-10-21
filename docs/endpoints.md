@@ -9,13 +9,13 @@
 - "control.chofufes2022.gotti.dev"
 `./backend/external`が動いています。クライアントはここにむけてwebsocketを張ってください。`/ws`にwebsocketのエンドポイントがあります。
 - "chofufes2022.gotti.dev"
-`./frontend`が動いています。ここにメインのページがデプロイされます。
+`./frontend/site`が動いています。ここにメインのページがデプロイされます。
 - "webrtc.chofufes2022.gotti.dev"
-`./frontend/videoCast/one_to_multiple_cast_skyway.py`が動いています。webrtcのピアリングを行います。
+`./backend/multicaster/one_to_multiple_cast_skyway.py`が動いています。webrtcのピアリングを行います。
 - "auth.chofufes2022.gotti.dev"
 認証画面です。認証が必要なページに入るには先にここを通ってください。
 - "receiver-test.chofufes2022.gotti.dev"
-`./frontend/videocast/skyway_receiver.html`が動いています。webrtcの受信側ページです。
+`./frontend/skyway_receiver/index.html`が動いています。webrtcの受信側ページです。
 
 ### 認証あり
 
@@ -26,7 +26,7 @@ prometheusというメトリクス収集ツールが動いています。基本�
 - "alert.chofufes2022.gotti.dev"
 使おうと思いましたがやめました。
 - "webrtc-sender.chofufes2022.gotti.dev"
-`./frontend/videocast/momo_sender.html`が動いています。webrtcの配信者側ページです。
+`./frontend/momo_sender/index.html`が動いています。webrtcの配信者側ページです。
 
 
 ## 学内

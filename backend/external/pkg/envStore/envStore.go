@@ -2,10 +2,11 @@ package envStore
 
 import (
 	"fmt"
-	"github.com/go-playground/validator/v10"
-	"github.com/vrischmann/envconfig"
 	"strconv"
 	"time"
+
+	"github.com/go-playground/validator/v10"
+	"github.com/vrischmann/envconfig"
 )
 
 type hostnamePort string
@@ -28,7 +29,7 @@ func (p *Port) Unmarshal(s string) error {
 		return err
 	}
 	if !(0 < d && d <= 65535) {
-		return fmt.Errorf("Port range failed; Port: %d\n", d)
+		return fmt.Errorf("Port range failed; Port: %d ", d)
 	}
 	*p = Port(d)
 	return nil
@@ -42,7 +43,7 @@ type Env struct {
 		Addr        hostnamePort
 		TimeoutSec  time.Duration `envconfig:"default=1s"`
 		MetricsPort Port          `envconfig:"default=9100"`
-		//SslCertPath string
+		// SslCertPath string
 	}
 }
 

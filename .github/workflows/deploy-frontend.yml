@@ -2,7 +2,7 @@ name: Deploy WebRTC
 
 defaults:
   run:
-    working-directory: ./frontend/
+    working-directory: ./frontend/site
 
 on:
   push:
@@ -28,8 +28,8 @@ jobs:
       - name: Build
         uses: docker/build-push-action@v3
         with:
-          context: ./frontend
-          file: ./frontend/Dockerfile
+          context: ./frontend/site
+          file: ./frontend/site/Dockerfile
           platforms: linux/amd64
           push: true
           tags: ghcr.io/ueckoken/plarail2022-frontend:${{ env.IMAGE_TAG }}

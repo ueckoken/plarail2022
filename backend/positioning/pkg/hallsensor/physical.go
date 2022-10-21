@@ -41,15 +41,17 @@ func (p *PhysicalSensors) CanPredict(name string) bool {
 	return s.predict
 }
 
-func NewPhysicalSensors() PhysicalSensors {
+func NewPhysicalSensors() (PhysicalSensors, error) {
 	var y SensorYaml
-	yaml.Unmarshal(HallSensorSetting, &y)
+	if err := yaml.Unmarshal(HallSensorSetting, &y); err != nil {
+		return PhysicalSensors{}, err
+	}
 	p := make(map[string]PhysicalSensor)
 	ps := PhysicalSensors{sensors: p}
 	for _, h := range y.Halls {
 		ps.sensors[h.Name] = PhysicalSensor{name: h.Name, predict: h.Predict, nexts: h.Nexts}
 	}
-	return ps
+	return ps, nil
 }
 
 type PhysicalSensor struct {

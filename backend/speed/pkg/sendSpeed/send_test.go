@@ -3,8 +3,8 @@ package sendSpeed
 import (
 	"net/http"
 	"testing"
-	"ueckoken/plarail2021-soft-speed/pkg/storeSpeed"
-	"ueckoken/plarail2021-soft-speed/spec"
+	"ueckoken/plarail2022-speed/pkg/storeSpeed"
+	"ueckoken/plarail2022-speed/spec"
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
@@ -30,7 +30,7 @@ func TestGetJson(t *testing.T) {
 	tm := new(TrainMock)
 	tm.On("GetSpeed").Return(100)
 	s.Train = tm
-	b, err := s.getJson()
+	b, err := s.getJSON()
 	assert.NoError(t, err)
 	assert.JSONEq(t, `{"speed":100}`, string(b))
 }

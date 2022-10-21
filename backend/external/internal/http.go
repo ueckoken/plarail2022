@@ -6,9 +6,9 @@ import (
 	"net/http"
 	"sync"
 	"time"
-	"ueckoken/plarail2021-soft-external/pkg/clientHandler"
-	"ueckoken/plarail2021-soft-external/pkg/envStore"
-	"ueckoken/plarail2021-soft-external/pkg/syncController"
+	"ueckoken/plarail2022-external/pkg/clientHandler"
+	"ueckoken/plarail2022-external/pkg/envStore"
+	"ueckoken/plarail2022-external/pkg/syncController"
 
 	"github.com/gorilla/mux"
 	"github.com/gorilla/websocket"
@@ -16,7 +16,7 @@ import (
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 )
 
-type HttpServer struct {
+type HTTPServer struct {
 	ClientHandler2syncController chan syncController.StationState
 	SyncController2clientHandler chan syncController.StationState
 	Environment                  *envStore.Env
@@ -31,7 +31,7 @@ type ClientsCollection struct {
 	mtx     sync.Mutex
 }
 
-func (h *HttpServer) StartServer() {
+func (h *HTTPServer) StartServer() {
 	clientChannelSend := make(chan clientHandler.ClientChannel)
 	go h.registerClient(clientChannelSend)
 	go h.handleChanges()
@@ -51,15 +51,17 @@ func (h *HttpServer) StartServer() {
 	r.Handle("/ws", clientHandler.ClientHandler{Upgrader: upgrader, ClientCommand: h.ClientHandler2syncController, ClientChannelSend: clientChannelSend})
 	r.Handle("/metrics", promhttp.Handler())
 	srv := &http.Server{
-		Handler: r,
-		Addr:    fmt.Sprintf("0.0.0.0:%d", h.Environment.ClientSideServer.Port),
-		// Good practice: enforce timeouts for servers you create!
+		Handler:           r,
+		Addr:              fmt.Sprintf("0.0.0.0:%d", h.Environment.ClientSideServer.Port),
+		ReadHeaderTimeout: 5 * time.Second,
+		ReadTimeout:       5 * time.Second,
+		WriteTimeout:      5 * time.Second,
 	}
 
 	log.Fatal(srv.ListenAndServe())
 }
 
-func (h *HttpServer) handleChanges() {
+func (h *HTTPServer) handleChanges() {
 	for d := range h.SyncController2clientHandler {
 		h.Clients.mtx.Lock()
 		h.TotalCLientCommands.With(prometheus.Labels{}).Inc()
@@ -76,9 +78,9 @@ func (h *HttpServer) handleChanges() {
 	time.Sleep(1 * time.Second)
 }
 
-func (h *HttpServer) registerClient(cn chan clientHandler.ClientChannel) {
+func (h *HTTPServer) registerClient(cn chan clientHandler.ClientChannel) {
 	for n := range cn {
-		func(h *HttpServer, n clientHandler.ClientChannel) {
+		func(h *HTTPServer, n clientHandler.ClientChannel) {
 			h.Clients.mtx.Lock()
 			defer h.Clients.mtx.Unlock()
 			h.TotalClientConnection.With(prometheus.Labels{}).Inc()
@@ -87,7 +89,7 @@ func (h *HttpServer) registerClient(cn chan clientHandler.ClientChannel) {
 	}
 }
 
-func (h *HttpServer) unregisterClient() {
+func (h *HTTPServer) unregisterClient() {
 	for {
 		h.Clients.mtx.Lock()
 		var deletionList []int

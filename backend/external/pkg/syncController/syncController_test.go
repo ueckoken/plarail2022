@@ -3,7 +3,7 @@ package syncController
 import (
 	"sync"
 	"testing"
-	"ueckoken/plarail2021-soft-external/pkg/servo"
+	"ueckoken/plarail2022-external/pkg/servo"
 )
 
 func (skvs *stationKVS) contain(ss StationState) bool {

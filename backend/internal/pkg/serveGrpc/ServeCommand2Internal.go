@@ -3,12 +3,13 @@ package serveGrpc
 import (
 	"context"
 	"fmt"
+	"net/http"
+	"ueckoken/plarail2022-internal/pkg/msg2Esp"
+	"ueckoken/plarail2022-internal/pkg/station2espIp"
+	pb "ueckoken/plarail2022-internal/spec"
+
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
-	"net/http"
-	"ueckoken/plarail2021-soft-internal/pkg/msg2Esp"
-	"ueckoken/plarail2021-soft-internal/pkg/station2espIp"
-	pb "ueckoken/plarail2021-soft-internal/spec"
 )
 
 type ControlServer struct {
@@ -41,11 +42,11 @@ func (c *ControlServer) Command2Internal(_ context.Context, req *pb.RequestSync)
 func (c *ControlServer) unpackStations(req *pb.Stations) (*station2espIp.StationDetail, error) {
 	s, ok := pb.Stations_StationId_name[int32(req.GetStationId())]
 	if !ok {
-		return nil, fmt.Errorf("station: %s do not define in proto file\n", req.String())
+		return nil, fmt.Errorf("station: %s do not define in proto file", req.String())
 	}
 	sta, err := c.Stations.Detail(s)
 	if err != nil {
-		return nil, fmt.Errorf("%w; station `%s` is not defined in yaml file\n", err, s)
+		return nil, fmt.Errorf("%w; station `%s` is not defined in yaml file", err, s)
 	}
 	return sta, nil
 }

@@ -8,9 +8,9 @@ import (
 	"log"
 	"net/http"
 	"time"
-	"ueckoken/plarail2021-soft-external/pkg/servo"
-	"ueckoken/plarail2021-soft-external/pkg/syncController"
-	pb "ueckoken/plarail2021-soft-external/spec"
+	"ueckoken/plarail2022-external/pkg/servo"
+	"ueckoken/plarail2022-external/pkg/syncController"
+	pb "ueckoken/plarail2022-external/spec"
 
 	"github.com/gorilla/websocket"
 )
@@ -50,7 +50,7 @@ func (m ClientHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		return c.SetReadDeadline(time.Now().Add(20 * time.Second))
 	})
 	c.SetCloseHandler(func(code int, text string) error {
-		fmt.Println("connection closed")
+		log.Println("connection closed")
 		cancel()
 		return nil
 	})
@@ -60,7 +60,7 @@ func (m ClientHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		dat := clientSendData{StationName: pb.Stations_StationId_name[cChan.StationID], State: pb.RequestSync_State_name[cChan.State]}
 		err := c.WriteJSON(dat)
 		if err != nil {
-			fmt.Println("err", err)
+			log.Println("err", err)
 			cDone <- struct{}{}
 			cancel()
 			break
@@ -120,7 +120,7 @@ func unpackClientSendData(c *websocket.Conn) (*syncController.StationState, erro
 	if !ok {
 		return nil, fmt.Errorf("bad state format: %s", ud.State)
 	}
-	fmt.Printf("Received: StationID:%d, State:%d\n", station, state)
+	log.Printf("Received: StationID:%d, State:%d\n", station, state)
 	return &syncController.StationState{
 		StationState: servo.StationState{
 			StationID: station,
@@ -130,10 +130,10 @@ func unpackClientSendData(c *websocket.Conn) (*syncController.StationState, erro
 }
 
 //go:embed embed/index.html
-var IndexHtml []byte
+var IndexHTML []byte
 
 func HandleStatic(w http.ResponseWriter, r *http.Request) {
-	_, err := w.Write(IndexHtml)
+	_, err := w.Write(IndexHTML)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 	}

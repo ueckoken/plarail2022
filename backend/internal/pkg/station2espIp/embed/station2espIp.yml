@@ -1,273 +1,273 @@
 stations:
   - station:
       name: motoyawata_s1
-      address: 'http://192.168.100.102:80'
+      address: "http://192.168.100.102:80"
       pin: 27
       set_angle: true
       on_angle: 30
       off_angle: 90
   - station:
       name: motoyawata_s2
-      address: 'http://192.168.100.102:80'
+      address: "http://192.168.100.102:80"
       pin: 26
       set_angle: true
       on_angle: 30
       off_angle: 100
   - station:
       name: iwamotocho_s1
-      address: 'http://192.168.100.102:80'
+      address: "http://192.168.100.102:80"
       pin: 16
       set_angle: true
       on_angle: 90
       off_angle: 180
   - station:
       name: iwamotocho_s2
-      address: 'http://192.168.100.102:80'
+      address: "http://192.168.100.102:80"
       pin: 13
       set_angle: true
       on_angle: 30
       off_angle: 90
   - station:
       name: iwamotocho_s4
-      address: 'http://192.168.100.102:80'
+      address: "http://192.168.100.102:80"
       pin: 33
       set_angle: true
       on_angle: 30
       off_angle: 120
   - station:
       name: iwamotocho_b1
-      address: 'http://192.168.100.102:80'
+      address: "http://192.168.100.102:80"
       pin: 25
       set_angle: true
       on_angle: 90
       off_angle: 30
   - station:
       name: iwamotocho_b4
-      address: 'http://192.168.100.102:80'
+      address: "http://192.168.100.102:80"
       pin: 4
       set_angle: true
       on_angle: 100
       off_angle: 0
   - station:
       name: kudanshita_s5
-      address: 'http://192.168.100.102:80'
+      address: "http://192.168.100.102:80"
       pin: 22
       set_angle: true
       on_angle: 90
       off_angle: 0
   - station:
       name: kudanshita_s6
-      address: 'http://192.168.100.102:80'
+      address: "http://192.168.100.102:80"
       pin: 21
       set_angle: true
       on_angle: 90
       off_angle: 0
   - station:
       name: sasazuka_b1
-      address: 'http://192.168.100.105:80'
+      address: "http://192.168.100.105:80"
       pin: 17
       set_angle: true
       on_angle: 90
       off_angle: 30
   - station:
       name: sasazuka_b2
-      address: 'http://192.168.100.105:80'
+      address: "http://192.168.100.105:80"
       pin: 21
       set_angle: true
       on_angle: 90
       off_angle: 0
   - station:
       name: sasazuka_s1
-      address: 'http://192.168.100.105:80'
+      address: "http://192.168.100.105:80"
       pin: 14
       set_angle: true
       on_angle: 0
       off_angle: 90
   - station:
       name: sasazuka_s2
-      address: 'http://192.168.100.105:80'
+      address: "http://192.168.100.105:80"
       pin: 13
       set_angle: true
       on_angle: 0
       off_angle: 90
   - station:
       name: sasazuka_s3
-      address: 'http://192.168.100.105:80'
+      address: "http://192.168.100.105:80"
       pin: 4
       set_angle: true
       on_angle: 0
       off_angle: 90
   - station:
       name: sasazuka_s4
-      address: 'http://192.168.100.105:80'
+      address: "http://192.168.100.105:80"
       pin: 16
       set_angle: true
       on_angle: 90
       off_angle: 0
   - station:
       name: sasazuka_s5
-      address: 'http://192.168.100.105:80'
+      address: "http://192.168.100.105:80"
       pin: 19
       set_angle: true
       on_angle: 60
       off_angle: 120
   - station:
       name: meidaimae_s1
-      address: 'http://192.168.100.105:80'
+      address: "http://192.168.100.105:80"
       pin: 23
       set_angle: true
       on_angle: 120
       off_angle: 180
   - station:
       name: meidaimae_s2
-      address: 'http://192.168.100.105:80'
+      address: "http://192.168.100.105:80"
       pin: 32
       set_angle: true
       on_angle: 120
       off_angle: 180
   - station:
       name: chofu_s1
-      address: 'http://192.168.100.107:80'
+      address: "http://192.168.100.107:80"
       pin: 27
       set_angle: true
       on_angle: 100
       off_angle: 180
   - station:
       name: chofu_s2
-      address: 'http://192.168.100.107:80'
+      address: "http://192.168.100.107:80"
       pin: 33
       set_angle: true
       on_angle: 100
       off_angle: 180
   - station:
       name: chofu_s3
-      address: 'http://192.168.100.107:80'
+      address: "http://192.168.100.107:80"
       pin: 21
       set_angle: true
       on_angle: 100
       off_angle: 180
   - station:
       name: chofu_s4
-      address: 'http://192.168.100.107:80'
+      address: "http://192.168.100.107:80"
       pin: 22
       set_angle: true
       on_angle: 100
       off_angle: 180
   - station:
       name: chofu_s5
-      address: 'http://192.168.100.107:80'
+      address: "http://192.168.100.107:80"
       pin: 18
       set_angle: true
       on_angle: 120
       off_angle: 180
   - station:
       name: chofu_s6
-      address: 'http://192.168.100.107:80'
+      address: "http://192.168.100.107:80"
       pin: 13
       set_angle: true
       on_angle: 120
       off_angle: 180
   - station:
       name: chofu_b1
-      address: 'http://192.168.100.107:80'
+      address: "http://192.168.100.107:80"
       pin: 23
       set_angle: true
       on_angle: 180
       off_angle: 120
   - station:
       name: chofu_b2
-      address: 'http://192.168.100.107:80'
+      address: "http://192.168.100.107:80"
       pin: 16
       set_angle: true
       on_angle: 180
       off_angle: 120
   - station:
       name: chofu_b3
-      address: 'http://192.168.100.107:80'
+      address: "http://192.168.100.107:80"
       pin: 4
       set_angle: true
       on_angle: 70
       off_angle: 180
   - station:
       name: chofu_b4
-      address: 'http://192.168.100.107:80'
+      address: "http://192.168.100.107:80"
       pin: 25
       set_angle: true
       on_angle: 80
       off_angle: 160
   - station:
       name: chofu_b5
-      address: 'http://192.168.100.107:80'
+      address: "http://192.168.100.107:80"
       pin: 14
       set_angle: true
       on_angle: 100
       off_angle: 180
   - station:
       name: kitano_b1
-      address: 'http://192.168.100.110:80'
+      address: "http://192.168.100.110:80"
       pin: 32
       set_angle: true
       on_angle: 100
       off_angle: 180
   - station:
       name: kitano_b2
-      address: 'http://192.168.100.110:80'
+      address: "http://192.168.100.110:80"
       pin: 17
       set_angle: true
       on_angle: 100
       off_angle: 180
   - station:
       name: kitano_s1
-      address: 'http://192.168.100.110:80'
+      address: "http://192.168.100.110:80"
       pin: 16
       set_angle: true
       on_angle: 120
       off_angle: 180
   - station:
       name: kitano_s2
-      address: 'http://192.168.100.110:80'
+      address: "http://192.168.100.110:80"
       pin: 33
       set_angle: true
       on_angle: 120
       off_angle: 180
   - station:
       name: kitano_s3
-      address: 'http://192.168.100.110:80'
+      address: "http://192.168.100.110:80"
       pin: 4
       set_angle: true
       on_angle: 100
       off_angle: 180
   - station:
       name: kitano_s4
-      address: 'http://192.168.100.110:80'
+      address: "http://192.168.100.110:80"
       pin: 25
       set_angle: true
       on_angle: 0
       off_angle: 80
   - station:
       name: kitano_s5
-      address: 'http://192.168.100.110:80'
+      address: "http://192.168.100.110:80"
       pin: 18
       set_angle: true
       on_angle: 120
       off_angle: 180
   - station:
       name: kitano_s6
-      address: 'http://192.168.100.110:80'
+      address: "http://192.168.100.110:80"
       pin: 19
       set_angle: true
       on_angle: 120
       off_angle: 180
   - station:
       name: takao_s1
-      address: 'http://192.168.100.110:80'
+      address: "http://192.168.100.110:80"
       pin: 27
       set_angle: true
       on_angle: 120
       off_angle: 180
   - station:
       name: takao_s2
-      address: 'http://192.168.100.110:80'
+      address: "http://192.168.100.110:80"
       pin: 26
       set_angle: true
       on_angle: 120

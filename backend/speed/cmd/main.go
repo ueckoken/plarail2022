@@ -1,8 +1,8 @@
 package main
 
 import (
-	"ueckoken/plarail2021-soft-speed/internal"
-	"ueckoken/plarail2021-soft-speed/pkg/train2IP"
+	"ueckoken/plarail2022-speed/internal"
+	"ueckoken/plarail2022-speed/pkg/train2IP"
 
 	"github.com/prometheus/client_golang/prometheus"
 )

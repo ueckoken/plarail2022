@@ -1,14 +1,13 @@
 package internal
 
 import (
-	"fmt"
 	"log"
 	"net/http"
 	"sync"
 	"time"
-	"ueckoken/plarail2021-soft-speed/pkg/sendSpeed"
-	"ueckoken/plarail2021-soft-speed/pkg/storeSpeed"
-	"ueckoken/plarail2021-soft-speed/pkg/train2IP"
+	"ueckoken/plarail2022-speed/pkg/sendSpeed"
+	"ueckoken/plarail2022-speed/pkg/storeSpeed"
+	"ueckoken/plarail2022-speed/pkg/train2IP"
 
 	"github.com/gorilla/websocket"
 	"github.com/prometheus/client_golang/prometheus"
@@ -42,10 +41,18 @@ func (s SpeedServer) StartSpeed() {
 	prometheus.MustRegister(s.NumberOfClientConnection)
 	prometheus.MustRegister(s.TotalCLientCommands)
 	prometheus.MustRegister(s.Speed)
-	http.Handle("/speed", s.ClientHandler)
-	http.Handle("/metrics", promhttp.Handler())
+	mux := http.NewServeMux()
+	mux.Handle("/speed", s.ClientHandler)
+	mux.Handle("/metrics", promhttp.Handler())
 	log.Println("listening on :8080")
-	log.Fatal(http.ListenAndServe(":8080", nil))
+	srv := &http.Server{
+		Addr:              ":8080",
+		Handler:           mux,
+		ReadHeaderTimeout: 3 * time.Second,
+		ReadTimeout:       5 * time.Second,
+		WriteTimeout:      5 * time.Second,
+	}
+	log.Fatal(srv.ListenAndServe())
 }
 
 type ClientHandler struct {
@@ -70,34 +77,28 @@ type ClientNotifier struct {
 }
 
 func (s *SpeedServer) RegisterClient(cn chan Client) {
-	for {
-		select {
-		case n := <-cn:
-			s.ClientHandler.Clients.mtx.Lock()
-			s.ClientHandler.Clients.clients = append(s.ClientHandler.Clients.clients, n)
-			s.ClientHandler.Clients.mtx.Unlock()
-		}
+	for n := range cn {
+		s.ClientHandler.Clients.mtx.Lock()
+		s.ClientHandler.Clients.clients = append(s.ClientHandler.Clients.clients, n)
+		s.ClientHandler.Clients.mtx.Unlock()
 	}
 }
 
 func (s *SpeedServer) HandleChange(cn chan storeSpeed.TrainConf) {
 	speed := sendSpeed.NewSendSpeed(&http.Client{})
-	for {
-		select {
-		case c := <-cn:
-			s.TotalCLientCommands.With(prometheus.Labels{}).Inc()
-			speed.Train = c
-			s.Speed.With(prometheus.Labels{}).Set(float64(c.GetSpeed()))
-			err := speed.Send()
-			if err != nil {
-				log.Println(err)
-			}
-			for _, client := range s.ClientHandler.Clients.clients {
-				select {
-				case client.notifier.Notifier <- c:
-				default:
-					fmt.Println("buffer is full...")
-				}
+	for c := range cn {
+		s.TotalCLientCommands.With(prometheus.Labels{}).Inc()
+		speed.Train = c
+		s.Speed.With(prometheus.Labels{}).Set(float64(c.GetSpeed()))
+		err := speed.Send()
+		if err != nil {
+			log.Println(err)
+		}
+		for _, client := range s.ClientHandler.Clients.clients {
+			select {
+			case client.notifier.Notifier <- c:
+			default:
+				log.Println("buffer is full...")
 			}
 		}
 	}

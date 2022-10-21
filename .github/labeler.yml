@@ -1,12 +1,38 @@
 internal:
-  - backend/internal/**/*
+  - any:
+      - backend/internal/**
+      - "!backend/internal/spec/**"
 external:
-  - backend/external/**/*
-frontend:
-  - frontend/**/*
+  - any:
+      - backend/external/**
+      - "!backend/external/spec/**"
+positioning:
+  - any:
+      - "backend/positioning/**"
+      - "!backend/positioning/spec/**"
+speed:
+  - any:
+      - "backend/speed/**"
+      - "!backend/speed/spec/**"
+ats:
+  - any:
+    - "backend/ats/**"
+    - "!backend/ats/spec/**"
+multicaster:
+  - any:
+      - "backend/multicaster/**"
+momo_sender:
+  - any:
+      - "frontend/momo_sender/**"
+skyway_receiver:
+  - any:
+      - "frontend/skyway_receiver/**"
+site:
+  - any:
+      - "frontend/site/**"
 ci-cd:
   - .github/**/*
   - manifests/**/*
 documentation:
   - README.md
-  - '**/docs/**/*.md'
+  - "**/docs/**/*.md"

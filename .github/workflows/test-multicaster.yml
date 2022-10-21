@@ -1,0 +1,22 @@
+name: Multicaster test
+
+defaults:
+  run:
+    working-directory: ./backend/multicaster
+
+on: push
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout
+        uses: actions/checkout@v3
+      - uses: actions/setup-python@v4
+        with:
+          python-version-file: ./backend/multicaster/.python-version
+          cache: pip
+          cache-dependency-path: ./backend/multicaster/requirements-dev.txt
+      - run: pip install -r requirements-dev.txt
+      - name: Type check
+        run: mypy .

@@ -2,9 +2,10 @@ package internal
 
 import (
 	"fmt"
-	"github.com/vrischmann/envconfig"
 	"strconv"
 	"time"
+
+	"github.com/vrischmann/envconfig"
 )
 
 type Port int32
@@ -15,7 +16,7 @@ func (p *Port) Unmarshal(s string) error {
 		return err
 	}
 	if !(0 < d && d <= 65535) {
-		return fmt.Errorf("Port range failed; Port: %d\n", d)
+		return fmt.Errorf("Port range failed; Port: %d", d)
 	}
 	*p = Port(d)
 	return nil
@@ -28,7 +29,7 @@ func (p *Port) String() string {
 type Env struct {
 	ExternalSideServer struct {
 		Port Port `envconfig:"default=54321"`
-		//SslCertPath string
+		// SslCertPath string
 		MetricsPort Port `envconfig:"default=9100"`
 	}
 	NodeConnection struct {

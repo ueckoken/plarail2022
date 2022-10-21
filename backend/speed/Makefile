@@ -14,3 +14,7 @@ build: down
 
 down:
 	docker-compose down
+test:
+	go test -v ./...
+buildGoBin:
+	CGO_ENABLED=0 go build -o app ./cmd/main.go

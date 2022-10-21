@@ -2,7 +2,7 @@ package internal
 
 import (
 	"time"
-	"ueckoken/plarail2021-soft-positioning/pkg/hallsensor"
+	"ueckoken/plarail2022-positioning/pkg/hallsensor"
 )
 
 type ApplicationStatus struct {
@@ -10,12 +10,16 @@ type ApplicationStatus struct {
 	HallSensorSpec hallsensor.PhysicalSensors
 }
 
-func NewApplicationStatus() ApplicationStatus {
-	return ApplicationStatus{HallSensorSpec: hallsensor.NewPhysicalSensors()}
+func NewApplicationStatus() (ApplicationStatus, error) {
+	pss, err := hallsensor.NewPhysicalSensors()
+	if err != nil {
+		return ApplicationStatus{}, err
+	}
+	return ApplicationStatus{HallSensorSpec: pss}, nil
 }
 
 type TrainStatus struct {
-	TrainId               int
+	TrainID               int
 	FetchedHallSensorName string
 	FetchedTimeStump      time.Time
 }

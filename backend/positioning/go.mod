@@ -1,11 +1,11 @@
-module ueckoken/plarail2021-soft-positioning
+module ueckoken/plarail2022-positioning
 
 go 1.19
 
 require (
 	github.com/ghodss/yaml v1.0.0
 	github.com/gorilla/websocket v1.5.0
-	google.golang.org/grpc v1.50.0
+	google.golang.org/grpc v1.50.1
 	google.golang.org/protobuf v1.28.1
 	gorm.io/driver/postgres v1.4.4
 	gorm.io/gorm v1.24.0

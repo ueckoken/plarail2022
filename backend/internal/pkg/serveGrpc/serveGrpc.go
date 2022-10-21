@@ -2,17 +2,19 @@ package serveGrpc
 
 import (
 	"fmt"
+	"log"
+	"net"
+	"net/http"
+	"time"
+	"ueckoken/plarail2022-internal/internal"
+	"ueckoken/plarail2022-internal/pkg/esp32healthcheck"
+	"ueckoken/plarail2022-internal/pkg/station2espIp"
+	pb "ueckoken/plarail2022-internal/spec"
+
 	grpcPrometheus "github.com/grpc-ecosystem/go-grpc-prometheus"
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"google.golang.org/grpc"
-	"log"
-	"net"
-	"net/http"
-	"ueckoken/plarail2021-soft-internal/internal"
-	"ueckoken/plarail2021-soft-internal/pkg/esp32healthcheck"
-	"ueckoken/plarail2021-soft-internal/pkg/station2espIp"
-	pb "ueckoken/plarail2021-soft-internal/spec"
 )
 
 type GrpcServer struct {
@@ -54,6 +56,13 @@ func ServeMetrics(promAddr string) {
 	// Enable histogram
 	grpcPrometheus.EnableHandlingTimeHistogram()
 	mux.Handle("/metrics", promhttp.Handler())
-	fmt.Println("Prometheus metrics bind address", promAddr)
-	log.Fatal(http.ListenAndServe(promAddr, mux))
+	log.Println("Prometheus metrics bind address", promAddr)
+	srv := &http.Server{
+		Addr:              promAddr,
+		Handler:           mux,
+		ReadHeaderTimeout: 5 * time.Second,
+		ReadTimeout:       5 * time.Second,
+		WriteTimeout:      5 * time.Second,
+	}
+	log.Fatal(srv.ListenAndServe())
 }

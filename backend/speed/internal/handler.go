@@ -2,8 +2,6 @@ package internal
 
 import (
 	"net/http"
-	"ueckoken/plarail2021-soft-speed/pkg/storeSpeed"
-	"ueckoken/plarail2021-soft-speed/pkg/train2IP"
 
 	"context"
 	"encoding/json"
@@ -11,8 +9,11 @@ import (
 	"log"
 	"time"
 
+	"ueckoken/plarail2022-speed/pkg/storeSpeed"
+	"ueckoken/plarail2022-speed/pkg/train2IP"
+	pb "ueckoken/plarail2022-speed/spec"
+
 	"github.com/gorilla/websocket"
-	pb "ueckoken/plarail2021-soft-speed/spec"
 )
 
 type speedStruct struct {
@@ -34,11 +35,10 @@ func (m ClientHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	notifier := Client{ClientNotifier{n, unregister}}
 	m.ClientNotification <- notifier
 	c.SetPongHandler(func(string) error {
-		c.SetReadDeadline(time.Now().Add(20 * time.Second))
-		return nil
+		return c.SetReadDeadline(time.Now().Add(20 * time.Second))
 	})
 	c.SetCloseHandler(func(code int, text string) error {
-		fmt.Println("connection closed")
+		log.Println("connection closed")
 		cancel()
 		return nil
 	})
@@ -66,7 +66,7 @@ func handleClientCommand(ctx context.Context, c *websocket.Conn, m *ClientHandle
 				log.Println(err)
 				return
 			}
-			m.ClientCommand <- *r
+			m.ClientCommand <- r
 		}
 	}
 }
@@ -78,7 +78,7 @@ func handleClientPing(ctx context.Context, c *websocket.Conn) {
 		select {
 		case <-ticker.C:
 			if err := c.WriteControl(websocket.PingMessage, []byte{}, time.Now().Add(1*time.Second)); err != nil {
-				fmt.Println("ping:", err)
+				log.Println("ping:", err)
 			}
 		case <-ctx.Done():
 			ticker.Stop()
@@ -87,7 +87,7 @@ func handleClientPing(ctx context.Context, c *websocket.Conn) {
 	}
 }
 
-func unpackClientSendData(c *websocket.Conn, nameDir train2IP.Name2Id) (*storeSpeed.TrainConf, error) {
+func unpackClientSendData(c *websocket.Conn, nameDir train2IP.Name2Id) (storeSpeed.TrainConf, error) {
 	_, msg, err := c.ReadMessage()
 	if err != nil {
 		return nil, fmt.Errorf("websocket read failed: %e", err)
@@ -99,8 +99,10 @@ func unpackClientSendData(c *websocket.Conn, nameDir train2IP.Name2Id) (*storeSp
 	}
 	speed := storeSpeed.NewTrainConf(
 		storeSpeed.NewTrain(pb.SendSpeed_Train(pb.SendSpeed_Train_value[ud.TrainName]),
-			nameDir.SearchIp(ud.TrainName)),
+			nameDir.SearchIP(ud.TrainName)),
 	)
-	speed.SetSpeed(int32(ud.Speed))
-	return &speed, nil
+	if err := speed.SetSpeed(int32(ud.Speed)); err != nil {
+		return nil, err
+	}
+	return speed, err
 }

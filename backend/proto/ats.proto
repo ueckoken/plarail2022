@@ -1,0 +1,13 @@
+syntax = "proto3";
+
+option go_package = "./spec";
+
+service Ats {
+  rpc SendStatus(SendStatusRequest) returns (SendStatusResponse) {}
+}
+
+message SendStatusRequest {
+  enum SensorName { unknown = 0; }
+  SensorName sensor = 1;
+}
+message SendStatusResponse {}

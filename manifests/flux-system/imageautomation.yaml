@@ -1,0 +1,13 @@
+apiVersion: kustomize.toolkit.fluxcd.io/v1beta1
+kind: Kustomization
+metadata:
+  name: plarail2022-image
+  namespace: plarail2021
+spec:
+  interval: 1m
+  path: ./manifests/imageautomation
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: plarail2022
+  validation: client

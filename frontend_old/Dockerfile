@@ -1,9 +1,0 @@
-FROM nginx
-#FROM node:16 AS builder
-WORKDIR /frontend
-#COPY ./ /frontend/
-#RUN npm i
-#RUN npx webpack
-
-#COPY --from=builder /frontend/*_.js /usr/share/nginx/html/
-COPY ./ /usr/share/nginx/html

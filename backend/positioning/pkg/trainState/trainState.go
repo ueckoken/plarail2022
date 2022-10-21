@@ -9,7 +9,7 @@ type States struct {
 }
 
 type State struct {
-	TrainId          int
+	TrainID          int
 	HallSensorName   string
 	FetchedTimeStump time.Time
 }
