@@ -19,7 +19,7 @@ SENDER_TOKEN = os.environ.get("SENDER_TOKEN")  # ["127.0.0.1"]
 print(SENDER_TOKEN)
 
 
-connections = []
+connections: set[WebSocketServerProtocol] = set()
 
 
 class ConnectSenderMessage(TypedDict):
@@ -65,7 +65,7 @@ class Room(TypedDict):
     sender_socket: Optional[WebSocketServerProtocol]
     peer_id: Optional[str]
     skyway_room_id: Optional[str]
-    connections: list[WebSocketServerProtocol]
+    connections: set[WebSocketServerProtocol]
     connect_num: int
 
 
@@ -91,7 +91,7 @@ async def handler(websocket: WebSocketServerProtocol, path: str) -> None:
     remote_address = cast(RemoteAddress, websocket.remote_address)
     print(remote_address)
     async with lock:
-        connections.append(websocket)
+        connections.add(websocket)
 
     try:
         async for raw_message in websocket:  # 受信
@@ -106,7 +106,7 @@ async def handler(websocket: WebSocketServerProtocol, path: str) -> None:
                     sender_socket=None,
                     peer_id=None,
                     skyway_room_id=None,
-                    connections=[websocket],
+                    connections={websocket},
                     connect_num=0,
                     # ルームの累積接続数が1000行くと通信が弾かれるのでその前にルームを切り替え
                 )
@@ -116,7 +116,7 @@ async def handler(websocket: WebSocketServerProtocol, path: str) -> None:
                 room = rooms[room_id]
                 if websocket not in room["connections"]:
                     async with lock:
-                        room["connections"].append(websocket)
+                        room["connections"].add(websocket)
             # 現在の通信のwebsocketが入ったroom_idのroomが存在することを保証
 
             if message["msg_type"] == "connect_sender":
@@ -201,9 +201,8 @@ async def handler(websocket: WebSocketServerProtocol, path: str) -> None:
     # 接続が切れたらその接続を削除
     for room_id, room in rooms.items():
         print(room)
-        if websocket in room["connections"]:
-            async with lock:
-                room["connections"].remove(websocket)
+        async with lock:
+            room["connections"].discard(websocket)
         if room["sender_socket"] is websocket:
             async with lock:
                 room["sender_socket"] = None
