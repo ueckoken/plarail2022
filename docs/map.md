@@ -65,6 +65,8 @@ hachioji_d2
 若葉台(車両基地)
 wakabadai_p1
 wakabadai_p2
+wakabadai_s1
+wakabadai_s2
 wakabadai_d1
 wakabadai_d2
 ```
