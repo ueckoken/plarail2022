@@ -8,28 +8,20 @@
   <body>
     <h3>P2P配信用サイト</h3>
     <div>
-      <input type="button" onclick="connectMomo();" value="Connect momo" />
-      <input
-        type="button"
-        onclick="disconnectMomo();"
-        value="Disconnect momo"
-      />
+      <input type="button" id="connect_momo_btn" value="Connect momo" />
+      <input type="button" id="disconnect_momo_btn" value="Disconnect momo" />
 
-      <input type="button" onclick="connectCamera();" value="Connect camera" />
+      <input type="button" id="connect_camera_btn" value="Connect camera" />
       <input
         type="button"
-        onclick="disconnectCamera();"
+        id="disconnect_camera_btn"
         value="Disconnect camera"
       />
 
+      <input type="button" id="connect_receiver_btn" value="Connect receiver" />
       <input
         type="button"
-        onclick="connectReceiver();"
-        value="Connect receiver"
-      />
-      <input
-        type="button"
-        onclick="disconnectReceiver();"
+        id="disconnect_receiver_btn"
         value="Disconnect receiver"
       />
 
@@ -49,7 +41,7 @@
     </div>
 
     MOMOコーデック
-    <select id="video_codec" onchange="onChangeVideoCodec()">
+    <select id="video_codec">
       <option value="none">none</option>
       <option value="H264">H264</option>
       <option value="VP8">VP8</option>
