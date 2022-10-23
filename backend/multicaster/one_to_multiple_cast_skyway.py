@@ -120,8 +120,6 @@ async def handler(websocket: WebSocketServerProtocol, path: str) -> None:
             # 現在の通信のwebsocketが入ったroom_idのroomが存在することを保証
 
             if message["msg_type"] == "connect_sender":
-                if room["skyway_room_id"] is None or room["peer_id"] is None:
-                    continue
                 if SENDER_TOKEN is None or SENDER_TOKEN == message["sender_token"]:
                     async with lock:  # if room["sender_socket"] is None:
                         print("sender_connect")
@@ -130,6 +128,8 @@ async def handler(websocket: WebSocketServerProtocol, path: str) -> None:
                         room["connect_num"] = 0
                         # senderは上書き
                         room["peer_id"] = message["peer_id"]
+                        if room["skyway_room_id"] is None or room["peer_id"] is None:
+                            continue
                         for connection in room["connections"]:
                             if connection is websocket:
                                 continue
