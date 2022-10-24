@@ -52,12 +52,7 @@ class OneToMultipleCastSkywayTest(IsolatedAsyncioTestCase):
                 )
             )
             await asyncio.sleep(WAIT_STATE_CHANGE_SEC)
-            self.assertIn(DUMMY_ROOM_ID, rooms)
-            self.assertIsNone(rooms[DUMMY_ROOM_ID]["sender_socket"])
-            self.assertEqual(len(rooms[DUMMY_ROOM_ID]["connections"]), 0)
-            self.assertEqual(
-                rooms[DUMMY_ROOM_ID]["cumulative_activated_connect_num"], 0
-            )
+            self.assertNotIn(DUMMY_ROOM_ID, rooms)
         await asyncio.sleep(WAIT_STATE_CHANGE_SEC)
         self.assertNotIn(DUMMY_ROOM_ID, rooms)
 
@@ -83,10 +78,14 @@ class OneToMultipleCastSkywayTest(IsolatedAsyncioTestCase):
             await asyncio.sleep(WAIT_STATE_CHANGE_SEC)
             self.assertIn(DUMMY_ROOM_ID, rooms)
             self.assertIsNotNone(rooms[DUMMY_ROOM_ID]["sender_socket"])
+            self.assertEqual(len(rooms[DUMMY_ROOM_ID]["connections"]), 1)
+            self.assertEqual(rooms[DUMMY_ROOM_ID]["cumulative_activated_connect_num"], 0)
             self.assertEqual(
                 rooms[DUMMY_ROOM_ID]["skyway_room_id"], DUMMY_SKYWAY_ROOM_ID
             )
             self.assertEqual(rooms[DUMMY_ROOM_ID]["peer_id"], DUMMY_PEER_ID)
+        await asyncio.sleep(WAIT_STATE_CHANGE_SEC)
+        self.assertNotIn(DUMMY_ROOM_ID, rooms)
 
     @patch("one_to_multiple_cast_skyway.SENDER_TOKEN", DUMMY_SENDER_TOKEN)
     async def test_connect_receiver(self) -> None:
