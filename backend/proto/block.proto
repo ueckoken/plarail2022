@@ -31,6 +31,20 @@ message Blocks {
     chofu_hachioji_down = 31;
     chofu_hashimoto_up = 40;
     chofu_hashimoto_down = 41;
+    shinjuku_b1 = 100;
+    shinjuku_b2 = 101;
+    sakurajosui_b1 = 110;
+    sakurajosui_b2 = 111;
+    sakurajosui_b3 = 120;
+    sakurajosui_b4 = 121;
+    chofu_b1 = 130;
+    chofu_b2 = 131;
+    chofu_b3 = 132;
+    chofu_b4 = 133;
+    hashimoto_b1 = 140;
+    hashimoto_b2 = 141;
+    hachioji_b1 = 150;
+    hachioji_b2 = 151;
   }
   BlockId blockId = 1;
 }

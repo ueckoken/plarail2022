@@ -22,4 +22,22 @@ chofu_hashimoto_up
 chofu_hashimoto_down
 ```
 
+また、駅構内に関しても同様に閉塞を用いて管理する。命名は以下の通り、
+```
+shinjuku_b1
+shinjuku_b2
+sakurajosui_b1
+sakurajosui_b2
+sakurajosui_b3
+sakurajosui_b4
+chofu_b1
+chofu_b2
+chofu_b3
+chofu_b4
+hashimoto_b1
+hashimoto_b2
+hachioji_b1
+hachioji_b2
+```
+
 なお、若葉台車両基地に入線する部分に関しては特別な閉塞は設けない。
