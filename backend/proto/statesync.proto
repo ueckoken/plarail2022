@@ -29,56 +29,39 @@ message Stations {
   enum StationId {
     unknown = 0;
 
-    motoyawata_s1 = 1;
-    motoyawata_s2 = 2;
 
-    iwamotocho_s1 = 11;
-    iwamotocho_s2 = 12;
-    iwamotocho_s4 = 13;
-    iwamotocho_b1 = 14;
-    iwamotocho_b2 = 15;
-    iwamotocho_b3 = 16;
-    iwamotocho_b4 = 17;
+    shinjuku_p1 = 1;
+    shinjuku_p1 = 2;
+    shinjuku_s1 = 3;
+    shinjuku_s2 = 4;
 
-    kudanshita_s5 = 21;
-    kudanshita_s6 = 22;
+    sakurajosui_p1 = 11;
+    sakurajosui_p2 = 12;
+    sakurajosui_s1 = 13;
+    sakurajosui_s2 = 14;
+    sakurajosui_s3 = 15;
+    sakurajosui_s4 = 16;
 
-    sasazuka_b1 = 31;
-    sasazuka_b2 = 32;
-    sasazuka_s1 = 33;
-    sasazuka_s2 = 34;
-    sasazuka_s3 = 35;
-    sasazuka_s4 = 36;
-    sasazuka_s5 = 37;
+    chofu_p1 = 21;
+    chofu_p2 = 22;
+    chofu_p3 = 23;
+    chofu_p4 = 24;
+    chofu_p5 = 25;
+    chofu_s1 = 26;
+    chofu_s2 = 27;
+    chofu_s3 = 28;
+    chofu_s4 = 29;
 
-    meidaimae_s1 = 41;
-    meidaimae_s2 = 42;
+    hashimoto_s1 = 31;
+    hashimoto_s2 = 32;
 
-    chofu_s1 = 51;
-    chofu_s2 = 52;
-    chofu_s3 = 53;
-    chofu_s4 = 54;
-    chofu_s5 = 55;
-    chofu_s6 = 56;
-    chofu_b1 = 57;
-    chofu_b2 = 58;
-    chofu_b3 = 59;
-    chofu_b4 = 60;
-    chofu_b5 = 61;
+    hachioji_s1 = 41;
+    hachioji_s2 = 42;
 
-    kitano_b1 = 71;
-    kitano_b2 = 72;
-    kitano_b3 = 73;
-    kitano_s1 = 74;
-    kitano_s2 = 75;
-    kitano_s3 = 76;
-    kitano_s4 = 77;
-    kitano_s5 = 78;
-    kitano_s6 = 79;
-    kitano_s7 = 80;
-
-    takao_s1 = 91;
-    takao_s2 = 92;
+    wakabadai_p1 = 51;
+    wakabadai_p2 = 52;
+    wakabadai_s1 = 53;
+    wakabadai_s2 = 54;
   }
   StationId stationId = 1;
 }
