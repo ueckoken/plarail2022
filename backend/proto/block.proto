@@ -1,0 +1,36 @@
+syntax = "proto3";
+
+option go_package = "./spec";
+
+import "google/protobuf/empty.proto";
+
+service BlockStateSync {
+  rpc NotifyState(google.protobuf.Empty) returns (BlockStateList) {}
+}
+
+message BlockStateList { repeated BlockState block_states = 1; }
+
+message BlockState {
+  Blocks block = 1;
+  enum State {
+    UNKNOWN = 0;
+    OPEN = 1;
+    CLOSE = 2;
+  }
+  State state = 2;
+}
+
+message Blocks {
+  enum BlockId {
+    unknown = 0;
+    shinjuku_sakurajosui_up = 10;
+    shinjuku_sakurajosui_down = 11;
+    sakurajosui_chofu_up = 20;
+    sakurajosui_chofu_down = 21;
+    chofu_hachioji_up = 30;
+    chofu_hachioji_down = 31;
+    chofu_hashimoto_up = 40;
+    chofu_hashimoto_down = 41;
+  }
+  BlockId blockId = 1;
+}
