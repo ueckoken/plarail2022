@@ -34,8 +34,6 @@ message Stations {
     shinjuku_p1 = 2;
     shinjuku_s1 = 3;
     shinjuku_s2 = 4;
-    shinjuku_d1 = 5;
-    shinjuku_d2 = 6;
 
     sakurajosui_p1 = 11;
     sakurajosui_p2 = 12;
@@ -43,43 +41,27 @@ message Stations {
     sakurajosui_s2 = 14;
     sakurajosui_s3 = 15;
     sakurajosui_s4 = 16;
-    sakurajosui_d1 = 17;
-    sakurajosui_d2 = 18;
-    sakurajosui_d3 = 19;
-    sakurajosui_d4 = 20;
 
-    chofu_p1 = 31;
-    chofu_p2 = 32;
-    chofu_p3 = 33;
-    chofu_p4 = 34;
-    chofu_p5 = 35;
-    chofu_s1 = 36;
-    chofu_s2 = 37;
-    chofu_s3 = 38;
-    chofu_s4 = 39;
-    chofu_d1 = 40;
-    chofu_d2 = 41;
-    chofu_d3 = 42;
-    chofu_d4 = 43;
-    chofu_d5 = 44;
-    chofu_d6 = 45;
+    chofu_p1 = 21;
+    chofu_p2 = 22;
+    chofu_p3 = 23;
+    chofu_p4 = 24;
+    chofu_p5 = 25;
+    chofu_s1 = 26;
+    chofu_s2 = 27;
+    chofu_s3 = 28;
+    chofu_s4 = 29;
 
-    hashimoto_s1 = 51;
-    hashimoto_s2 = 52;
-    hashimoto_d1 = 53;
-    hashimoto_d2 = 54;
+    hashimoto_s1 = 31;
+    hashimoto_s2 = 32;
 
-    hachioji_s1 = 61;
-    hachioji_s2 = 62;
-    hachioji_d1 = 63;
-    hachioji_d2 = 64;
+    hachioji_s1 = 41;
+    hachioji_s2 = 42;
 
-    wakabadai_p1 = 71;
-    wakabadai_p2 = 72;
-    wakabadai_s1 = 73;
-    wakabadai_s2 = 74;
-    wakabadai_d1 = 75;
-    wakabadai_d2 = 76;
+    wakabadai_p1 = 51;
+    wakabadai_p2 = 52;
+    wakabadai_s1 = 53;
+    wakabadai_s2 = 54;
   }
   StationId stationId = 1;
 }
