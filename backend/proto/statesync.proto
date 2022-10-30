@@ -29,56 +29,57 @@ message Stations {
   enum StationId {
     unknown = 0;
 
-    motoyawata_s1 = 1;
-    motoyawata_s2 = 2;
 
-    iwamotocho_s1 = 11;
-    iwamotocho_s2 = 12;
-    iwamotocho_s4 = 13;
-    iwamotocho_b1 = 14;
-    iwamotocho_b2 = 15;
-    iwamotocho_b3 = 16;
-    iwamotocho_b4 = 17;
+    shinjuku_p1 = 1;
+    shinjuku_p1 = 2;
+    shinjuku_s1 = 3;
+    shinjuku_s2 = 4;
+    shinjuku_d1 = 5;
+    shinjuku_d2 = 6;
 
-    kudanshita_s5 = 21;
-    kudanshita_s6 = 22;
+    sakurajosui_p1 = 11;
+    sakurajosui_p2 = 12;
+    sakurajosui_s1 = 13;
+    sakurajosui_s2 = 14;
+    sakurajosui_s3 = 15;
+    sakurajosui_s4 = 16;
+    sakurajosui_d1 = 17;
+    sakurajosui_d2 = 18;
+    sakurajosui_d3 = 19;
+    sakurajosui_d4 = 20;
 
-    sasazuka_b1 = 31;
-    sasazuka_b2 = 32;
-    sasazuka_s1 = 33;
-    sasazuka_s2 = 34;
-    sasazuka_s3 = 35;
-    sasazuka_s4 = 36;
-    sasazuka_s5 = 37;
+    chofu_p1 = 31;
+    chofu_p2 = 32;
+    chofu_p3 = 33;
+    chofu_p4 = 34;
+    chofu_p5 = 35;
+    chofu_s1 = 36;
+    chofu_s2 = 37;
+    chofu_s3 = 38;
+    chofu_s4 = 39;
+    chofu_d1 = 40;
+    chofu_d2 = 41;
+    chofu_d3 = 42;
+    chofu_d4 = 43;
+    chofu_d5 = 44;
+    chofu_d6 = 45;
 
-    meidaimae_s1 = 41;
-    meidaimae_s2 = 42;
+    hashimoto_s1 = 51;
+    hashimoto_s2 = 52;
+    hashimoto_d1 = 53;
+    hashimoto_d2 = 54;
 
-    chofu_s1 = 51;
-    chofu_s2 = 52;
-    chofu_s3 = 53;
-    chofu_s4 = 54;
-    chofu_s5 = 55;
-    chofu_s6 = 56;
-    chofu_b1 = 57;
-    chofu_b2 = 58;
-    chofu_b3 = 59;
-    chofu_b4 = 60;
-    chofu_b5 = 61;
+    hachioji_s1 = 61;
+    hachioji_s2 = 62;
+    hachioji_d1 = 63;
+    hachioji_d2 = 64;
 
-    kitano_b1 = 71;
-    kitano_b2 = 72;
-    kitano_b3 = 73;
-    kitano_s1 = 74;
-    kitano_s2 = 75;
-    kitano_s3 = 76;
-    kitano_s4 = 77;
-    kitano_s5 = 78;
-    kitano_s6 = 79;
-    kitano_s7 = 80;
-
-    takao_s1 = 91;
-    takao_s2 = 92;
+    wakabadai_p1 = 71;
+    wakabadai_p2 = 72;
+    wakabadai_s1 = 73;
+    wakabadai_s2 = 74;
+    wakabadai_d1 = 75;
+    wakabadai_d2 = 76;
   }
   StationId stationId = 1;
 }
