@@ -31,9 +31,8 @@ message Stations {
 
 
     shinjuku_p1 = 1;
-    shinjuku_p1 = 2;
-    shinjuku_s1 = 3;
-    shinjuku_s2 = 4;
+    shinjuku_s1 = 2;
+    shinjuku_s2 = 3;
 
     sakurajosui_p1 = 11;
     sakurajosui_p2 = 12;
