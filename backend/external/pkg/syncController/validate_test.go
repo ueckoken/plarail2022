@@ -7,8 +7,8 @@ import (
 )
 
 const (
-	ChofuB1 = int32(spec.Stations_chofu_b1)
-	ChofuB2 = int32(spec.Stations_chofu_b2)
+	ChofuP1 = int32(spec.Stations_chofu_p1)
+	ChofuP2 = int32(spec.Stations_chofu_p2)
 	ChofuS1 = int32(spec.Stations_chofu_s1)
 	ChofuS2 = int32(spec.Stations_chofu_s2)
 )
@@ -28,11 +28,11 @@ func TestValidator_Validate(t *testing.T) {
 	rules := []Station{{
 		EachStation{
 			Name:   "chofu_kudari",
-			Points: []string{"chofu_s1", "chofu_s2", "chofu_b1", "chofu_b2"},
+			Points: []string{"chofu_s1", "chofu_s2", "chofu_p1", "chofu_p2"},
 			Rules: []Rule{
 				{
 					On:  nil,
-					Off: []string{"chofu_s1", "chofu_s2", "chofu_b1", "chofu_b2"},
+					Off: []string{"chofu_s1", "chofu_s2", "chofu_p1", "chofu_p2"},
 				},
 				{
 					On:  []string{"chofu_s1"},
@@ -56,10 +56,10 @@ func TestValidator_Validate(t *testing.T) {
 			name:   "ルールの1つ目に従う",
 			fields: fields{Stations: rules},
 			args: args{
-				u: StationState{servo.StationState{StationID: ChofuB1, State: OFF}},
+				u: StationState{servo.StationState{StationID: ChofuP1, State: OFF}},
 				ss: []StationState{
-					{servo.StationState{StationID: ChofuB1, State: ON}},  // chofu_b1,on
-					{servo.StationState{StationID: ChofuB2, State: OFF}}, // chofu_b2,off
+					{servo.StationState{StationID: ChofuP1, State: ON}},  // chofu_b1,on
+					{servo.StationState{StationID: ChofuP2, State: OFF}}, // chofu_b2,off
 					{servo.StationState{StationID: ChofuS1, State: OFF}}, // chofu_s1,off
 					{servo.StationState{StationID: ChofuS2, State: OFF}}, // chofu_s2,off
 				},
@@ -72,8 +72,8 @@ func TestValidator_Validate(t *testing.T) {
 			args: args{
 				u: StationState{servo.StationState{StationID: ChofuS1, State: ON}},
 				ss: []StationState{
-					{servo.StationState{StationID: ChofuB1, State: ON}},
-					{servo.StationState{StationID: ChofuB2, State: ON}},
+					{servo.StationState{StationID: ChofuP1, State: ON}},
+					{servo.StationState{StationID: ChofuP2, State: ON}},
 					{servo.StationState{StationID: ChofuS1, State: OFF}},
 					{servo.StationState{StationID: ChofuS2, State: OFF}},
 				},
@@ -86,8 +86,8 @@ func TestValidator_Validate(t *testing.T) {
 			args: args{
 				u: StationState{servo.StationState{StationID: ChofuS2, State: ON}},
 				ss: []StationState{
-					{servo.StationState{StationID: ChofuB1, State: ON}},
-					{servo.StationState{StationID: ChofuB2, State: ON}},
+					{servo.StationState{StationID: ChofuP1, State: ON}},
+					{servo.StationState{StationID: ChofuP2, State: ON}},
 					{servo.StationState{StationID: ChofuS1, State: OFF}},
 					{servo.StationState{StationID: ChofuS2, State: OFF}},
 				},
@@ -100,8 +100,8 @@ func TestValidator_Validate(t *testing.T) {
 			args: args{
 				u: StationState{servo.StationState{StationID: ChofuS2, State: ON}},
 				ss: []StationState{
-					{servo.StationState{StationID: ChofuB1, State: ON}},
-					{servo.StationState{StationID: ChofuB2, State: ON}},
+					{servo.StationState{StationID: ChofuP1, State: ON}},
+					{servo.StationState{StationID: ChofuP2, State: ON}},
 					{servo.StationState{StationID: ChofuS1, State: ON}},
 					{servo.StationState{StationID: ChofuS2, State: OFF}},
 				},
@@ -118,10 +118,10 @@ func TestValidator_Validate(t *testing.T) {
 			name:   "3つ目のルール違反",
 			fields: fields{Stations: rules},
 			args: args{
-				u: StationState{servo.StationState{StationID: ChofuB1, State: ON}},
+				u: StationState{servo.StationState{StationID: ChofuP1, State: ON}},
 				ss: []StationState{
-					{servo.StationState{StationID: ChofuB1, State: OFF}},
-					{servo.StationState{StationID: ChofuB2, State: OFF}},
+					{servo.StationState{StationID: ChofuP1, State: OFF}},
+					{servo.StationState{StationID: ChofuP2, State: OFF}},
 					{servo.StationState{StationID: ChofuS1, State: OFF}},
 					{servo.StationState{StationID: ChofuS2, State: OFF}},
 				},
@@ -158,8 +158,8 @@ func Test_matchRule(t *testing.T) {
 			args: args{
 				rules: nil,
 				ss: []StationState{
-					{servo.StationState{StationID: ChofuB1, State: OFF}},
-					{servo.StationState{StationID: ChofuB2, State: OFF}},
+					{servo.StationState{StationID: ChofuP1, State: OFF}},
+					{servo.StationState{StationID: ChofuP2, State: OFF}},
 					{servo.StationState{StationID: ChofuS1, State: OFF}},
 					{servo.StationState{StationID: ChofuS2, State: OFF}},
 				},
@@ -171,10 +171,10 @@ func Test_matchRule(t *testing.T) {
 		{
 			name: "異常系",
 			args: args{
-				rules: []string{"chofu_s1", "chofu_s2", "chofu_b1", "chofu_b2"},
+				rules: []string{"chofu_p1", "chofu_p2", "chofu_s1", "chofu_s2"},
 				ss: []StationState{
-					{servo.StationState{StationID: ChofuB1, State: OFF}},
-					{servo.StationState{StationID: ChofuB2, State: OFF}},
+					{servo.StationState{StationID: ChofuP1, State: OFF}},
+					{servo.StationState{StationID: ChofuP2, State: OFF}},
 					{servo.StationState{StationID: ChofuS1, State: ON}},
 					{servo.StationState{StationID: ChofuS2, State: OFF}},
 				},
