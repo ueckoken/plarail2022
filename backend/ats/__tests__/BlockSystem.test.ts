@@ -1,4 +1,11 @@
 import { BlockSystem } from '../src/BlockSystem';
+import { BlockStateList, BlockState, Blocks } from '../spec/block_pb.d';
+
+const state: BlockState[] = new BlockStateList()
+const newState = new BlockState();
+newState.setState(BlockState.State.OPEN)
+newState.setBlock((): Blocks => { block: Blocks = return new Blocks(); Blocks.setBlockid(Blocks.BlockId.SHINJUKU_B1); return Blocks });
+
 
 describe('BlockSystem', () => {
   const blockSystem = new BlockSystem();
@@ -21,3 +28,12 @@ describe('BlockSystem', () => {
     );
   });
 })
+
+export function setId(arg0: string) {
+  throw new Error('Function not implemented.');
+}
+
+export function setId(arg0: string) {
+  throw new Error('Function not implemented.');
+}
+

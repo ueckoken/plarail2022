@@ -11,16 +11,6 @@ service BlockStateSync {
 message BlockStateList { repeated BlockState block_states = 1; }
 
 message BlockState {
-  Blocks block = 1;
-  enum State {
-    UNKNOWN = 0;
-    OPEN = 1;
-    CLOSE = 2;
-  }
-  State state = 2;
-}
-
-message Blocks {
   enum BlockId {
     unknown = 0;
     shinjuku_sakurajosui_up = 10;
@@ -46,5 +36,11 @@ message Blocks {
     hachioji_b1 = 150;
     hachioji_b2 = 151;
   }
-  BlockId blockId = 1;
+  BlockId blockId = 3;
+  enum State {
+    UNKNOWN = 0;
+    OPEN = 1;
+    CLOSE = 2;
+  }
+  State state = 2;
 }

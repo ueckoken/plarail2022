@@ -1,6 +1,6 @@
-export interface Block{
-  id:string;
-  state: BlockState;
-}
+import { Stations, RequestSync } from '../spec/statesync_pb'
 
-type BlockState = 'UNKNOWN' | 'ON' | 'OFF';
+export interface Point {
+  id: Stations.StationIdMap;
+  state: RequestSync.StateMap;
+}

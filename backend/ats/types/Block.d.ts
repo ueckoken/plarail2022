@@ -1,6 +1,6 @@
-export interface Block{
-  id:string;
-  state: BlockState;
-}
+import { BlockState, Blocks } from '../spec/block_pb'
 
-type BlockState = 'ERROR' | 'OPEN' | 'CLOSE';
+export interface Block {
+  id: Blocks.BlockIdMap;
+  state: BlockState.StateMap;
+}
