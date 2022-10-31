@@ -27,10 +27,8 @@ export namespace BlockStateList {
 }
 
 export class BlockState extends jspb.Message {
-  hasBlock(): boolean;
-  clearBlock(): void;
-  getBlock(): Blocks | undefined;
-  setBlock(value?: Blocks): void;
+  getBlockid(): BlockState.BlockIdMap[keyof BlockState.BlockIdMap];
+  setBlockid(value: BlockState.BlockIdMap[keyof BlockState.BlockIdMap]): void;
 
   getState(): BlockState.StateMap[keyof BlockState.StateMap];
   setState(value: BlockState.StateMap[keyof BlockState.StateMap]): void;
@@ -47,36 +45,8 @@ export class BlockState extends jspb.Message {
 
 export namespace BlockState {
   export type AsObject = {
-    block?: Blocks.AsObject,
+    blockid: BlockState.BlockIdMap[keyof BlockState.BlockIdMap],
     state: BlockState.StateMap[keyof BlockState.StateMap],
-  }
-
-  export interface StateMap {
-    UNKNOWN: 0;
-    OPEN: 1;
-    CLOSE: 2;
-  }
-
-  export const State: StateMap;
-}
-
-export class Blocks extends jspb.Message {
-  getBlockid(): Blocks.BlockIdMap[keyof Blocks.BlockIdMap];
-  setBlockid(value: Blocks.BlockIdMap[keyof Blocks.BlockIdMap]): void;
-
-  serializeBinary(): Uint8Array;
-  toObject(includeInstance?: boolean): Blocks.AsObject;
-  static toObject(includeInstance: boolean, msg: Blocks): Blocks.AsObject;
-  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
-  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
-  static serializeBinaryToWriter(message: Blocks, writer: jspb.BinaryWriter): void;
-  static deserializeBinary(bytes: Uint8Array): Blocks;
-  static deserializeBinaryFromReader(message: Blocks, reader: jspb.BinaryReader): Blocks;
-}
-
-export namespace Blocks {
-  export type AsObject = {
-    blockid: Blocks.BlockIdMap[keyof Blocks.BlockIdMap],
   }
 
   export interface BlockIdMap {
@@ -106,5 +76,13 @@ export namespace Blocks {
   }
 
   export const BlockId: BlockIdMap;
+
+  export interface StateMap {
+    UNKNOWN: 0;
+    OPEN: 1;
+    CLOSE: 2;
+  }
+
+  export const State: StateMap;
 }
 
