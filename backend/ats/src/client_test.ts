@@ -17,7 +17,7 @@ function ats(): Promise<SendStatusResponse> {
         reject(err);
       }
       console.log("Receive Message");
-      if(response==null){
+      if (response == null) {
         throw new Error("response is null");
       }
       return resolve(response);

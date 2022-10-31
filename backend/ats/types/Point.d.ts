@@ -3,4 +3,4 @@ export interface Block{
   state: BlockState;
 }
 
-type BlockState = 'ERROR' | 'OPEN' | 'CLOSE';
+type BlockState = 'UNKNOWN' | 'ON' | 'OFF';

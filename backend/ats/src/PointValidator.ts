@@ -1,3 +1,3 @@
-export class PointValidator{
-  
+export class PointValidator {
+
 }
