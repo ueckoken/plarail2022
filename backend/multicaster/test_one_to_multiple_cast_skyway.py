@@ -79,7 +79,9 @@ class OneToMultipleCastSkywayTest(IsolatedAsyncioTestCase):
             self.assertIn(DUMMY_ROOM_ID, rooms)
             self.assertIsNotNone(rooms[DUMMY_ROOM_ID]["sender_socket"])
             self.assertEqual(len(rooms[DUMMY_ROOM_ID]["connections"]), 1)
-            self.assertEqual(rooms[DUMMY_ROOM_ID]["cumulative_activated_connect_num"], 0)
+            self.assertEqual(
+                rooms[DUMMY_ROOM_ID]["cumulative_activated_connect_num"], 0
+            )
             self.assertEqual(
                 rooms[DUMMY_ROOM_ID]["skyway_room_id"], DUMMY_SKYWAY_ROOM_ID
             )
