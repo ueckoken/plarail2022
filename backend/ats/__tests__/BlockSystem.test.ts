@@ -1,14 +1,12 @@
 import { BlockSystem } from '../src/BlockSystem';
-import { BlockStateList, BlockState, Blocks } from '../spec/block_pb.d';
+import { BlockState, BlockStateList } from '../spec/block_pb';
 
-const state: BlockState[] = new BlockStateList()
-const newState = new BlockState();
-newState.setState(BlockState.State.OPEN)
-newState.setBlock((): Blocks => { block: Blocks = return new Blocks(); Blocks.setBlockid(Blocks.BlockId.SHINJUKU_B1); return Blocks });
-
+let state: BlockStateList;
+state.addBlockStates(new BlockState());
+console.log(state);
 
 describe('BlockSystem', () => {
-  const blockSystem = new BlockSystem();
+  const blockSystem = new BlockSystem(state);
 
   it('BlockIDが指定されたときにBlockRuleを取得する', () => {
     const blockRule =
@@ -28,12 +26,3 @@ describe('BlockSystem', () => {
     );
   });
 })
-
-export function setId(arg0: string) {
-  throw new Error('Function not implemented.');
-}
-
-export function setId(arg0: string) {
-  throw new Error('Function not implemented.');
-}
-
