@@ -1,53 +1,56 @@
 <html lang="ja">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script src="https://cdn.webrtc.ecl.ntt.com/skyway-4.4.5.js"></script>
-    <title>MJPEG TO SkyWay</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://cdn.webrtc.ecl.ntt.com/skyway-4.4.5.js"></script>
+  <title>MJPEG TO SkyWay</title>
 </head>
+
 <body>
-    <p id="my-id"></p>
-    <button id="make-call" disabled>発信</button>
-    <video id="their-video" width="400px" autoplay muted playsinline></video>
+  <p id="my-id"></p>
+  <input type="text" id="their-id">
+  <button id="make-call">発信</button>
+  <video id="their-video" width="400px" autoplay muted playsinline></video>
 </body>
 <script>
-//Peer作成
-const peer = new Peer({
+  //Peer作成
+  const peer = new Peer({
     key: '2eb379e0-0374-4e3c-9674-d7415b0b7f27',
     debug: 3
-});
-
-//PeerID取得
-peer.on('open', () => {
-    document.getElementById('my-id').textContent
-        = "my-id: " + peer.id;
-});
-
-//着信処理
-peer.on('call', mediaConnection => {
-  // mediaConnection.answer(myStream);
-  setEventListener(mediaConnection);
-});
-
-// イベントリスナを設置する関数
-const setEventListener = mediaConnection => {
-  mediaConnection.on('stream', stream => {
-    // video要素にカメラ映像をセットして再生
-    const videoElm = document.getElementById('their-video');
-    videoElm.srcObject = stream;
-    videoElm.play();
   });
-}
 
-// error 処理
-peer.on('error', err => {
+  //PeerID取得
+  peer.on('open', () => {
+    document.getElementById('my-id').textContent = "my-id: " + peer.id;
+  });
+
+  // 発信処理
+  document.getElementById('make-call').onclick = () => {
+    const theirID = document.getElementById('their-id').value;
+    const mediaConnection = peer.call(theirID);
+    setEventListener(mediaConnection);
+  };
+
+  // イベントリスナを設置する関数
+  const setEventListener = mediaConnection => {
+    mediaConnection.on('stream', stream => {
+      // video要素にカメラ映像をセットして再生
+      const videoElm = document.getElementById('their-video');
+      videoElm.srcObject = stream;
+      videoElm.play();
+    });
+  }
+
+  // error 処理
+  peer.on('error', err => {
     alert(err.message);
-});
+  });
 
-// close 処理
-peer.on('close', () => {
-  alert('通信が切断しました。');
-});
-
+  // close 処理
+  peer.on('close', () => {
+    alert('通信が切断しました。');
+  });
 </script>
+
 </html>
