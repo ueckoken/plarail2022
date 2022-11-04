@@ -12,7 +12,7 @@ from typing import Literal, Optional, TypedDict, Union, cast
 
 ADDRESS = "0.0.0.0"
 PORT = 8081
-MAX_CONNECT_NUM = 980
+MAX_CUMULATIVE_ACTIVATED_CONNECT_NUM = 980
 # CERT = "C://Users/asika/OneDrive/ドキュメント/webRTC/vscode_live_server.cert.pem"
 # KEY = "C://Users/asika/OneDrive/ドキュメント/webRTC/vscode_live_server.key.pem"
 SENDER_TOKEN = os.environ.get("SENDER_TOKEN")  # ["127.0.0.1"]
@@ -66,7 +66,7 @@ class Room(TypedDict):
     peer_id: Optional[str]
     skyway_room_id: Optional[str]
     connections: set[WebSocketServerProtocol]
-    connect_num: int
+    cumulative_activated_connect_num: int
 
 
 RemoteAddress = Optional[tuple[str, int]]
@@ -107,7 +107,7 @@ async def handler(websocket: WebSocketServerProtocol, path: str) -> None:
                     peer_id=None,
                     skyway_room_id=None,
                     connections={websocket},
-                    connect_num=0,
+                    cumulative_activated_connect_num=0,
                     # ルームの累積接続数が1000行くと通信が弾かれるのでその前にルームを切り替え
                 )
                 async with lock:
@@ -125,7 +125,7 @@ async def handler(websocket: WebSocketServerProtocol, path: str) -> None:
                         print("sender_connect")
                         room["sender_socket"] = websocket
                         room["skyway_room_id"] = message["skyway_room_id"]
-                        room["connect_num"] = 0
+                        room["cumulative_activated_connect_num"] = 0
                         # senderは上書き
                         room["peer_id"] = message["peer_id"]
                         if room["skyway_room_id"] is None or room["peer_id"] is None:
@@ -144,7 +144,7 @@ async def handler(websocket: WebSocketServerProtocol, path: str) -> None:
                                     )
                                 )
                             )
-                            room["connect_num"] += 1
+                            room["cumulative_activated_connect_num"] += 1
                             promises.append(promise)
             elif message["msg_type"] == "connect_receiver":
                 print("connect_receiver")
@@ -152,7 +152,10 @@ async def handler(websocket: WebSocketServerProtocol, path: str) -> None:
                     if room["skyway_room_id"] is None or room["peer_id"] is None:
                         continue
                     print("send")
-                    if room["connect_num"] < MAX_CONNECT_NUM:
+                    if (
+                        room["cumulative_activated_connect_num"]
+                        < MAX_CUMULATIVE_ACTIVATED_CONNECT_NUM
+                    ):
                         promise = websocket.send(
                             json.dumps(
                                 ConnectReceiverReplyMessage(
@@ -165,7 +168,7 @@ async def handler(websocket: WebSocketServerProtocol, path: str) -> None:
                         )
 
                         async with lock:
-                            room["connect_num"] += 1
+                            room["cumulative_activated_connect_num"] += 1
                         promises.append(promise)
                     else:
                         # ルームの累積接続数が溢れそうだったら新しい部屋をsenderに作ってもらう
@@ -178,7 +181,7 @@ async def handler(websocket: WebSocketServerProtocol, path: str) -> None:
                         )
                         promises.append(promise)
                         async with lock:
-                            room["connect_num"] = 0
+                            room["cumulative_activated_connect_num"] = 0
             elif message["msg_type"] == "exit_room":
                 if websocket in room["connections"]:
                     async with lock:
@@ -188,7 +191,7 @@ async def handler(websocket: WebSocketServerProtocol, path: str) -> None:
                         room["sender_socket"] = None
                         room["peer_id"] = None
                         room["skyway_room_id"] = None
-                        room["connect_num"] = 0
+                        room["cumulative_activated_connect_num"] = 0
             print("{}: {}".format(path, message))
             for p in promises:
                 try:
