@@ -1,0 +1,51 @@
+sensors:
+# それぞれのSensorを通過した時に対応するblockをどうするかを指定
+  - name: shinjuku_d1
+    block: shinjuku_sakurajosui_up
+    state: OPEN
+  - name: shinjuku_d2
+    block: shinjuku_sakurajosui_down
+    state: CLOSE
+  - name: sakurajosui_d1
+    block: shinjuku_sakurajosui_down
+    state: OPEN
+  - name: sakurajosui_d2
+    block: sakurajosui_chofu_down
+    state: CLOSE
+  - name: sakurajosui_d3
+    block: sakurajosui_chofu_up
+    state: OPEN
+  - name: sakurajosui_d4
+    block: shinjuku_sakurajosui_up
+    state: CLOSE
+  - name: chofu_d1
+    block: sakurajosui_chofu_down
+    state: OPEN
+  - name: chofu_d2
+    block: chofu_hachioji_down
+    state: CLOSE
+  - name: chofu_d3
+    block: chofu_hashimoto_down
+    state: CLOSE
+  - name: chofu_d4
+    block: chofu_hachioji_up
+    state: OPEN
+  - name: chofu_d5
+    block: chofu_hashimoto_up
+    state: OPEN
+  - name: chofu_d6
+    block: sakurajosui_chofu_up
+    state: CLOSE
+  - name: hashimoto_d1
+    block: chofu_hashimoto_down
+    state: OPEN
+  - name: hashimoto_d2
+    block: chofu_hashimoto_up
+    state: CLOSE
+  - name: hachioji_d1
+    block: chofu_hachioji_down
+    state: OPEN
+  - name: hachioji_d2
+    block: chofu_hachioji_up
+    state: CLOSE
+# 若葉台車両基地は変則的な動作をするためここでは未定義
