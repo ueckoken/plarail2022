@@ -45,6 +45,10 @@ jobs:
         run: |-
           yarn install --frozen-lockfile
         working-directory: backend/ats
+      - name: prepare python protoc
+        run: |-
+          pip3 install grpcio-tools
+        working-directory: backend/auto_operation/central_controller
       - name: gen proto
         run: |-
           make pb
