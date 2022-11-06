@@ -1,6 +1,10 @@
-import { BlockState, Blocks } from '../spec/block_pb'
+import { BlockState } from '../spec/block_pb'
 
 export interface Block {
-  id: Blocks.BlockIdMap;
+  id: BlockState.BlockIdMap;
   state: BlockState.StateMap;
+}
+
+export interface BlockMap {
+  [key: string]: Block;
 }
