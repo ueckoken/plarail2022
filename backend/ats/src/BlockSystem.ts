@@ -14,15 +14,7 @@ export class BlockSystem {
     this.BlockState = BlockState;
   }
 
-  getBeUpdatedBlockByBlockId(block_id: string) {
-    const blockRule = blockRules.sensors.find((blockRule) => blockRule.name === block_id);
-    if (blockRule === undefined) {
-      throw new Error(`Block ${block_id} is not found in config`);
-    }
-    return blockRule;
-  }
+  updateBlock(blockId, blockState) {
 
-  getBlockState(block_id: string) {
-    return this.BlockState.getBlockStatesList.call(this.BlockState).find((block) => block.getBlockid.toString() === block_id);
   }
 }
