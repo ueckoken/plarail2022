@@ -48,6 +48,9 @@ export namespace SendStatusRequest {
 }
 
 export class SendStatusResponse extends jspb.Message {
+  getResponse(): SendStatusResponse.ResponseMap[keyof SendStatusResponse.ResponseMap];
+  setResponse(value: SendStatusResponse.ResponseMap[keyof SendStatusResponse.ResponseMap]): void;
+
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): SendStatusResponse.AsObject;
   static toObject(includeInstance: boolean, msg: SendStatusResponse): SendStatusResponse.AsObject;
@@ -60,6 +63,15 @@ export class SendStatusResponse extends jspb.Message {
 
 export namespace SendStatusResponse {
   export type AsObject = {
+    response: SendStatusResponse.ResponseMap[keyof SendStatusResponse.ResponseMap],
   }
+
+  export interface ResponseMap {
+    UNKNOWN: 0;
+    SUCCESS: 1;
+    FAILED: 2;
+  }
+
+  export const Response: ResponseMap;
 }
 
