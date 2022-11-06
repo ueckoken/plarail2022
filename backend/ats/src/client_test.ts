@@ -9,25 +9,20 @@ function ats(): Promise<SendStatusResponse> {
   )
 
   const request = new SendStatusRequest();
-  request.setSensor(0);
-  return new Promise<SendStatusResponse>((resolve, reject) => {
-    console.log("Send Message");
+  request.setSensor(24);
+  return new Promise((resolve, reject) => {
     client.sendStatus(request, (err, response) => {
       if (err) {
         reject(err);
       }
-      console.log("Receive Message");
-      if (response == null) {
-        throw new Error("response is null");
-      }
-      return resolve(response);
-    }
-    );
+      if (response === undefined) return reject(new Error('No data'));
+      resolve(response);
+    });
   });
 }
 
 (async () => {
   console.log("Client Start");
-  const result = await ats();
+  console.log((await ats()).getResponse());
   console.log("Client End");
 })();
