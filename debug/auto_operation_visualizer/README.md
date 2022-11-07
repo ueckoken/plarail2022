@@ -1,6 +1,6 @@
-# ビジュアライザ
+# 自動運転ビジュアライザ
 
-各閉塞区間の状態をビジュアライズします。
+自動運転プログラム (`/backend/auto_operation`) の各閉塞区間の状態をビジュアライズします。
 
 ![](docs/preview.png)
 
@@ -15,6 +15,10 @@ npm install
 ```
 
 ## 実行
+
+まずローカル環境で `/backend/auto_operation` を起動してください。
+
+その後
 
 ```bash
 npm run dev
