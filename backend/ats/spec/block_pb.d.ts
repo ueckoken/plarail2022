@@ -7,10 +7,8 @@ export class NotifyStateRequest extends jspb.Message {
   getState(): NotifyStateRequest.StateMap[keyof NotifyStateRequest.StateMap];
   setState(value: NotifyStateRequest.StateMap[keyof NotifyStateRequest.StateMap]): void;
 
-  hasBlockid(): boolean;
-  clearBlockid(): void;
-  getBlockid(): Blocks | undefined;
-  setBlockid(value?: Blocks): void;
+  getBlockid(): NotifyStateRequest.BlockIdMap[keyof NotifyStateRequest.BlockIdMap];
+  setBlockid(value: NotifyStateRequest.BlockIdMap[keyof NotifyStateRequest.BlockIdMap]): void;
 
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): NotifyStateRequest.AsObject;
@@ -25,7 +23,7 @@ export class NotifyStateRequest extends jspb.Message {
 export namespace NotifyStateRequest {
   export type AsObject = {
     state: NotifyStateRequest.StateMap[keyof NotifyStateRequest.StateMap],
-    blockid?: Blocks.AsObject,
+    blockid: NotifyStateRequest.BlockIdMap[keyof NotifyStateRequest.BlockIdMap],
   }
 
   export interface StateMap {
@@ -35,54 +33,6 @@ export namespace NotifyStateRequest {
   }
 
   export const State: StateMap;
-}
-
-export class NotifyStateResponse extends jspb.Message {
-  getResponse(): NotifyStateResponse.ResponseMap[keyof NotifyStateResponse.ResponseMap];
-  setResponse(value: NotifyStateResponse.ResponseMap[keyof NotifyStateResponse.ResponseMap]): void;
-
-  serializeBinary(): Uint8Array;
-  toObject(includeInstance?: boolean): NotifyStateResponse.AsObject;
-  static toObject(includeInstance: boolean, msg: NotifyStateResponse): NotifyStateResponse.AsObject;
-  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
-  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
-  static serializeBinaryToWriter(message: NotifyStateResponse, writer: jspb.BinaryWriter): void;
-  static deserializeBinary(bytes: Uint8Array): NotifyStateResponse;
-  static deserializeBinaryFromReader(message: NotifyStateResponse, reader: jspb.BinaryReader): NotifyStateResponse;
-}
-
-export namespace NotifyStateResponse {
-  export type AsObject = {
-    response: NotifyStateResponse.ResponseMap[keyof NotifyStateResponse.ResponseMap],
-  }
-
-  export interface ResponseMap {
-    UNKNOWN: 0;
-    SUCCESS: 1;
-    FAILED: 2;
-  }
-
-  export const Response: ResponseMap;
-}
-
-export class Blocks extends jspb.Message {
-  getBlockid(): Blocks.BlockIdMap[keyof Blocks.BlockIdMap];
-  setBlockid(value: Blocks.BlockIdMap[keyof Blocks.BlockIdMap]): void;
-
-  serializeBinary(): Uint8Array;
-  toObject(includeInstance?: boolean): Blocks.AsObject;
-  static toObject(includeInstance: boolean, msg: Blocks): Blocks.AsObject;
-  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
-  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
-  static serializeBinaryToWriter(message: Blocks, writer: jspb.BinaryWriter): void;
-  static deserializeBinary(bytes: Uint8Array): Blocks;
-  static deserializeBinaryFromReader(message: Blocks, reader: jspb.BinaryReader): Blocks;
-}
-
-export namespace Blocks {
-  export type AsObject = {
-    blockid: Blocks.BlockIdMap[keyof Blocks.BlockIdMap],
-  }
 
   export interface BlockIdMap {
     UNKNOWN: 0;
@@ -111,5 +61,33 @@ export namespace Blocks {
   }
 
   export const BlockId: BlockIdMap;
+}
+
+export class NotifyStateResponse extends jspb.Message {
+  getResponse(): NotifyStateResponse.ResponseMap[keyof NotifyStateResponse.ResponseMap];
+  setResponse(value: NotifyStateResponse.ResponseMap[keyof NotifyStateResponse.ResponseMap]): void;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): NotifyStateResponse.AsObject;
+  static toObject(includeInstance: boolean, msg: NotifyStateResponse): NotifyStateResponse.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: NotifyStateResponse, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): NotifyStateResponse;
+  static deserializeBinaryFromReader(message: NotifyStateResponse, reader: jspb.BinaryReader): NotifyStateResponse;
+}
+
+export namespace NotifyStateResponse {
+  export type AsObject = {
+    response: NotifyStateResponse.ResponseMap[keyof NotifyStateResponse.ResponseMap],
+  }
+
+  export interface ResponseMap {
+    UNKNOWN: 0;
+    SUCCESS: 1;
+    FAILED: 2;
+  }
+
+  export const Response: ResponseMap;
 }
 
