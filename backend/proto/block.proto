@@ -3,12 +3,29 @@ syntax = "proto3";
 option go_package = "./spec";
 
 service BlockStateSync {
-  rpc NotifyState(BlockStateList) returns (BlockStateList) {}
+  rpc NotifyState(NotifyStateRequest) returns (NotifyStateResponse) {}
 }
 
-message BlockStateList { repeated BlockState block_states = 1; }
+message NotifyStateRequest {
+  enum State {
+    UNKNOWN = 0;
+    OPEN = 1;
+    CLOSE = 2;
+  }
+  State state = 2;
+  Blocks blockId = 3;
+}
 
-message BlockState {
+message NotifyStateResponse {
+  enum Response {
+    UNKNOWN = 0;
+    SUCCESS = 1;
+    FAILED = 2;
+  }
+  Response response = 1;
+}
+
+message Blocks {
   enum BlockId {
     unknown = 0;
     shinjuku_sakurajosui_up = 10;
@@ -35,10 +52,4 @@ message BlockState {
     hachioji_b2 = 151;
   }
   BlockId blockId = 3;
-  enum State {
-    UNKNOWN = 0;
-    OPEN = 1;
-    CLOSE = 2;
-  }
-  State state = 2;
 }
