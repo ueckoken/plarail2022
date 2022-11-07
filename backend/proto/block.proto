@@ -2,10 +2,8 @@ syntax = "proto3";
 
 option go_package = "./spec";
 
-import "google/protobuf/empty.proto";
-
 service BlockStateSync {
-  rpc NotifyState(google.protobuf.Empty) returns (BlockStateList) {}
+  rpc NotifyState(BlockStateList) returns (BlockStateList) {}
 }
 
 message BlockStateList { repeated BlockState block_states = 1; }
