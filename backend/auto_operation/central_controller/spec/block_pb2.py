@@ -13,7 +13,7 @@ _sym_db = _symbol_database.Default()
 
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x0b\x62lock.proto\"3\n\x0e\x42lockStateList\x12!\n\x0c\x62lock_states\x18\x01 \x03(\x0b\x32\x0b.BlockState\"\xe4\x04\n\nBlockState\x12$\n\x07\x62lockId\x18\x03 \x01(\x0e\x32\x13.BlockState.BlockId\x12 \n\x05state\x18\x02 \x01(\x0e\x32\x11.BlockState.State\"\xe2\x03\n\x07\x42lockId\x12\x0b\n\x07unknown\x10\x00\x12\x1b\n\x17shinjuku_sakurajosui_up\x10\n\x12\x1d\n\x19shinjuku_sakurajosui_down\x10\x0b\x12\x18\n\x14sakurajosui_chofu_up\x10\x14\x12\x1a\n\x16sakurajosui_chofu_down\x10\x15\x12\x15\n\x11\x63hofu_hachioji_up\x10\x1e\x12\x17\n\x13\x63hofu_hachioji_down\x10\x1f\x12\x16\n\x12\x63hofu_hashimoto_up\x10(\x12\x18\n\x14\x63hofu_hashimoto_down\x10)\x12\x0f\n\x0bshinjuku_b1\x10\x64\x12\x0f\n\x0bshinjuku_b2\x10\x65\x12\x12\n\x0esakurajosui_b1\x10n\x12\x12\n\x0esakurajosui_b2\x10o\x12\x12\n\x0esakurajosui_b3\x10x\x12\x12\n\x0esakurajosui_b4\x10y\x12\r\n\x08\x63hofu_b1\x10\x82\x01\x12\r\n\x08\x63hofu_b2\x10\x83\x01\x12\r\n\x08\x63hofu_b3\x10\x84\x01\x12\r\n\x08\x63hofu_b4\x10\x85\x01\x12\x11\n\x0chashimoto_b1\x10\x8c\x01\x12\x11\n\x0chashimoto_b2\x10\x8d\x01\x12\x10\n\x0bhachioji_b1\x10\x96\x01\x12\x10\n\x0bhachioji_b2\x10\x97\x01\")\n\x05State\x12\x0b\n\x07UNKNOWN\x10\x00\x12\x08\n\x04OPEN\x10\x01\x12\t\n\x05\x43LOSE\x10\x02\x32\x43\n\x0e\x42lockStateSync\x12\x31\n\x0bNotifyState\x12\x0f.BlockStateList\x1a\x0f.BlockStateList\"\x00\x42\x08Z\x06./specb\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x0b\x62lock.proto\"\x83\x01\n\x12NotifyStateRequest\x12(\n\x05state\x18\x02 \x01(\x0e\x32\x19.NotifyStateRequest.State\x12\x18\n\x07\x62lockId\x18\x03 \x01(\x0b\x32\x07.Blocks\")\n\x05State\x12\x0b\n\x07UNKNOWN\x10\x00\x12\x08\n\x04OPEN\x10\x01\x12\t\n\x05\x43LOSE\x10\x02\"x\n\x13NotifyStateResponse\x12/\n\x08response\x18\x01 \x01(\x0e\x32\x1d.NotifyStateResponse.Response\"0\n\x08Response\x12\x0b\n\x07UNKNOWN\x10\x00\x12\x0b\n\x07SUCCESS\x10\x01\x12\n\n\x06\x46\x41ILED\x10\x02\"\x8f\x04\n\x06\x42locks\x12 \n\x07\x62lockId\x18\x03 \x01(\x0e\x32\x0f.Blocks.BlockId\"\xe2\x03\n\x07\x42lockId\x12\x0b\n\x07unknown\x10\x00\x12\x1b\n\x17shinjuku_sakurajosui_up\x10\n\x12\x1d\n\x19shinjuku_sakurajosui_down\x10\x0b\x12\x18\n\x14sakurajosui_chofu_up\x10\x14\x12\x1a\n\x16sakurajosui_chofu_down\x10\x15\x12\x15\n\x11\x63hofu_hachioji_up\x10\x1e\x12\x17\n\x13\x63hofu_hachioji_down\x10\x1f\x12\x16\n\x12\x63hofu_hashimoto_up\x10(\x12\x18\n\x14\x63hofu_hashimoto_down\x10)\x12\x0f\n\x0bshinjuku_b1\x10\x64\x12\x0f\n\x0bshinjuku_b2\x10\x65\x12\x12\n\x0esakurajosui_b1\x10n\x12\x12\n\x0esakurajosui_b2\x10o\x12\x12\n\x0esakurajosui_b3\x10x\x12\x12\n\x0esakurajosui_b4\x10y\x12\r\n\x08\x63hofu_b1\x10\x82\x01\x12\r\n\x08\x63hofu_b2\x10\x83\x01\x12\r\n\x08\x63hofu_b3\x10\x84\x01\x12\r\n\x08\x63hofu_b4\x10\x85\x01\x12\x11\n\x0chashimoto_b1\x10\x8c\x01\x12\x11\n\x0chashimoto_b2\x10\x8d\x01\x12\x10\n\x0bhachioji_b1\x10\x96\x01\x12\x10\n\x0bhachioji_b2\x10\x97\x01\x32L\n\x0e\x42lockStateSync\x12:\n\x0bNotifyState\x12\x13.NotifyStateRequest\x1a\x14.NotifyStateResponse\"\x00\x42\x08Z\x06./specb\x06proto3')
 
 _builder.BuildMessageAndEnumDescriptors(DESCRIPTOR, globals())
 _builder.BuildTopDescriptorsAndMessages(DESCRIPTOR, 'block_pb2', globals())
@@ -21,14 +21,18 @@ if _descriptor._USE_C_DESCRIPTORS == False:
 
   DESCRIPTOR._options = None
   DESCRIPTOR._serialized_options = b'Z\006./spec'
-  _BLOCKSTATELIST._serialized_start=15
-  _BLOCKSTATELIST._serialized_end=66
-  _BLOCKSTATE._serialized_start=69
-  _BLOCKSTATE._serialized_end=681
-  _BLOCKSTATE_BLOCKID._serialized_start=156
-  _BLOCKSTATE_BLOCKID._serialized_end=638
-  _BLOCKSTATE_STATE._serialized_start=640
-  _BLOCKSTATE_STATE._serialized_end=681
-  _BLOCKSTATESYNC._serialized_start=683
-  _BLOCKSTATESYNC._serialized_end=750
+  _NOTIFYSTATEREQUEST._serialized_start=16
+  _NOTIFYSTATEREQUEST._serialized_end=147
+  _NOTIFYSTATEREQUEST_STATE._serialized_start=106
+  _NOTIFYSTATEREQUEST_STATE._serialized_end=147
+  _NOTIFYSTATERESPONSE._serialized_start=149
+  _NOTIFYSTATERESPONSE._serialized_end=269
+  _NOTIFYSTATERESPONSE_RESPONSE._serialized_start=221
+  _NOTIFYSTATERESPONSE_RESPONSE._serialized_end=269
+  _BLOCKS._serialized_start=272
+  _BLOCKS._serialized_end=799
+  _BLOCKS_BLOCKID._serialized_start=317
+  _BLOCKS_BLOCKID._serialized_end=799
+  _BLOCKSTATESYNC._serialized_start=801
+  _BLOCKSTATESYNC._serialized_end=877
 # @@protoc_insertion_point(module_scope)
