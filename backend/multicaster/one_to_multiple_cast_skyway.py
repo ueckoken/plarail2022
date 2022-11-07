@@ -12,14 +12,14 @@ from typing import Literal, Optional, TypedDict, Union, cast
 
 ADDRESS = "0.0.0.0"
 PORT = 8081
-MAX_CONNECT_NUM = 980
+MAX_CUMULATIVE_ACTIVATED_CONNECT_NUM = 980
 # CERT = "C://Users/asika/OneDrive/ドキュメント/webRTC/vscode_live_server.cert.pem"
 # KEY = "C://Users/asika/OneDrive/ドキュメント/webRTC/vscode_live_server.key.pem"
 SENDER_TOKEN = os.environ.get("SENDER_TOKEN")  # ["127.0.0.1"]
 print(SENDER_TOKEN)
 
 
-connections = []
+connections: set[WebSocketServerProtocol] = set()
 
 
 class ConnectSenderMessage(TypedDict):
@@ -65,8 +65,8 @@ class Room(TypedDict):
     sender_socket: Optional[WebSocketServerProtocol]
     peer_id: Optional[str]
     skyway_room_id: Optional[str]
-    connections: list[WebSocketServerProtocol]
-    connect_num: int
+    connections: set[WebSocketServerProtocol]
+    cumulative_activated_connect_num: int
 
 
 RemoteAddress = Optional[tuple[str, int]]
@@ -91,7 +91,7 @@ async def handler(websocket: WebSocketServerProtocol, path: str) -> None:
     remote_address = cast(RemoteAddress, websocket.remote_address)
     print(remote_address)
     async with lock:
-        connections.append(websocket)
+        connections.add(websocket)
 
     try:
         async for raw_message in websocket:  # 受信
@@ -106,8 +106,8 @@ async def handler(websocket: WebSocketServerProtocol, path: str) -> None:
                     sender_socket=None,
                     peer_id=None,
                     skyway_room_id=None,
-                    connections=[websocket],
-                    connect_num=0,
+                    connections={websocket},
+                    cumulative_activated_connect_num=0,
                     # ルームの累積接続数が1000行くと通信が弾かれるのでその前にルームを切り替え
                 )
                 async with lock:
@@ -116,20 +116,20 @@ async def handler(websocket: WebSocketServerProtocol, path: str) -> None:
                 room = rooms[room_id]
                 if websocket not in room["connections"]:
                     async with lock:
-                        room["connections"].append(websocket)
+                        room["connections"].add(websocket)
             # 現在の通信のwebsocketが入ったroom_idのroomが存在することを保証
 
             if message["msg_type"] == "connect_sender":
-                if room["skyway_room_id"] is None or room["peer_id"] is None:
-                    continue
                 if SENDER_TOKEN is None or SENDER_TOKEN == message["sender_token"]:
                     async with lock:  # if room["sender_socket"] is None:
                         print("sender_connect")
                         room["sender_socket"] = websocket
                         room["skyway_room_id"] = message["skyway_room_id"]
-                        room["connect_num"] = 0
+                        room["cumulative_activated_connect_num"] = 0
                         # senderは上書き
                         room["peer_id"] = message["peer_id"]
+                        if room["skyway_room_id"] is None or room["peer_id"] is None:
+                            continue
                         for connection in room["connections"]:
                             if connection is websocket:
                                 continue
@@ -144,7 +144,7 @@ async def handler(websocket: WebSocketServerProtocol, path: str) -> None:
                                     )
                                 )
                             )
-                            room["connect_num"] += 1
+                            room["cumulative_activated_connect_num"] += 1
                             promises.append(promise)
             elif message["msg_type"] == "connect_receiver":
                 print("connect_receiver")
@@ -152,7 +152,10 @@ async def handler(websocket: WebSocketServerProtocol, path: str) -> None:
                     if room["skyway_room_id"] is None or room["peer_id"] is None:
                         continue
                     print("send")
-                    if room["connect_num"] < MAX_CONNECT_NUM:
+                    if (
+                        room["cumulative_activated_connect_num"]
+                        < MAX_CUMULATIVE_ACTIVATED_CONNECT_NUM
+                    ):
                         promise = websocket.send(
                             json.dumps(
                                 ConnectReceiverReplyMessage(
@@ -165,7 +168,7 @@ async def handler(websocket: WebSocketServerProtocol, path: str) -> None:
                         )
 
                         async with lock:
-                            room["connect_num"] += 1
+                            room["cumulative_activated_connect_num"] += 1
                         promises.append(promise)
                     else:
                         # ルームの累積接続数が溢れそうだったら新しい部屋をsenderに作ってもらう
@@ -178,7 +181,7 @@ async def handler(websocket: WebSocketServerProtocol, path: str) -> None:
                         )
                         promises.append(promise)
                         async with lock:
-                            room["connect_num"] = 0
+                            room["cumulative_activated_connect_num"] = 0
             elif message["msg_type"] == "exit_room":
                 if websocket in room["connections"]:
                     async with lock:
@@ -188,7 +191,7 @@ async def handler(websocket: WebSocketServerProtocol, path: str) -> None:
                         room["sender_socket"] = None
                         room["peer_id"] = None
                         room["skyway_room_id"] = None
-                        room["connect_num"] = 0
+                        room["cumulative_activated_connect_num"] = 0
             print("{}: {}".format(path, message))
             for p in promises:
                 try:
@@ -201,9 +204,8 @@ async def handler(websocket: WebSocketServerProtocol, path: str) -> None:
     # 接続が切れたらその接続を削除
     for room_id, room in rooms.items():
         print(room)
-        if websocket in room["connections"]:
-            async with lock:
-                room["connections"].remove(websocket)
+        async with lock:
+            room["connections"].discard(websocket)
         if room["sender_socket"] is websocket:
             async with lock:
                 room["sender_socket"] = None

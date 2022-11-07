@@ -1,7 +1,6 @@
 up:
-	docker-compose down
-	docker-compose build
-	docker-compose up -d
+	docker compose down
+	docker compose up --build -d 
 
 pull:
 	git pull
@@ -59,7 +58,21 @@ speedControlPositioning:
 	-I./ \
 	proto/speedControl.proto
 
-ats: ats-node
-ats-node:
+ats: ats_node ats_go ats_python
+
+ats_node:
 	cd ats && \
+	./protoc-gen.sh
+
+ats_go:
+	protoc \
+	--go_out=json2grpc \
+	--go_opt=Mproto/ats.proto=. \
+	--go-grpc_out=json2grpc/spec \
+	--go-grpc_opt=Mproto/ats.proto=. \
+	-I./ \
+	proto/ats.proto
+
+ats_python:
+	cd auto_operation && \
 	./protoc-gen.sh

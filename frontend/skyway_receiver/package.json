@@ -2,7 +2,7 @@
   "name": "chofusai-plarail2022-skyway-receiver",
   "private": true,
   "dependencies": {
-    "skyway-js": "4.4.1"
+    "skyway-js": "4.4.5"
   },
   "devDependencies": {
     "prettier": "2.7.1",
