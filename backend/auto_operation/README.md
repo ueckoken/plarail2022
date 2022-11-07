@@ -1,7 +1,5 @@
 # 自動運転プログラム
 ## 使い方
-以下、auto_operation/central_controller の中を見る
-
 ### シミュレーションモードの設定
 - main.py の中に、`operation.state.communication.setup(simulationMode=True)`と書いてある部分がある。simulationModeを`True` にすると、ESP32が接続されていなくても動く
 
@@ -21,9 +19,6 @@ python3 main.py
 ```
 
 ## 中身
-### central_controller
-自動運転システム
-
 - templates
   - 運転体験ウェブページのCSSが入っている
 
