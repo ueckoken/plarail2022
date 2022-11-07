@@ -1,6 +1,6 @@
 # 自動運転プログラム
 ## 使い方
-以下、auto_operation/system_on_raspi の中を見る
+以下、auto_operation/central_controller の中を見る
 
 ### シミュレーションモードの設定
 - main.py の中に、`operation.state.communication.setup(simulationMode=True)`と書いてある部分がある。simulationModeを`True` にすると、ESP32が接続されていなくても動く
@@ -13,7 +13,7 @@
 -  Communication.py の、`self.esp32Map[0] = serial.Serial("/dev/cu.ESP32-ESP32SPP", 115200)` と書いてある部分に各車両がつながっているポートを指定する
 
 ### 線路形状の確認
-- auto_operation/system_on_raspi/State.py の中に線路形状と列車の初期位置が書き込まれている。必要に応じて修正する
+- auto_operation/central_controller/State.py の中に線路形状と列車の初期位置が書き込まれている。必要に応じて修正する
 
 ### 実行
 ```
@@ -21,16 +21,6 @@ python3 main.py
 ```
 
 ## 中身
-### child_ship/child_ship.ino (谷口)
-  - 子艦の Arduino Nano に書き込む、サーボとセンサの制御プログラム
-  - シリアル通信で junctionId を受け取り、ポイントを切り替える。
-  - CdSが車両の通過を検知したとき、通過したCdSの sensorId を送る。
-
-### mother_ship/mother_ship.ino (谷口)
-  - 母艦の Arduino Mega に書き込むプログラム
-  - シリアル通信で junctionId を受け取り、ポイントを切り替える。
-  - CdSが車両の通過を検知したとき、通過したCdSの sensorId を送る。
-
 ### central_controller
 自動運転システム
 
