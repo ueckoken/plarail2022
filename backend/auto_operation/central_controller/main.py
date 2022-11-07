@@ -4,6 +4,7 @@ from flask import Flask, render_template, Response
 from flask_socketio import SocketIO
 from flask_cors import CORS
 import threading
+import Connection
 
 ESP_EYE_IP_ADDR = "esp32-1D31E4.mshome.net"
 

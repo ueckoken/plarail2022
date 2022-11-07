@@ -13,6 +13,11 @@ class Ats(ats_pb2_grpc.AtsServicer):
     print("Reveived: " + str(request.sensor))
     return ats_pb2.SendStatusResponse(response=1)
 
+class Block(block_pb2_grpc.BlockStateSyncServicer):
+  def NotifyState(self, request, context):
+    print("Reveived: " + "BlockId" + str(request.blockId) +",State:"+ str(request.state))
+    return ats_pb2.SendStatusResponse(response=1)
+
 def test():
   with grpc.insecure_channel('localhost:6543') as channel:
     stub = ats_pb2_grpc.AtsStub(channel)
@@ -23,6 +28,7 @@ def test():
 def serve():
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
     ats_pb2_grpc.add_AtsServicer_to_server(Ats(), server)
+    block_pb2_grpc.add_BlockStateSyncServicer_to_server(Block(), server)
     server.add_insecure_port('[::]:6543')
     server.start()
     server.wait_for_termination()
