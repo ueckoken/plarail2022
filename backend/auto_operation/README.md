@@ -11,7 +11,7 @@
 -  Communication.py の、`self.esp32Map[0] = serial.Serial("/dev/cu.ESP32-ESP32SPP", 115200)` と書いてある部分に各車両がつながっているポートを指定する
 
 ### 線路形状の確認
-- auto_operation/central_controller/State.py の中に線路形状と列車の初期位置が書き込まれている。必要に応じて修正する
+- State.py の中に線路形状と列車の初期位置が書き込まれている。必要に応じて修正する
 
 ### 実行
 ```

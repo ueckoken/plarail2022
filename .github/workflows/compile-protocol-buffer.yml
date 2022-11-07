@@ -49,7 +49,7 @@ jobs:
       - name: prepare python protoc
         run: |-
           pip3 install grpcio-tools
-        working-directory: backend/auto_operation/central_controller
+        working-directory: backend/auto_operation
       - name: gen proto
         run: |-
           make pb

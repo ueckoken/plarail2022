@@ -74,5 +74,5 @@ ats_go:
 	proto/ats.proto
 
 ats_python:
-	cd auto_operation/central_controller && \
+	cd auto_operation && \
 	./protoc-gen.sh
