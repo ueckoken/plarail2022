@@ -41,10 +41,15 @@ jobs:
           mkdir -p $GITHUB_WORKSPACE/backend/external/spec
           mkdir -p $GITHUB_WORKSPACE/backend/ats/spec
           mkdir -p $GITHUB_WORKSPACE/backend/json2grpc/spec
+          mkdir -p $GITHUB_WORKSPACE/backend/auto_operation/central_controller/spec
       - name: prepare node protoc
         run: |-
           yarn install --frozen-lockfile
         working-directory: backend/ats
+      - name: prepare python protoc
+        run: |-
+          pip3 install grpcio-tools
+        working-directory: backend/auto_operation/central_controller
       - name: gen proto
         run: |-
           make pb

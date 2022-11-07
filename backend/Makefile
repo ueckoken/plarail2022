@@ -58,7 +58,7 @@ speedControlPositioning:
 	-I./ \
 	proto/speedControl.proto
 
-ats: ats_node ats_go
+ats: ats_node ats_go ats_python
 
 ats_node:
 	cd ats && \
@@ -72,3 +72,7 @@ ats_go:
 	--go-grpc_opt=Mproto/ats.proto=. \
 	-I./ \
 	proto/ats.proto
+
+ats_python:
+	cd auto_operation/central_controller && \
+	./protoc-gen.sh
