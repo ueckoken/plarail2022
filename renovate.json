@@ -7,5 +7,12 @@
   },
   "flux": {
     "fileMatch": [".+\\.ya?ml$"]
-  }
+  },
+  "automerge": true,
+  "packageRules": [
+    {
+      "matchUpdateTypes": ["major"],
+      "automerge": false
+    }
+  ]
 }
