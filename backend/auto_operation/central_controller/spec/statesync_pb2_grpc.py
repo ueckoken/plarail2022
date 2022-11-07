@@ -2,7 +2,7 @@
 """Client and server classes corresponding to protobuf-defined services."""
 import grpc
 
-import statesync_pb2 as statesync__pb2
+from . import statesync_pb2 as statesync__pb2
 
 
 class ControlStub(object):
