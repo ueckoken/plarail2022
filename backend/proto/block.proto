@@ -13,19 +13,6 @@ message NotifyStateRequest {
     CLOSE = 2;
   }
   State state = 2;
-  Blocks blockId = 3;
-}
-
-message NotifyStateResponse {
-  enum Response {
-    UNKNOWN = 0;
-    SUCCESS = 1;
-    FAILED = 2;
-  }
-  Response response = 1;
-}
-
-message Blocks {
   enum BlockId {
     unknown = 0;
     shinjuku_sakurajosui_up = 10;
@@ -52,4 +39,13 @@ message Blocks {
     hachioji_b2 = 151;
   }
   BlockId blockId = 3;
+}
+
+message NotifyStateResponse {
+  enum Response {
+    UNKNOWN = 0;
+    SUCCESS = 1;
+    FAILED = 2;
+  }
+  Response response = 1;
 }
