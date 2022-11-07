@@ -2,8 +2,7 @@
 """Client and server classes corresponding to protobuf-defined services."""
 import grpc
 
-from . import block_pb2 as block__pb2
-from google.protobuf import empty_pb2 as google_dot_protobuf_dot_empty__pb2
+import block_pb2 as block__pb2
 
 
 class BlockStateSyncStub(object):
@@ -17,7 +16,7 @@ class BlockStateSyncStub(object):
         """
         self.NotifyState = channel.unary_unary(
                 '/BlockStateSync/NotifyState',
-                request_serializer=google_dot_protobuf_dot_empty__pb2.Empty.SerializeToString,
+                request_serializer=block__pb2.BlockStateList.SerializeToString,
                 response_deserializer=block__pb2.BlockStateList.FromString,
                 )
 
@@ -36,7 +35,7 @@ def add_BlockStateSyncServicer_to_server(servicer, server):
     rpc_method_handlers = {
             'NotifyState': grpc.unary_unary_rpc_method_handler(
                     servicer.NotifyState,
-                    request_deserializer=google_dot_protobuf_dot_empty__pb2.Empty.FromString,
+                    request_deserializer=block__pb2.BlockStateList.FromString,
                     response_serializer=block__pb2.BlockStateList.SerializeToString,
             ),
     }
@@ -61,7 +60,7 @@ class BlockStateSync(object):
             timeout=None,
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/BlockStateSync/NotifyState',
-            google_dot_protobuf_dot_empty__pb2.Empty.SerializeToString,
+            block__pb2.BlockStateList.SerializeToString,
             block__pb2.BlockStateList.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
