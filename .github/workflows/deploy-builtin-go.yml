@@ -23,16 +23,4 @@ jobs:
       - name: Build Go binary
         run: |-
           make build_arm
-      - name: Count changes
-        id: changes
-        run: |
-          git add -N .
-          echo "::set-output name=count::$(git diff --name-only |wc -l)"
-      - name: commit and push
-        run: |
-          git config --global user.name 'GO builder'
-          git config --global user.email 'bot@example.com'
-          git add .
-          git commit -m 'built by github actions'
-          git push
-        if: steps.changes.outputs.count > 0
+      - uses: EndBug/add-and-commit@v9

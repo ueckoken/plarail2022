@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8">
+    <title>オンライン運転体験 | 東大プラレーラーズ五月祭2022</title>
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <link href="static/loaders.min.css" rel="stylesheet">
+    <link href="static/style.css" rel="stylesheet" type="text/css">
+    <link href="static/google-fonts/style.css" rel="stylesheet">
+    <link href="static/fontawesome-free-5.15.4-web/css/all.min.css" rel="stylesheet">
+    <meta name="esp-eye-ip-addr" content="{{ esp_eye_ip_addr }}" />
+  </head>
+  <body>
+    <header>
+      <h1>東大プラレーラーズ・オンライン運転体験</h1>
+    </header>
+    <div id="input_area">
+      <div class="input_text">
+        <input type="text" id="pw_input" placeholder="列車番号を入力" disabled>
+        <i class="fas fa-subway"></i>
+      </div>
+      <a href="#" class="input_button" id="pw_send">運転をはじめる</a>
+    </div>
+    <div id="message_area">
+      <i id="message_icon" class="fas fa-info-circle"></i>
+      <p id="message">指定された時間になったら、列車番号を入力し「運転をはじめる」を押してください。</p>
+      <div class="loader" id="loader">
+        <div class="loader-inner ball-pulse">
+          <div></div>
+          <div></div>
+          <div></div>
+        </div>
+      </div>
+    </div>
+    <div id="content">
+      <div id="controller">
+        <img id="movie" />
+        <div id="signal_area">
+          <img id="signal_img" src="static/img/G.svg">
+        </div>
+        <div id="distance_area">
+          <p id="distance_text">停止位置まで</p>
+          <p id="distance_value">0 cm</p>
+        </div>
+        <div id="mascon_area">
+          <input type="range" id="mascon" value="0" min="0" max="{{ max_speed }}" step="1" title="運転するには、列車番号を入力してください">
+        </div>
+      </div>
+    </div>
+    <!-- websocketを扱うjavascript -->
+    <script src="static/socket.io-4.5.0/socket.io.min.js"></script>
+    <script type="module" src="static/script.js"></script>
+  </body>
+</html>

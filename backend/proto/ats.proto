@@ -7,7 +7,7 @@ service Ats {
 }
 
 message SendStatusRequest {
-  enum SensorName { 
+  enum SensorName {
     unknown = 0;
 
     shinjuku_d1 = 1;
@@ -33,7 +33,14 @@ message SendStatusRequest {
 
     wakabadai_d1 = 51;
     wakabadai_d2 = 52;
-   }
+  }
   SensorName sensor = 1;
 }
-message SendStatusResponse {}
+message SendStatusResponse {
+  enum Response {
+    UNKNOWN = 0;
+    SUCCESS = 1;
+    FAILED = 2;
+  }
+  Response response = 1;
+}
