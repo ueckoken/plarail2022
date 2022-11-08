@@ -6,6 +6,8 @@ import spec.ats_pb2 as ats_pb2
 import spec.ats_pb2_grpc as ats_pb2_grpc
 import spec.block_pb2 as block_pb2
 import spec.block_pb2_grpc as block_pb2_grpc
+import spec.statesync_pb2 as statesync_pb2
+import spec.statesync_pb2_grpc as statesync_pb2_grpc
 
 def testATS():
   with grpc.insecure_channel('localhost:6543') as channel:
@@ -19,5 +21,11 @@ def testBlock():
     response = stub.NotifyState(block_pb2.NotifyStateRequest(state=2,blockId=2))
   print("Received: " + str(response.response))
 
+def testStateSync():
+  with grpc.insecure_channel('localhost:6543') as channel:
+    stub = statesync_pb2_grpc.ControlStub(channel)
+    response = stub.Command2Internal(statesync_pb2.RequestSync(state=2,station=statesync_pb2.Stations(stationId=1)))
+  print("Received: " + str(response))
+
 if __name__ == '__main__':
-  testBlock()
+  testStateSync()
