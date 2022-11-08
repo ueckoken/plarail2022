@@ -2,7 +2,7 @@
 """Client and server classes corresponding to protobuf-defined services."""
 import grpc
 
-from . import block_pb2 as block__pb2
+from . from . import block_pb2 as block__pb2
 
 
 class BlockStateSyncStub(object):

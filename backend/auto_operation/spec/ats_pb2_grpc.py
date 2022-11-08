@@ -2,7 +2,7 @@
 """Client and server classes corresponding to protobuf-defined services."""
 import grpc
 
-from . import ats_pb2 as ats__pb2
+from . from . import ats_pb2 as ats__pb2
 
 
 class AtsStub(object):
