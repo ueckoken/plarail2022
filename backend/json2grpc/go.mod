@@ -1,4 +1,4 @@
-module json2grpc
+module github.com/ueckoken/backend/json2grpc
 
 go 1.19
 
