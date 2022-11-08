@@ -1,8 +1,8 @@
-name: Deploy external
+name: Deploy WebRTC sender
 
 defaults:
   run:
-    working-directory: ./backend/external
+    working-directory: ./frontend/momo_sender
 
 on:
   push:
@@ -11,19 +11,10 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+
     steps:
-      - name: checkout
-        uses: actions/checkout@v3
+      - uses: actions/checkout@v3
       - uses: docker/setup-buildx-action@v2
-      - name: Set up Go
-        uses: actions/setup-go@v3
-        with:
-          go-version-file: ./backend/external/go.mod
-          cache: true
-          cache-dependency-path: ./backend/external/go.sum
-      - name: Build Go binary
-        run: |-
-          make build
       - name: set tag
         run: |-
           export TIMESTUMP=$(date +%s)
@@ -38,9 +29,10 @@ jobs:
       - name: Build
         uses: docker/build-push-action@v3
         with:
-          context: ./backend/external
+          context: ./frontend/momo_sender/
+          file: ./frontend/momo_sender/Dockerfile
           platforms: linux/amd64
           push: true
-          tags: ghcr.io/ueckoken/plarail2022-external:${{ env.IMAGE_TAG }}
+          tags: ghcr.io/ueckoken/plarail2022-webrtc-sender:${{ env.IMAGE_TAG }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
