@@ -28,7 +28,7 @@ jobs:
       - name: Build
         uses: docker/build-push-action@v3
         with:
-          context: ./backend/auto-operation
+          context: ./backend/auto_operation
           platforms: linux/amd64
           push: true
           tags: ghcr.io/ueckoken/plarail2022-auto-operation:${{ env.IMAGE_TAG }}
