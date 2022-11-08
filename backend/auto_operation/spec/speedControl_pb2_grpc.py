@@ -2,7 +2,7 @@
 """Client and server classes corresponding to protobuf-defined services."""
 import grpc
 
-from . from . import speedControl_pb2 as speedControl__pb2
+from . import speedControl_pb2 as speedControl__pb2
 
 
 class SpeedStub(object):
