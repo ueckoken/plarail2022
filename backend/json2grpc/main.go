@@ -45,13 +45,11 @@ func main() {
 
 		switch r.Method {
 		case http.MethodGet:
-			mutex.RLock()
 
 			if err := json.NewEncoder(w).Encode(sensor); err != nil {
 				http.Error(w, fmt.Sprintf(`{"status":"%s"}`, err), http.StatusInternalServerError)
 				return
 			}
-			mutex.RUnlock()
 
 		case http.MethodPost:
 			var temp Send
