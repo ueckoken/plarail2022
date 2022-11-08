@@ -8,7 +8,7 @@ import (
 	"net/http"
 	"sync"
 
-	atspb "json2grpc/spec"
+	atspb "github.com/ueckoken/backend/json2grpc/spec"
 
 	"github.com/go-playground/validator/v10"
 	"google.golang.org/grpc"

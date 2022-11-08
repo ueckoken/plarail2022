@@ -3,7 +3,7 @@ package main
 import (
 	"context"
 	"fmt"
-	atspb "json2grpc/spec"
+	atspb "github.com/ueckoken/backend/json2grpc/spec"
 	"log"
 	"net"
 	"os"
