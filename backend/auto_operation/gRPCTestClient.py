@@ -18,7 +18,7 @@ def testATS():
 def testBlock():
   with grpc.insecure_channel('localhost:6543') as channel:
     stub = block_pb2_grpc.BlockStateSyncStub(channel)
-    response = stub.NotifyState(block_pb2.NotifyStateRequest(state=2,blockId=2))
+    response = stub.NotifyState(block_pb2.NotifyStateRequest(state=2,block=block_pb2.Blocks(blockId=10)))
   print("Received: " + str(response.response))
 
 def testStateSync():
@@ -28,4 +28,6 @@ def testStateSync():
   print("Received: " + str(response))
 
 if __name__ == '__main__':
+  testBlock()
   testStateSync()
+  testATS()
