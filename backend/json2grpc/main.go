@@ -7,6 +7,7 @@ import (
 	"log"
 	"net/http"
 	"sync"
+	"time"
 
 	atspb "github.com/ueckoken/backend/json2grpc/spec"
 
@@ -86,5 +87,12 @@ func main() {
 		}
 	})
 
-	http.ListenAndServe(":8080", nil)
+	srv := &http.Server{
+		Addr:              ":8080",
+		Handler:           nil,
+		ReadHeaderTimeout: 3 * time.Second,
+		ReadTimeout:       5 * time.Second,
+		WriteTimeout:      5 * time.Second,
+	}
+	log.Fatal(srv.ListenAndServe())
 }
