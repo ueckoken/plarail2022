@@ -13,7 +13,7 @@ def testATS():
   with grpc.insecure_channel('localhost:6543') as channel:
     stub = ats_pb2_grpc.AtsStub(channel)
     response = stub.SendStatus(ats_pb2.SendStatusRequest(sensor=13))
-  print("Received: " + str(response.response))
+  print("Received: " + str(response))
 
 def testBlock():
   with grpc.insecure_channel('localhost:6543') as channel:
@@ -28,6 +28,6 @@ def testStateSync():
   print("Received: " + str(response))
 
 if __name__ == '__main__':
-  testBlock()
-  testStateSync()
+  # testBlock()
+  # testStateSync()
   testATS()

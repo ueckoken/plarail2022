@@ -16,12 +16,14 @@ import spec.block_pb2_grpc as block_pb2_grpc
 import spec.statesync_pb2 as statesync_pb2
 import spec.statesync_pb2_grpc as statesync_pb2_grpc
 import os
+import inspect
 
 # Proxyと通信するためのサーバー
 class Ats(ats_pb2_grpc.AtsServicer):
   def SendStatus(self, request, context):
-    print("Reveived: " + str(request.sensor))
-    return ats_pb2.SendStatusResponse(response=1)
+    sensorId = request.sensor
+    print("Reveived: " + sensorId2sensorName(sensorId))
+    return ats_pb2.SendStatusResponse(response=ats_pb2.SendStatusResponse.Response.Value('SUCCESS'))
 
 # externalと通信するためのサーバー
 class StateSync(statesync_pb2_grpc.ControlServicer):
@@ -34,6 +36,9 @@ def test():
     stub = ats_pb2_grpc.AtsStub(channel)
     response = stub.SendStatus(ats_pb2.SendStatusRequest(sensor=1))
   print("Received: " + str(response.response))
+  
+def sensorId2sensorName(sensorId):
+  return ats_pb2.SendStatusRequest.SensorName.Name(sensorId)
 
 # gRPCサーバーを起動する
 def serve():
@@ -61,5 +66,4 @@ class Connection:
     return response.response
 
 if __name__ == '__main__':
-    serve()
-    test()
+  serve()
