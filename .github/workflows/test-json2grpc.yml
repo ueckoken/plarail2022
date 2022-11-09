@@ -1,0 +1,32 @@
+name: json2grpc build and test
+
+defaults:
+  run:
+    working-directory: ./backend/json2grpc
+
+on: push
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: checkout
+        uses: actions/checkout@v3
+      - name: Set up Go
+        uses: actions/setup-go@v3
+        with:
+          go-version-file: ./backend/json2grpc/go.mod
+          cache: true
+          cache-dependency-path: ./backend/json2grpc/go.sum
+      - name: golangci-lint
+        uses: golangci/golangci-lint-action@v3
+        with:
+          version: v1.50
+          working-directory: ./backend/json2grpc/
+      - name: Build Go binary
+        run: |-
+          make build
+      - name: Run Go Test
+        run: |-
+          make test
