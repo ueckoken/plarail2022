@@ -16,19 +16,20 @@ import spec.block_pb2_grpc as block_pb2_grpc
 import spec.statesync_pb2 as statesync_pb2
 import spec.statesync_pb2_grpc as statesync_pb2_grpc
 import os
+import datetime
 import inspect
 
 # Proxyと通信するためのサーバー
 class Ats(ats_pb2_grpc.AtsServicer):
   def SendStatus(self, request, context):
     sensorId = request.sensor
-    print("Reveived: " + sensorId2sensorName(sensorId))
+    print(f"Time: {datetime.datetime.timestamp( datetime.datetime.now())}, Reveived Sensor:  {sensorId2sensorName(sensorId)}")
     return ats_pb2.SendStatusResponse(response=ats_pb2.SendStatusResponse.Response.Value('SUCCESS'))
 
 # externalと通信するためのサーバー
 class StateSync(statesync_pb2_grpc.ControlServicer):
   def Command2Internal(self, request, context):
-    print("Received: StationId: "+ str(request.station).strip() + ", State:"+str(request.state))
+    print("Received: StationId: "+ str(request.station).strip() + "\t\tState:"+str(request.state))
     return statesync_pb2.Command2InternalResponse(response=1)
 
 def test():
