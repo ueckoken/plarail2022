@@ -25,7 +25,7 @@ def testStateSync():
   with grpc.insecure_channel('localhost:6543') as channel:
     stub = statesync_pb2_grpc.ControlStub(channel)
     response = stub.Command2Internal(statesync_pb2.RequestSync(state=2,station=statesync_pb2.Stations(stationId=1)))
-  print("Received: " + str(response))
+  print("Received: " + str(response.response))
 
 if __name__ == '__main__':
   # testBlock()

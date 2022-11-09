@@ -23,7 +23,7 @@ class Block(block_pb2_grpc.BlockStateSyncServicer):
 class StateSync(statesync_pb2_grpc.ControlServicer):
   def Command2Internal(self, request, context):
     print("Received: StationId: "+ str(request.station).strip() + ", State:"+str(request.state))
-    return statesync_pb2.Command2InternalResponse(response=1)
+    return statesync_pb2.ResponseSync(response=1)
     
 def test():
   with grpc.insecure_channel('localhost:6543') as channel:
@@ -34,7 +34,7 @@ def test():
 # gRPCサーバーを起動する
 def serve():
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
-    ats_pb2_grpc.add_AtsServicer_to_server(Ats(), server)
+    # ats_pb2_grpc.add_AtsServicer_to_server(Ats(), server)
     block_pb2_grpc.add_BlockStateSyncServicer_to_server(Block(), server)
     statesync_pb2_grpc.add_ControlServicer_to_server(StateSync(), server)
     server.add_insecure_port('[::]:6543')
