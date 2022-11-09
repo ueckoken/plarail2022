@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"log"
 	"net/http"
-	"sync"
 	"time"
 
 	atspb "github.com/ueckoken/backend/json2grpc/spec"
@@ -39,25 +38,22 @@ func main() {
 	client = atspb.NewAtsClient(conn)
 
 	http.HandleFunc("/sensor", func(w http.ResponseWriter, r *http.Request) {
-		var mutex = &sync.RWMutex{}
 		var sensor Send
 
 		w.Header().Set("Content-Type", "application/json")
 
 		switch r.Method {
 		case http.MethodPost:
-			var temp Send
-			if err := json.NewDecoder(r.Body).Decode(&temp); err != nil {
+			if err := json.NewDecoder(r.Body).Decode(&sensor); err != nil {
 				http.Error(w, fmt.Sprintf(`{"status":"%s"}`, err), http.StatusInternalServerError)
 				return
 			}
 			validate := validator.New()
-			if err := validate.Struct(temp); err != nil {
+			if err := validate.Struct(sensor); err != nil {
 				http.Error(w, fmt.Sprintf(`{"status":"%s"}`, err), http.StatusBadRequest)
 				return
 			}
-			mutex.Lock()
-			sensor = temp
+
 			fmt.Printf("%+v\n", sensor)
 
 			req := &atspb.SendStatusRequest{
@@ -72,7 +68,6 @@ func main() {
 			} else {
 				fmt.Println(res.String())
 			}
-			mutex.Unlock()
 
 			w.WriteHeader(http.StatusOK)
 			w.Write([]byte(`{"status": "ok"}`))
