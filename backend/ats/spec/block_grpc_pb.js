@@ -3,28 +3,27 @@
 'use strict';
 var grpc = require('@grpc/grpc-js');
 var block_pb = require('./block_pb.js');
-var google_protobuf_empty_pb = require('google-protobuf/google/protobuf/empty_pb.js');
 
-function serialize_BlockStateList(arg) {
-  if (!(arg instanceof block_pb.BlockStateList)) {
-    throw new Error('Expected argument of type BlockStateList');
+function serialize_NotifyStateRequest(arg) {
+  if (!(arg instanceof block_pb.NotifyStateRequest)) {
+    throw new Error('Expected argument of type NotifyStateRequest');
   }
   return Buffer.from(arg.serializeBinary());
 }
 
-function deserialize_BlockStateList(buffer_arg) {
-  return block_pb.BlockStateList.deserializeBinary(new Uint8Array(buffer_arg));
+function deserialize_NotifyStateRequest(buffer_arg) {
+  return block_pb.NotifyStateRequest.deserializeBinary(new Uint8Array(buffer_arg));
 }
 
-function serialize_google_protobuf_Empty(arg) {
-  if (!(arg instanceof google_protobuf_empty_pb.Empty)) {
-    throw new Error('Expected argument of type google.protobuf.Empty');
+function serialize_NotifyStateResponse(arg) {
+  if (!(arg instanceof block_pb.NotifyStateResponse)) {
+    throw new Error('Expected argument of type NotifyStateResponse');
   }
   return Buffer.from(arg.serializeBinary());
 }
 
-function deserialize_google_protobuf_Empty(buffer_arg) {
-  return google_protobuf_empty_pb.Empty.deserializeBinary(new Uint8Array(buffer_arg));
+function deserialize_NotifyStateResponse(buffer_arg) {
+  return block_pb.NotifyStateResponse.deserializeBinary(new Uint8Array(buffer_arg));
 }
 
 
@@ -33,12 +32,12 @@ var BlockStateSyncService = exports.BlockStateSyncService = {
     path: '/BlockStateSync/NotifyState',
     requestStream: false,
     responseStream: false,
-    requestType: google_protobuf_empty_pb.Empty,
-    responseType: block_pb.BlockStateList,
-    requestSerialize: serialize_google_protobuf_Empty,
-    requestDeserialize: deserialize_google_protobuf_Empty,
-    responseSerialize: serialize_BlockStateList,
-    responseDeserialize: deserialize_BlockStateList,
+    requestType: block_pb.NotifyStateRequest,
+    responseType: block_pb.NotifyStateResponse,
+    requestSerialize: serialize_NotifyStateRequest,
+    requestDeserialize: deserialize_NotifyStateRequest,
+    responseSerialize: serialize_NotifyStateResponse,
+    responseDeserialize: deserialize_NotifyStateResponse,
   },
 };
 

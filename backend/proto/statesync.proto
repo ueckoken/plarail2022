@@ -6,6 +6,16 @@ service Control {
   rpc Command2Internal(RequestSync) returns (ResponseSync) {}
 }
 
+message Command2InternalRequest {
+  Stations station = 1;
+  enum State {
+    UNKNOWN = 0;
+    ON = 1;
+    OFF = 2;
+  }
+  State state = 2;
+}
+
 message RequestSync {
   Stations station = 1;
   enum State {
@@ -25,10 +35,18 @@ message ResponseSync {
   Response response = 1;
 }
 
+message Command2InternalResponse {
+  enum Response {
+    UNKNOWN = 0;
+    SUCCESS = 1;
+    FAILED = 2;
+  }
+  Response response = 1;
+}
+
 message Stations {
   enum StationId {
     unknown = 0;
-
 
     shinjuku_p1 = 1;
     shinjuku_s1 = 2;
