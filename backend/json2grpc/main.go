@@ -21,8 +21,6 @@ type Send struct {
 }
 
 func main() {
-	var mutex = &sync.RWMutex{}
-	var sensor Send
 	var client atspb.AtsClient
 
 	//grpcサーバーとのコネクションの確立
@@ -41,17 +39,12 @@ func main() {
 	client = atspb.NewAtsClient(conn)
 
 	http.HandleFunc("/sensor", func(w http.ResponseWriter, r *http.Request) {
+		var mutex = &sync.RWMutex{}
+		var sensor Send
 
 		w.Header().Set("Content-Type", "application/json")
 
 		switch r.Method {
-		case http.MethodGet:
-
-			if err := json.NewEncoder(w).Encode(sensor); err != nil {
-				http.Error(w, fmt.Sprintf(`{"status":"%s"}`, err), http.StatusInternalServerError)
-				return
-			}
-
 		case http.MethodPost:
 			var temp Send
 			if err := json.NewDecoder(r.Body).Decode(&temp); err != nil {
@@ -74,16 +67,18 @@ func main() {
 			res, err := client.SendStatus(context.Background(), req)
 			if err != nil {
 				fmt.Println(err)
+				http.Error(w, fmt.Sprintf(`{"status":"%s"}`, err), http.StatusInternalServerError)
+				return
 			} else {
 				fmt.Println(res.String())
 			}
 			mutex.Unlock()
 
-			w.WriteHeader(http.StatusCreated)
-			w.Write([]byte(`{"status": "created"}`))
+			w.WriteHeader(http.StatusOK)
+			w.Write([]byte(`{"status": "ok"}`))
 
 		default:
-			http.Error(w, `{"status":"permits only GET or POST"}`, http.StatusMethodNotAllowed)
+			http.Error(w, `{"status":"permits only POST"}`, http.StatusMethodNotAllowed)
 		}
 	})
 
