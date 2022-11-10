@@ -2,7 +2,6 @@ package proxy
 
 import (
 	"encoding/json"
-	"fmt"
 	"log"
 	"net/http"
 
@@ -54,7 +53,10 @@ func (h *Handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		res, err := h.grpcClient.SendStatus(r.Context(), req)
 		if err != nil {
 			log.Println(err)
-			http.Error(w, fmt.Sprintf(`{"status":"%s"}`, err), http.StatusInternalServerError)
+			if err := json.NewEncoder(w).Encode(StatusResponse{Status: "err", InternalError: err}); err != nil {
+				log.Print(err)
+			}
+			w.WriteHeader(http.StatusInternalServerError)
 			return
 		}
 		if err := json.NewEncoder(w).Encode(StatusResponse{Status: res.GetResponse().String()}); err != nil {
@@ -62,6 +64,9 @@ func (h *Handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		}
 		w.WriteHeader(http.StatusOK)
 	default:
-		http.Error(w, `{"status":"permits only POST"}`, http.StatusMethodNotAllowed)
+		if err := json.NewEncoder(w).Encode(StatusResponse{Status: "permits only POST"}); err != nil {
+			log.Print(err)
+		}
+		w.WriteHeader(http.StatusMethodNotAllowed)
 	}
 }
