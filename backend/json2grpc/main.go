@@ -22,8 +22,8 @@ type Send struct {
 func main() {
 	var client atspb.AtsClient
 
-	//grpcサーバーとのコネクションの確立
-	address := "localhost:8888" //grpcサーバーのアドレス
+	// grpcサーバーとのコネクションの確立
+	address := "localhost:8888" // grpcサーバーのアドレス
 	conn, err := grpc.Dial(
 		address,
 
