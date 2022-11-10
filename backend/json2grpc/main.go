@@ -1,31 +1,31 @@
 package main
 
 import (
-	"encoding/json"
-	"fmt"
+	"context"
 	"log"
 	"net/http"
+	"os"
+	"os/signal"
 	"time"
 
+	"github.com/kelseyhightower/envconfig"
+	"github.com/ueckoken/backend/json2grpc/pkg/proxy"
 	atspb "github.com/ueckoken/backend/json2grpc/spec"
 
-	"github.com/go-playground/validator/v10"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 )
 
-type Send struct {
-	Sensor int32 `validate:"required,min=1,max=52"`
+type Config struct {
+	internalEndpoint string
+	listenAddr       string
 }
 
 func main() {
-	var client atspb.AtsClient
-
-	// grpcサーバーとのコネクションの確立
-	address := "localhost:8888" // grpcサーバーのアドレス
+	var conf Config
+	envconfig.MustProcess("", &conf)
 	conn, err := grpc.Dial(
-		address,
-
+		conf.internalEndpoint,
 		grpc.WithTransportCredentials(insecure.NewCredentials()),
 		grpc.WithBlock(),
 	)
@@ -34,56 +34,28 @@ func main() {
 		return
 	}
 	defer conn.Close()
-	client = atspb.NewAtsClient(conn)
-
-	http.HandleFunc("/sensor", func(w http.ResponseWriter, r *http.Request) {
-		var sensor Send
-
-		w.Header().Set("Content-Type", "application/json")
-
-		switch r.Method {
-		case http.MethodPost:
-			if err := json.NewDecoder(r.Body).Decode(&sensor); err != nil {
-				http.Error(w, fmt.Sprintf(`{"status":"%s"}`, err), http.StatusInternalServerError)
-				return
-			}
-			validate := validator.New()
-			if err := validate.Struct(sensor); err != nil {
-				http.Error(w, fmt.Sprintf(`{"status":"%s"}`, err), http.StatusBadRequest)
-				return
-			}
-
-			log.Printf("%+v\n", sensor)
-
-			req := &atspb.SendStatusRequest{
-				Sensor: atspb.SendStatusRequest_SensorName(sensor.Sensor),
-			}
-
-			res, err := client.SendStatus(r.Context(), req)
-			if err != nil {
-				log.Println(err)
-				http.Error(w, fmt.Sprintf(`{"status":"%s"}`, err), http.StatusInternalServerError)
-				return
-			}
-			log.Println(res.String())
-
-			w.WriteHeader(http.StatusOK)
-			if _, err := w.Write([]byte(`{"status": "ok"}`)); err != nil {
-				log.Println(err)
-			}
-
-		default:
-			http.Error(w, `{"status":"permits only POST"}`, http.StatusMethodNotAllowed)
-		}
-	})
-
+	client := atspb.NewAtsClient(conn)
+	mux := http.NewServeMux()
+	mux.Handle("/sensor", proxy.NewHandler(client))
 	srv := &http.Server{
-		Addr:              ":8080",
-		Handler:           nil,
+		Addr:              conf.listenAddr,
+		Handler:           mux,
 		ReadHeaderTimeout: 3 * time.Second,
 		ReadTimeout:       5 * time.Second,
 		WriteTimeout:      5 * time.Second,
 	}
-	err = srv.ListenAndServe()
-	log.Println(err)
+	go func() {
+		if err := srv.ListenAndServe(); err != nil {
+			log.Print(err)
+		}
+	}()
+	c := make(chan os.Signal, 1)
+	signal.Notify(c, os.Interrupt)
+	<-c
+
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+	if err := srv.Shutdown(ctx); err != nil {
+		log.Print(err)
+	}
 }
