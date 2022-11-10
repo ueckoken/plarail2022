@@ -1,15 +1,13 @@
-name: External build and test
-
-defaults:
-  run:
-    working-directory: ./backend/external
+name: code test
 
 on: push
 
 jobs:
-  test:
+  backend-external:
+    defaults:
+      run:
+        working-directory: ./backend/external
     runs-on: ubuntu-latest
-
     steps:
       - name: checkout
         uses: actions/checkout@v3
@@ -30,3 +28,180 @@ jobs:
       - name: Run Go Test
         run: |-
           make test
+  backend-internal:
+    defaults:
+      run:
+        working-directory: ./backend/internal
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout
+        uses: actions/checkout@v3
+      - name: Set up Go
+        uses: actions/setup-go@v3
+        with:
+          go-version-file: ./backend/internal/go.mod
+          cache: true
+          cache-dependency-path: ./backend/internal/go.sum
+      - name: golangci-lint
+        uses: golangci/golangci-lint-action@v3
+        with:
+          version: v1.50
+          working-directory: ./backend/internal/
+      - name: Build Go binary
+        run: |-
+          make build
+      - name: Run Go Test
+        run: |-
+          make test
+
+  backend-json2grpc:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./backend/json2grpc
+
+    steps:
+      - name: checkout
+        uses: actions/checkout@v3
+      - name: Set up Go
+        uses: actions/setup-go@v3
+        with:
+          go-version-file: ./backend/json2grpc/go.mod
+          cache: true
+          cache-dependency-path: ./backend/json2grpc/go.sum
+      - name: golangci-lint
+        uses: golangci/golangci-lint-action@v3
+        with:
+          version: v1.50
+          working-directory: ./backend/json2grpc/
+      - name: Build Go binary
+        run: |-
+          make build
+      - name: Run Go Test
+        run: |-
+          make test
+
+  backend-multicaster:
+    defaults:
+      run:
+        working-directory: ./backend/multicaster
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout
+        uses: actions/checkout@v3
+      - uses: actions/setup-python@v4
+        with:
+          python-version-file: ./backend/multicaster/.python-version
+          cache: pip
+          cache-dependency-path: ./backend/multicaster/requirements-dev.txt
+      - run: pip install -r requirements-dev.txt
+      - name: Type check
+        run: mypy .
+
+  backend-positioning:
+    defaults:
+      run:
+        working-directory: ./backend/positioning
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout
+        uses: actions/checkout@v3
+      - name: Set up Go
+        uses: actions/setup-go@v3
+        with:
+          go-version-file: ./backend/positioning/go.mod
+          cache: true
+          cache-dependency-path: ./backend/positioning/go.sum
+      - name: golangci-lint
+        uses: golangci/golangci-lint-action@v3
+        with:
+          version: v1.50
+          working-directory: ./backend/positioning/
+      - name: Build Go binary
+        run: |-
+          make build
+      - name: Run Go Test
+        run: |-
+          make test
+
+  frontend-skyway_receiver:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./frontend/skyway_receiver
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version-file: ./frontend/skyway_receiver/.nvmrc
+          cache: npm
+          cache-dependency-path: ./frontend/skyway_receiver/package-lock.json
+      - name: dependency-install
+        run: npm ci
+      - name: build
+        run: npm run build
+  backend-speed:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./backend/speed
+    steps:
+      - name: checkout
+        uses: actions/checkout@v3
+      - name: Set up Go
+        uses: actions/setup-go@v3
+        with:
+          go-version-file: ./backend/speed/go.mod
+          cache: true
+          cache-dependency-path: ./backend/speed/go.sum
+      - name: golangci-lint
+        uses: golangci/golangci-lint-action@v3
+        with:
+          version: v1.50
+          working-directory: ./backend/speed/
+      - name: Build Go binary
+        run: |-
+          make buildGoBin
+      - name: Run Go Test
+        run: |-
+          make test
+  frontend-sender:
+    defaults:
+      run:
+        working-directory: ./frontend/momo_sender
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version-file: ./frontend/momo_sender/.nvmrc
+          cache: npm
+          cache-dependency-path: ./frontend/momo_sender/package-lock.json
+      - name: dependency-install
+        run: npm ci
+      - name: build
+        run: npm run build
+
+  frontend-site:
+    defaults:
+      run:
+        working-directory: ./frontend/site
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/cache@v3
+        with:
+          path: |
+            ${{ github.workspace }}/frontend/site/.next/cache
+          key: ${{ runner.os }}-nextjs-${{ hashFiles('./frontend/site/**/yarn.lock') }}-${{ hashFiles('./frontend/site/**.[jt]s', './frontend/site/**.[jt]sx') }}
+      - uses: actions/setup-node@v3
+        with:
+          node-version-file: ./frontend/site/.nvmrc
+          cache: yarn
+          cache-dependency-path: ./frontend/site/yarn.lock
+      - name: dependency-install
+        run: yarn install --frozen-lockfile --immutable
+      - name: lint
+        run: yarn lint
+      - name: build
+        run: yarn build
