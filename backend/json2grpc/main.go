@@ -1,7 +1,6 @@
 package main
 
 import (
-	"context"
 	"encoding/json"
 	"fmt"
 	"log"
@@ -54,23 +53,24 @@ func main() {
 				return
 			}
 
-			fmt.Printf("%+v\n", sensor)
+			log.Printf("%+v\n", sensor)
 
 			req := &atspb.SendStatusRequest{
 				Sensor: atspb.SendStatusRequest_SensorName(sensor.Sensor),
 			}
 
-			res, err := client.SendStatus(context.Background(), req)
+			res, err := client.SendStatus(r.Context(), req)
 			if err != nil {
-				fmt.Println(err)
+				log.Println(err)
 				http.Error(w, fmt.Sprintf(`{"status":"%s"}`, err), http.StatusInternalServerError)
 				return
-			} else {
-				fmt.Println(res.String())
 			}
+			log.Println(res.String())
 
 			w.WriteHeader(http.StatusOK)
-			w.Write([]byte(`{"status": "ok"}`))
+			if _, err := w.Write([]byte(`{"status": "ok"}`)); err != nil {
+				log.Println(err)
+			}
 
 		default:
 			http.Error(w, `{"status":"permits only POST"}`, http.StatusMethodNotAllowed)
@@ -84,5 +84,6 @@ func main() {
 		ReadTimeout:       5 * time.Second,
 		WriteTimeout:      5 * time.Second,
 	}
-	log.Fatal(srv.ListenAndServe())
+	err = srv.ListenAndServe()
+	log.Println(err)
 }
