@@ -1,21 +1,21 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: plarail2021-soft-backennd-auto-operation
+  name: plarail2022-soft-backend-auto-operation
   namespace: plarail2021
 spec:
   selector:
     matchLabels:
-      app: plarail2021-soft-backennd-auto-operation
+      app: plarail2021-soft-backend-auto-operation
   template:
     metadata:
       labels:
-        app: plarail2021-soft-backennd-auto-operation
+        app: plarail2021-soft-backend-auto-operation
     spec:
       serviceAccountName: "tailscale"
       containers:
-        - name: plarail2021-soft-backennd-auto-operation
-          image: ghcr.io/ueckoken/plarail2022-auto-operation:58f9e55-1667923961 # {"$imagepolicy": "plarail2021:auto-operation"}
+        - name: plarail2022-soft-backend-auto-operation
+          image: ghcr.io/ueckoken/plarail2022-auto-operation:58f9e55-1667923961
           imagePullPolicy: Always
           ports:
             - containerPort: 50050
