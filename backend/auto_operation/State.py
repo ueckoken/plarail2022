@@ -8,7 +8,7 @@ class State:
     CURVE_UNIT = 16.9  # 曲線レールの長さ[cm]
 
     # __init__で線路形状と車両の配置を定義する
-    def __init__(self):
+    def __init__(self) -> None:
         self.junctionList: list[Junction] = []
         self.sectionList: list[Section] = []
         self.sensorList: list[Sensor] = []

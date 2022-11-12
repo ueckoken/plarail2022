@@ -1,8 +1,17 @@
+from dataclasses import dataclass
 from enum import Enum
+from typing import Optional
 
 
 class Section:
-    def __init__(self, id: int, sourceJunction: 'Junction', targetJunction: 'Junction', sourceServoState: 'Junction.ServoState', targetServoState: 'Junction.ServoState', length: float):
+    id: int
+    length: float
+    station: Optional['Station']
+    stationPosition: float
+    sourceJunction: 'Junction'
+    targetJunction: 'Junction'
+
+    def __init__(self, id: int, sourceJunction: 'Junction', targetJunction: 'Junction', sourceServoState: 'Junction.ServoState', targetServoState: 'Junction.ServoState', length: float) -> None:
         self.id = id
         self.length = length
         self.station = None
@@ -12,7 +21,7 @@ class Section:
         self.targetJunction = targetJunction
         self.targetJunction.addInSection(self, targetServoState)
 
-    def putStation(self, station: 'Station', stationPosition: float):
+    def putStation(self, station: 'Station', stationPosition: float) -> None:
         self.station = station
         self.stationPosition = stationPosition
 
@@ -24,7 +33,7 @@ class Junction:
         Curve = 2
 
         @staticmethod
-        def invert(input: 'Junction.ServoState'):
+        def invert(input: 'Junction.ServoState') -> 'Junction.ServoState':
             if input == Junction.ServoState.Straight:
                 return Junction.ServoState.Curve
             elif input == Junction.ServoState.Curve:
@@ -32,7 +41,18 @@ class Junction:
             else:
                 return Junction.ServoState.NoServo
 
-    def __init__(self, id: int, servoId: int):
+    id: int
+    servoId: int
+    inSectionStraight: Optional['Section']
+    inSectionCurve: Optional['Section']
+    outSectionStraight: Optional['Section']
+    outSectionCurve: Optional['Section']
+    inServoState: ServoState
+    outServoState: ServoState
+    belongStation: Optional['Station']
+    toggleRequested: bool
+
+    def __init__(self, id: int, servoId: int) -> None:
         self.id = id
         self.servoId = servoId
         self.inSectionStraight = None
@@ -44,7 +64,7 @@ class Junction:
         self.belongStation = None
         self.toggleRequested = False
 
-    def addInSection(self, section, servoState):
+    def addInSection(self, section, servoState) -> None:
         if servoState == Junction.ServoState.Straight:
             self.inSectionStraight = section
         elif servoState == Junction.ServoState.Curve:
@@ -54,7 +74,7 @@ class Junction:
             self.inSectionCurve = None
             self.inServoState = Junction.ServoState.NoServo
 
-    def addOutSection(self, section, servoState):
+    def addOutSection(self, section, servoState) -> None:
         if servoState == Junction.ServoState.Straight:
             self.outSectionStraight = section
         elif servoState == Junction.ServoState.Curve:
@@ -64,7 +84,7 @@ class Junction:
             self.outSectionCurve = None
             self.outServoState = Junction.ServoState.NoServo
 
-    def toggle(self):
+    def toggle(self) -> None:
         if self.inSectionStraight and self.inSectionCurve:  # IN側に2本入ってくる分岐点の場合
             self.inServoState = Junction.ServoState.invert(self.inServoState)  # 反転
             self.toggleRequested = True
@@ -72,50 +92,57 @@ class Junction:
             self.outServoState = Junction.ServoState.invert(self.outServoState)  # 反転
             self.toggleRequested = True
 
-    def setServoState(self, servoState: ServoState):
+    def setServoState(self, servoState: ServoState) -> None:
         if self.inSectionStraight and self.inSectionCurve:  # IN側に2本入ってくる分岐点の場合inServoStateをセット
             self.inServoState = servoState
         if self.outSectionStraight and self.outSectionCurve:  # OUT側に2本入ってくる分岐点の場合outServoStateをセット
             self.outServoState = servoState
 
-    def getOutSection(self) -> Section:
+    def getOutSection(self) -> Optional[Section]:
         if self.outServoState == Junction.ServoState.Curve:
             return self.outSectionCurve
         else:
             return self.outSectionStraight
 
-    def getInSection(self) -> Section:
+    def getInSection(self) -> Optional[Section]:
         if self.inServoState == Junction.ServoState.Curve:
             return self.inSectionCurve
         else:
             return self.inSectionStraight
 
 
+@dataclass
 class Sensor:
-    def __init__(self, id: int, belongSection: Section, position: float):
-        self.id = id
-        self.belongSection = belongSection
-        self.position = position
+    id: int
+    belongSection: 'Section'
+    position: float
 
 
+@dataclass
 class Station:
-    def __init__(self, id: int, name: str):
-        self.id = id
-        self.name = name
+    id: int
+    name: str
 
 
 class Train:
+    @dataclass
     class PIDParam:
-        def __init__(self, r: float, INPUT_MIN: int, INPUT_MAX: int, INPUT_START: int, kp: float, ki: float, kd: float):
-            self.r = r
-            self.INPUT_MIN = INPUT_MIN
-            self.INPUT_MAX = INPUT_MAX
-            self.INPUT_START = INPUT_START
-            self.kp = kp
-            self.ki = ki
-            self.kd = kd
+        r: float
+        INPUT_MIN: int
+        INPUT_MAX: int
+        INPUT_START: int
+        kp: float
+        ki: float
+        kd: float
 
-    def __init__(self, id: int, initialSection: Section, initialPosition: float, pidParam: PIDParam):
+    id: int
+    targetSpeed: float
+    currentSection: Optional['Section']
+    mileage: float
+    prevMileage: float
+    pidParam: 'PIDParam'
+
+    def __init__(self, id: int, initialSection: Section, initialPosition: float, pidParam: PIDParam) -> None:
         self.id = id
         self.targetSpeed = 0.0
         self.currentSection = initialSection
@@ -124,9 +151,10 @@ class Train:
         self.pidParam = pidParam
 
     # 引数：進んだ距離
-    def move(self, delta: float):
+    def move(self, delta: float) -> None:
         self.prevMileage = self.mileage
         self.mileage += delta
+        assert self.currentSection is not None
         if (self.mileage >= self.currentSection.length):  # junctionを通過したとき
             self.mileage = self.mileage - self.currentSection.length
             self.currentSection = self.currentSection.targetJunction.getOutSection()
