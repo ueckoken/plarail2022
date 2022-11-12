@@ -35,7 +35,7 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Bake images
-        uses: docker/bake-action@master
+        uses: docker/bake-action@v2
         env:
           TAG: ${{ steps.generate_tag.outputs.tag }}
         with:
