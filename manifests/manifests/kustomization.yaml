@@ -1,7 +1,7 @@
 resources:
   - ./frontend
-#  - ./python-webrtc-server
-#  - ./external
-#  - ./receiver-test
-#  - ./webrtc-sender
+  - ./python-webrtc-server
+  - ./external
+  - ./receiver-test
+  - ./webrtc-sender
 #  - ./positioning
