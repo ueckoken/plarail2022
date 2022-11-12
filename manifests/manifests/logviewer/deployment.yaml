@@ -14,7 +14,7 @@ spec:
         app: logviewer
     spec:
       containers:
-      - image: asia-northeast1-docker.pkg.dev/gotti-dev/plarail-logviewer/logviewer-401bd39657a23ac59c9a6cfad7dfbc52@sha256:3eba7c0ab429569b5e7198138f6814d3cec5ae768e822652ba90f52e914a3cc6
+      - image: asia-northeast1-docker.pkg.dev/gotti-dev/plarail-logviewer/logviewer-401bd39657a23ac59c9a6cfad7dfbc52@sha256:1efc8ec1469c5c12902f775489546609c99e3d4f09d8abf695c799b98d861333
         name: logviewer
         ports:
         - containerPort: 8080
