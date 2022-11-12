@@ -1,52 +1,20 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: plarail2022-soft-backend-auto-operation
+  name: auto-operation
   namespace: plarail2021
 spec:
   selector:
     matchLabels:
-      app: plarail2021-soft-backend-auto-operation
+      app: auto-operation
   template:
     metadata:
       labels:
-        app: plarail2021-soft-backend-auto-operation
+        app: auto-operation
     spec:
-      serviceAccountName: "tailscale"
       containers:
         - name: plarail2022-soft-backend-auto-operation
           image: ghcr.io/ueckoken/plarail2022-auto-operation:58f9e55-1667923961
           imagePullPolicy: Always
           ports:
             - containerPort: 50050
-          envFrom:
-            - configMapRef:
-                name: auto-operation-env
-        - name: ts-sidecar
-          image: "ghcr.io/tailscale/tailscale:latest"
-          command: ["/bin/sh", "/usr/bin/run.sh"]
-          volumeMounts:
-            - name: tailscale-config
-              mountPath: /usr/bin
-          env:
-            # Store the state in a k8s secret
-            - name: KUBE_SECRET
-              value: "tailscale"
-            - name: USERSPACE
-              value: "false"
-            - name: AUTH_KEY
-              valueFrom:
-                secretKeyRef:
-                  name: tailscale-auth
-                  key: AUTH_KEY
-                  optional: false
-          securityContext:
-            capabilities:
-              add:
-                - NET_ADMIN
-                - CAP_NET_ADMIN
-                - CAP_NET_RAW
-      volumes:
-        - name: tailscale-config
-          configMap:
-            name: tailscale-config

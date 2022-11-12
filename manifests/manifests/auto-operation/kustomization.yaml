@@ -1,5 +1,4 @@
 resources:
   - ./deployment.yaml
   - ./service.yaml
-  - ./env.yaml
   - ./ingressroute.yaml

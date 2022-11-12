@@ -5,8 +5,8 @@ metadata:
   namespace: plarail2021
 spec:
   routes:
-  - kind: Rule
-    match: Host(`operate.chofufes2022.gotti.dev`)
-    services:
-    - name: plarail2021-soft-backend-auto-operation
-      port: 80
+    - kind: Rule
+      match: Host(`operate.chofufes2022.gotti.dev`)
+      services:
+        - name: auto-operation
+          port: 80
