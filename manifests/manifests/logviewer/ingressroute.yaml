@@ -1,16 +1,14 @@
 apiVersion: traefik.containo.us/v1alpha1
 kind: IngressRoute
 metadata:
-  name: webrtc-sender
+  name: logviewer
   namespace: plarail2021
 spec:
   routes:
   - kind: Rule
-    match: Host(`webrtc-sender.chofufes2022.ueckoken.club`)
-    middlewares:
-    - name: oauth2
+    match: Host(`logs.chofufes2022.ueckoken.club`)
     services:
-    - name: webrtc-sender
-      port: 80
+    - name: logviewer
+      port: 8080
   tls:
     secretName: cloudflare-cert
