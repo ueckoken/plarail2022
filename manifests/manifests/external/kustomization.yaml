@@ -3,6 +3,6 @@ resources:
   - ./service.yaml
   - ./env.yaml
   - ./ingressroute.yaml
-  - ./monitor.yaml
-  - ./rbac.yaml
-  - ./tailscale-conf.yaml
+#  - ./monitor.yaml
+#  - ./rbac.yaml
+#  - ./tailscale-conf.yaml
