@@ -6,7 +6,7 @@ metadata:
   labels:
     app: auto-operation
 spec:
-  type: NodePort
+  type: ClusterIP
   selector:
     app: auto-operation
   ports:
