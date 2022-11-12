@@ -2,243 +2,42 @@ name: build and publish image
 
 on:
   push:
-    branches: [deployment]
+    branches:
+      - "main"
+      - "deployment"
+  pull_request:
 
 jobs:
-  backend-auto_operation:
+  build:
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: ./backend/auto_operation
     steps:
-      - name: checkout
-        uses: actions/checkout@v3
-      - uses: docker/setup-buildx-action@v2
-      - name: set tag
-        run: |-
-          export TIMESTAMP=$(date +%s)
-          export SHA=$(echo ${{ github.sha }} | cut -c1-7)
-          echo "IMAGE_TAG=$SHA-$TIMESTAMP" >> $GITHUB_ENV
-      - name: Login to GitHub Container Registry
-        uses: docker/login-action@v2
-        with:
-          registry: ghcr.io
-          username: ${{ github.repository_owner }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-      - name: Build
-        uses: docker/build-push-action@v3
-        with:
-          context: ./backend/auto_operation
-          platforms: linux/amd64
-          push: true
-          tags: ghcr.io/ueckoken/plarail2022-auto-operation:${{ env.IMAGE_TAG }}
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
-  backend-external:
-    runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: ./backend/external
-    steps:
-      - name: checkout
-        uses: actions/checkout@v3
-      - uses: docker/setup-buildx-action@v2
-      - name: set tag
-        run: |-
-          export TIMESTAMP=$(date +%s)
-          export SHA=$(echo ${{ github.sha }} | cut -c1-7)
-          echo "IMAGE_TAG=$SHA-$TIMESTAMP" >> $GITHUB_ENV
-      - name: Login to GitHub Container Registry
-        uses: docker/login-action@v2
-        with:
-          registry: ghcr.io
-          username: ${{ github.repository_owner }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-      - name: Build
-        uses: docker/build-push-action@v3
-        with:
-          context: ./backend/external
-          platforms: linux/amd64
-          push: true
-          tags: ghcr.io/ueckoken/plarail2022-external:${{ env.IMAGE_TAG }}
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
-  backend-internal:
-    runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: ./backend/internal
-    steps:
-      - name: checkout
-        uses: actions/checkout@v3
-      - uses: docker/setup-buildx-action@v2
-      - name: set tag
-        run: |-
-          export TIMESTAMP=$(date +%s)
-          export SHA=$(echo ${{ github.sha }} | cut -c1-7)
-          echo "IMAGE_TAG=$SHA-$TIMESTAMP" >> $GITHUB_ENV
-      - name: Login to GitHub Container Registry
-        uses: docker/login-action@v2
-        with:
-          registry: ghcr.io
-          username: ${{ github.repository_owner }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-      - name: Build
-        uses: docker/build-push-action@v3
-        with:
-          context: ./backend/internal
-          platforms: linux/amd64
-          push: true
-          tags: ghcr.io/ueckoken/plarail2022-internal:${{ env.IMAGE_TAG }}
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
-  backend-multicaster:
-    runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: ./backend/multicaster
-    steps:
-      - uses: actions/checkout@v3
-      - uses: docker/setup-buildx-action@v2
-      - name: Login to GitHub Container Registry
-        uses: docker/login-action@v2
-        with:
-          registry: ghcr.io
-          username: ${{ github.repository_owner }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-      - name: set tag
-        run: |-
-          export TIMESTAMP=$(date +%s)
-          export SHA=$(echo ${{ github.sha }} | cut -c1-7)
-          echo "IMAGE_TAG=$SHA-$TIMESTAMP" >> $GITHUB_ENV
-      - name: Build
-        uses: docker/build-push-action@v3
-        with:
-          context: ./backend/multicaster
-          file: ./backend/multicaster/Dockerfile
-          platforms: linux/amd64
-          push: true
-          tags: ghcr.io/ueckoken/plarail2022-frontend-python:${{ env.IMAGE_TAG }}
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
+      - name: Checkout
+        uses: actions/checkout@v2
 
-  backend-positioning:
-    defaults:
-      run:
-        working-directory: ./backend/positioning
-    runs-on: ubuntu-latest
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
 
-    steps:
-      - uses: actions/checkout@v3
-      - uses: docker/setup-buildx-action@v2
-      - name: Login to GitHub Container Registry
-        uses: docker/login-action@v2
-        with:
-          registry: ghcr.io
-          username: ${{ github.repository_owner }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-      - name: set tag
-        run: |-
-          export TIMESTAMP=$(date +%s)
-          export SHA=$(echo ${{ github.sha }} | cut -c1-7)
-          echo "IMAGE_TAG=$SHA-$TIMESTAMP" >> $GITHUB_ENV
-      - name: Build
-        uses: docker/build-push-action@v3
-        with:
-          context: ./backend/positioning
-          file: ./backend/positioning/Dockerfile
-          platforms: linux/amd64
-          push: true
-          tags: ghcr.io/ueckoken/plarail2022-positioning:${{ env.IMAGE_TAG }}
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
-  frontend-momo_sender:
-    runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: ./frontend/momo_sender
+      - name: Extract branch name
+        shell: bash
+        run: echo "branch=${GITHUB_REF#refs/heads/}" >> $GITHUB_OUTPUT
+        id: extract_branch
 
-    steps:
-      - uses: actions/checkout@v3
-      - uses: docker/setup-buildx-action@v2
-      - name: set tag
-        run: |-
-          export TIMESTAMP=$(date +%s)
-          export SHA=$(echo ${{ github.sha }} | cut -c1-7)
-          echo "IMAGE_TAG=$SHA-$TIMESTAMP" >> $GITHUB_ENV
-      - name: Login to GitHub Container Registry
-        uses: docker/login-action@v2
-        with:
-          registry: ghcr.io
-          username: ${{ github.repository_owner }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-      - name: Build
-        uses: docker/build-push-action@v3
-        with:
-          context: ./frontend/momo_sender/
-          file: ./frontend/momo_sender/Dockerfile
-          platforms: linux/amd64
-          push: true
-          tags: ghcr.io/ueckoken/plarail2022-webrtc-sender:${{ env.IMAGE_TAG }}
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
+      - name: Generate tag
+        id: generate_tag
+        shell: bash
+        run: echo "tag=$(echo ${{ github.sha }} | cut -c1-7)-$(date +%s)" >> $GITHUB_OUTPUT
 
-  frontend-site:
-    runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: ./frontend/site
-    steps:
-      - uses: actions/checkout@v3
-      - uses: docker/setup-buildx-action@v2
       - name: Login to GitHub Container Registry
         uses: docker/login-action@v2
         with:
           registry: ghcr.io
-          username: ${{ github.repository_owner }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-      - name: set tag
-        run: |-
-          export TIMESTAMP=$(date +%s)
-          export SHA=$(echo ${{ github.sha }} | cut -c1-7)
-          echo "IMAGE_TAG=$SHA-$TIMESTAMP" >> $GITHUB_ENV
-      - name: Build
-        uses: docker/build-push-action@v3
-        with:
-          context: ./frontend/site
-          file: ./frontend/site/Dockerfile
-          platforms: linux/amd64
-          push: true
-          tags: ghcr.io/ueckoken/plarail2022-frontend:${{ env.IMAGE_TAG }}
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
-  frontend-skyway_receiver:
-    runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: ./frontend/skyway_receiver
-    steps:
-      - uses: actions/checkout@v3
-      - uses: docker/setup-buildx-action@v2
-      - name: Login to GitHub Container Registry
-        uses: docker/login-action@v2
-        with:
-          registry: ghcr.io
-          username: ${{ github.repository_owner }}
+          username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: set tag
-        run: |-
-          export TIMESTAMP=$(date +%s)
-          export SHA=$(echo ${{ github.sha }} | cut -c1-7)
-          echo "IMAGE_TAG=$SHA-$TIMESTAMP" >> $GITHUB_ENV
-      - name: Build
-        uses: docker/build-push-action@v3
+      - name: Bake images
+        uses: docker/bake-action@v2
+        env:
+          TAG: ${{ steps.generate_tag.outputs.tag }}
         with:
-          context: ./frontend/skyway_receiver/
-          file: ./frontend/skyway_receiver/Dockerfile
-          platforms: linux/amd64
-          push: true
-          tags: ghcr.io/ueckoken/plarail2022-receiver-test:${{ env.IMAGE_TAG }}
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
+          files: ./docker-bake.hcl
+          push: ${{ github.event_name == 'push' && startsWith( steps.extract_branch.outputs.branch , 'deployment' ) }}
