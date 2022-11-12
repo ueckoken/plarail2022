@@ -7,6 +7,7 @@ spec:
   secretName: cloudflare-cert
   dnsNames:
     - "*.chofufes2022.ueckoken.club"
+    - "chofufes2022.ueckoken.club"
   issuerRef:
     name: letsencrypt-prod
     kind: ClusterIssuer
