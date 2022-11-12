@@ -17,20 +17,24 @@ import (
 )
 
 type Config struct {
-	internalEndpoint string
-	listenAddr       string
+	GRPCEndpoint string `required:"true"`
+	ListenAddr       string `required:"true"`
 }
 
 func main() {
 	var conf Config
 	envconfig.MustProcess("", &conf)
-	conn, err := grpc.Dial(
-		conf.internalEndpoint,
+	ctx := context.Background()
+	ctxGrpcConn, cancel := context.WithTimeout(ctx, 5*time.Second)
+	defer cancel()
+	conn, err := grpc.DialContext(
+		ctxGrpcConn,
+		conf.GRPCEndpoint,
 		grpc.WithTransportCredentials(insecure.NewCredentials()),
-		grpc.WithBlock(),
+		// grpc.WithBlock(), // 接続が確立するまでブロッキングする
 	)
 	if err != nil {
-		log.Fatal("Connection failed")
+		log.Println("Connection failed")
 		return
 	}
 	defer conn.Close()
@@ -38,13 +42,14 @@ func main() {
 	mux := http.NewServeMux()
 	mux.Handle("/sensor", proxy.NewHandler(client))
 	srv := &http.Server{
-		Addr:              conf.listenAddr,
+		Addr:              conf.ListenAddr,
 		Handler:           mux,
 		ReadHeaderTimeout: 3 * time.Second,
 		ReadTimeout:       5 * time.Second,
 		WriteTimeout:      5 * time.Second,
 	}
 	go func() {
+		log.Printf("listen in %s\n", conf.ListenAddr)
 		if err := srv.ListenAndServe(); err != nil {
 			log.Print(err)
 		}
@@ -53,9 +58,9 @@ func main() {
 	signal.Notify(c, os.Interrupt)
 	<-c
 
-	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	ctxShutDown, cancel := context.WithTimeout(ctx, 5*time.Second)
 	defer cancel()
-	if err := srv.Shutdown(ctx); err != nil {
+	if err := srv.Shutdown(ctxShutDown); err != nil {
 		log.Print(err)
 	}
 }
