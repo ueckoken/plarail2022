@@ -156,24 +156,18 @@ class State:
 
     # 線路上のある点からある点までの距離を返す
     # 2つの地点が同じsectionに存在する場合、s1>s2だと負の値を返す
-    def getDistance(self, s1: Section, mileage1: float, s2: Section, mileage2: float, originalStartSection: Section = None) -> float:
+    def getDistance(self, s1: Section, mileage1: float, s2: Section, mileage2: float) -> float:
         distance = 0
         testSection = s1
+        passedJunctionId: list[int] = []  # 一度通過したjucntionのidを記録しておく。同じjunctionを2回通った場合は到達不能と判定しnanを返す
+        print(f"[getDistance] s1.sec={s1.id}, s1.mil={mileage1}, s2.sec={s2.id}, s2.mil={mileage2}")
 
-        # 何も見つけられずに最初の地点に戻ってきてしまった場合、終了
-        if originalStartSection != None and s1.id == originalStartSection.id:
-            return s1.length
-
-        if originalStartSection == None:
-            originalStartSection = s1
         while testSection.id != s2.id:
-            distance += testSection.length
-            if testSection.targetJunction.outSectionCurve == None:
-                testSection = testSection.targetJunction.getOutSection()
+            if testSection.targetJunction.id in passedJunctionId:  # junctionを2回目に通過した場合、一周してしまうのでnanを返す
+                return float('nan')
             else:
-                distanceFrom2OutJucntionToS2ViaStraight = self.getDistance(testSection.targetJunction.outSectionStraight, 0, s2, mileage2, originalStartSection)
-                distanceFrom2OutJucntionToS2ViaCurve = self.getDistance(testSection.targetJunction.outSectionCurve, 0, s2, mileage2, originalStartSection)
-                return distance - mileage1 + min(distanceFrom2OutJucntionToS2ViaStraight, distanceFrom2OutJucntionToS2ViaCurve)
-            if testSection.id == originalStartSection.id:
-                break  # 1周して戻ってきた場合は終了
+                passedJunctionId.append(testSection.targetJunction.id)  # 一度通過したjunctionのidを記録
+                distance += testSection.length
+                testSection = testSection.targetJunction.getOutSection()
+            
         return distance - mileage1 + mileage2

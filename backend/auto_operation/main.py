@@ -47,6 +47,9 @@ def operation_loop():
         print(
             f"[main.operation_loop] t0.section: {operation.state.getTrainById(0).currentSection.id}, t0.mil: {operation.state.getTrainById(0).mileage:.2f}, t0.spd: {operation.state.getTrainById(0).targetSpeed:.2f}, t1.section: {operation.state.getTrainById(1).currentSection.id}, t1.mil: {operation.state.getTrainById(1).mileage:.2f}, t1.spd: {operation.state.getTrainById(1).targetSpeed:.2f}"
         )
+        print(
+            f"[main.operation_loop] junction2: {operation.state.getJunctionById(2).outServoState}, junction6:{operation.state.getJunctionById(6).inServoState}"
+        )
         time.sleep(0.1)
 
 
@@ -59,17 +62,22 @@ def send_signal_to_browser():
             train_taiken.currentSection.id,
             train_taiken.currentSection.targetJunction.getOutSection(
             ).id)  # 体験車から見た信号機を取得
-        distance = operation.ato.getDistanceUntilStop(
-            train_taiken)  # 停止位置までの距離を取得
+        atoStopPoint = operation.ato.getATOStopPoint(train_taiken)
+        distance = operation.state.getDistance(train_taiken.currentSection, train_taiken.mileage, atoStopPoint.section, atoStopPoint.mileage)
         blocks = {}  # 閉塞を送る。区間0と3に列車がいるなら、{'s0': True, 's3': True} のような文字列
         for train in operation.state.trainList:
             blocks["s" + str(train.currentSection.id)] = True
+        stops = []  # どこのストップレールを上げるべきか送る。区間0と区間3を上げるなら、[1, 3]のような配列
+        for train in operation.state.trainList:
+            if train.stopPoint:  # 列車には停止すべき点が存在しない場合もある(ATSを無効化した場合など)。停止点を持っている場合はsectionIDを送る
+                stops.append(train.stopPoint.section.id)
 
         # websocketで送信
         socketio.emit('signal_taiken', {
             'signal': signal.value,
             'distance': int(distance),
-            'blocks': blocks
+            'blocks': blocks,
+            'stops': stops
         })
 
 
