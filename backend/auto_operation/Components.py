@@ -4,14 +4,14 @@ from typing import Optional
 
 
 class Section:
-    id: int
+    id: str
     length: float
     station: Optional['Station']
     stationPosition: float
     sourceJunction: 'Junction'
     targetJunction: 'Junction'
 
-    def __init__(self, id: int, sourceJunction: 'Junction', targetJunction: 'Junction', sourceServoState: 'Junction.ServoState', targetServoState: 'Junction.ServoState', length: float) -> None:
+    def __init__(self, id: str, sourceJunction: 'Junction', targetJunction: 'Junction', sourceServoState: 'Junction.ServoState', targetServoState: 'Junction.ServoState', length: float) -> None:
         self.id = id
         self.length = length
         self.station = None

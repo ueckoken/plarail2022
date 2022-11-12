@@ -21,7 +21,7 @@ from State import *
 
 
 class Dia:
-    def __init__(self, trainId: int, stationId: int, wait: bool, stopTime: int, arriveSectionId: int, destSectionId: int):
+    def __init__(self, trainId: int, stationId: int, wait: bool, stopTime: int, arriveSectionId: str, destSectionId: str):
         self.trainId = trainId
         self.stationId = stationId
         self.wait = wait
@@ -91,7 +91,7 @@ class DiaPlanner:
         return result[0]
 
     # 指定した列車の、指定した駅に対するダイヤを更新
-    def setDia(self, trainId: int, staionId: int, wait: bool, stopTime: int, arriveSectionId: int, destSectionId: int) -> None:
+    def setDia(self, trainId: int, staionId: int, wait: bool, stopTime: int, arriveSectionId: str, destSectionId: str) -> None:
         for dia in self.__diaList:
             if dia.trainId == trainId and dia.stationId == staionId:
                 dia.wait = wait
