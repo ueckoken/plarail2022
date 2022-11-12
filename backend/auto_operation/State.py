@@ -76,7 +76,7 @@ class State:
 
         # junction.belogStation
         self.getJunctionById(2).belongStation = self.getStationById(2)  # junction2は調布下り
-        self.getJunctionById(6).belongStation = self.getSectionById(7)  # junction6は調布上り
+        self.getJunctionById(6).belongStation = self.getStationById(7)  # junction6は調布上り
 
         # PIDParams(r: float, INPUT_MIN: int, INPUT_MAX: int, INPUT_START: int, kp: float, ki: float, kd: float)
         pidParam0 = Train.PIDParam(1.25, 40, 55, 68, 0.70, 0, 0)  # Dr. (maxinput: 40 + 0.70*40cm/s = 68)
