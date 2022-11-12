@@ -1,17 +1,25 @@
 from dataclasses import dataclass
 from enum import Enum
-from typing import Optional
+from typing import Literal, Optional
 
 
 class Section:
-    id: str
+    SectionId = Literal[
+        'shinjuku_b1', 'shinjuku_b2',
+        'sakurajosui_b1', 'sakurajosui_b2', 'sakurajosui_b3', 'sakurajosui_b4', 'sakurajosui_b5', 'sakurajosui_b6',
+        'chofu_b1', 'chofu_b2', 'chofu_b3', 'chofu_b4',
+        'hashimoto_b1', 'hashimoto_b2',
+        'hachioji_b1', 'hachioji_b2',
+    ]
+
+    id: SectionId
     length: float
     station: Optional['Station']
     stationPosition: float
     sourceJunction: 'Junction'
     targetJunction: 'Junction'
 
-    def __init__(self, id: str, sourceJunction: 'Junction', targetJunction: 'Junction', sourceServoState: 'Junction.ServoState', targetServoState: 'Junction.ServoState', length: float) -> None:
+    def __init__(self, id: SectionId, sourceJunction: 'Junction', targetJunction: 'Junction', sourceServoState: 'Junction.ServoState', targetServoState: 'Junction.ServoState', length: float) -> None:
         self.id = id
         self.length = length
         self.station = None
@@ -41,7 +49,15 @@ class Junction:
             else:
                 return Junction.ServoState.NoServo
 
-    id: str
+    JunctionId = Literal[
+        'shinjuku_j1', 'shinjuku_j2',
+        'sakurajosui_j1', 'sakurajosui_j2', 'sakurajosui_j3', 'sakurajosui_j4',
+        'chofu_j1', 'chofu_j2', 'chofu_j3', 'chofu_j4',
+        'hashimoto_j1', 'hashimoto_j2',
+        'hachioji_j1', 'hachioji_j2',
+    ]
+
+    id: JunctionId
     servoId: int
     inSectionStraight: Optional['Section']
     inSectionCurve: Optional['Section']
@@ -52,7 +68,7 @@ class Junction:
     belongStation: Optional['Station']
     toggleRequested: bool
 
-    def __init__(self, id: str, servoId: int) -> None:
+    def __init__(self, id: JunctionId, servoId: int) -> None:
         self.id = id
         self.servoId = servoId
         self.inSectionStraight = None
@@ -120,7 +136,17 @@ class Sensor:
 
 @dataclass
 class Station:
-    id: str
+    StationId = Literal[
+        'shinjuku_s1', 'shinjuku_s2',
+        'sakurajosui_s1', 'sakurajosui_s2', 'sakurajosui_s3', 'sakurajosui_s4',
+        'sakurajosui_s5',
+        'chofu_s0',
+        'chofu_s1', 'chofu_s2', 'chofu_s3', 'chofu_s4',
+        'hashimoto_s1', 'hashimoto_s2',
+        'hachioji_s1', 'hachioji_s2',
+    ]
+
+    id: StationId
     name: str
 
 
