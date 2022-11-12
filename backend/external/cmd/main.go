@@ -11,9 +11,18 @@ import (
 const namespace = "plarailexternal"
 
 func main() {
-	clientHandler2syncController := make(chan syncController.StationState, 16)
-	syncController2clientHandler := make(chan syncController.StationState, 64)
-	initEspStatus2syncController := make(chan syncController.StationState)
+	syncControllerInput := make(chan syncController.StationState)
+	grpcHandlerInput := make(chan syncController.StationState)
+	main2grpcHandler := make(chan syncController.StationState)
+	syncControllerOutput := make(chan syncController.StationState)
+	httpInput := make(chan syncController.StationState)
+
+	go func() {
+		for c := range syncControllerOutput {
+			main2grpcHandler <- c
+			httpInput <- c
+		}
+	}()
 
 	envVal := envStore.GetEnv()
 
@@ -45,20 +54,22 @@ func main() {
 	)
 
 	httpServer := internal.HTTPServer{
-		ClientHandler2syncController: clientHandler2syncController,
-		SyncController2clientHandler: syncController2clientHandler,
-		Environment:                  envVal,
-		NumberOfClientConnection:     clientConn,
-		TotalClientConnection:        clientConnTotal,
-		TotalCLientCommands:          controlCommandTotal,
-		Clients:                      &internal.ClientsCollection{},
+		StateOutput:              syncControllerInput,
+		StateInput:               httpInput,
+		Environment:              envVal,
+		NumberOfClientConnection: clientConn,
+		TotalClientConnection:    clientConnTotal,
+		TotalCLientCommands:      controlCommandTotal,
+		Clients:                  &internal.ClientsCollection{},
 	}
 	syncController := syncController.SyncController{
-		ClientHandler2syncController: clientHandler2syncController,
-		SyncController2clientHandler: syncController2clientHandler,
-		Environment:                  envVal,
-		InitServoRoute:               initEspStatus2syncController,
+		StateInput:  syncControllerInput,
+		StateOutput: syncControllerOutput,
+		Environment: envVal,
 	}
+	grpcHandler := internal.NewGrpcHandler(envVal, syncControllerInput, grpcHandlerInput)
+
+	go internal.GRPCListenAndServe(uint(envVal.ClientSideServer.GrpcPort), grpcHandler)
 	go httpServer.StartServer()
 	syncController.StartSyncController()
 }

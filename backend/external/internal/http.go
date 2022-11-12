@@ -17,13 +17,13 @@ import (
 )
 
 type HTTPServer struct {
-	ClientHandler2syncController chan syncController.StationState
-	SyncController2clientHandler chan syncController.StationState
-	Environment                  *envStore.Env
-	NumberOfClientConnection     *prometheus.GaugeVec
-	TotalClientConnection        *prometheus.CounterVec
-	TotalCLientCommands          *prometheus.CounterVec
-	Clients                      *ClientsCollection
+	StateOutput              chan<- syncController.StationState
+	StateInput               <-chan syncController.StationState
+	Environment              *envStore.Env
+	NumberOfClientConnection *prometheus.GaugeVec
+	TotalClientConnection    *prometheus.CounterVec
+	TotalCLientCommands      *prometheus.CounterVec
+	Clients                  *ClientsCollection
 }
 
 type ClientsCollection struct {
@@ -48,7 +48,7 @@ func (h *HTTPServer) StartServer() {
 			return true
 		},
 	}
-	r.Handle("/ws", clientHandler.ClientHandler{Upgrader: upgrader, ClientCommand: h.ClientHandler2syncController, ClientChannelSend: clientChannelSend})
+	r.Handle("/ws", clientHandler.ClientHandler{Upgrader: upgrader, ClientCommand: h.StateOutput, ClientChannelSend: clientChannelSend})
 	r.Handle("/metrics", promhttp.Handler())
 	srv := &http.Server{
 		Handler:           r,
@@ -62,7 +62,7 @@ func (h *HTTPServer) StartServer() {
 }
 
 func (h *HTTPServer) handleChanges() {
-	for d := range h.SyncController2clientHandler {
+	for d := range h.StateInput {
 		h.Clients.mtx.Lock()
 		h.TotalCLientCommands.With(prometheus.Labels{}).Inc()
 		for _, c := range h.Clients.Clients {
@@ -78,7 +78,7 @@ func (h *HTTPServer) handleChanges() {
 	time.Sleep(1 * time.Second)
 }
 
-func (h *HTTPServer) registerClient(cn chan clientHandler.ClientChannel) {
+func (h *HTTPServer) registerClient(cn <-chan clientHandler.ClientChannel) {
 	for n := range cn {
 		func(h *HTTPServer, n clientHandler.ClientChannel) {
 			h.Clients.mtx.Lock()

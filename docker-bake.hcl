@@ -1,5 +1,5 @@
 group "default" {
-  targets = ["auto-operation", "external", "internal", "multicaster", "positioning", "webrtc-sender", "frontend", "receiver-test"]
+  targets = ["auto-operation", "external", "internal", "multicaster", "positioning", "webrtc-sender", "frontend", "receiver-test", "logviewer"]
 }
 
 variable "PREFIX" {
@@ -68,5 +68,12 @@ target "receiver-test" {
   context = "./frontend/skyway_receiver"
   tags = [
     GET_TAG("receiver-test")
+  ]
+}
+
+target "logviewer" {
+  context = "./infra/logviewer"
+  tags = [
+    GET_TAG("logviewer")
   ]
 }

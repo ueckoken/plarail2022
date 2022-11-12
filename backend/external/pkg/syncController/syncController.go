@@ -73,37 +73,25 @@ func (skvs *stationKVS) retrieve() []StationState {
 }
 
 type SyncController struct {
-	ClientHandler2syncController chan StationState
-	SyncController2clientHandler chan StationState
-	InitServoRoute               chan StationState
-	Environment                  *envStore.Env
+	StateInput  <-chan StationState
+	StateOutput chan<- StationState
+	Environment *envStore.Env
 }
 
 func (s *SyncController) StartSyncController() {
 	kvs := newStationKvs()
 
-	go s.Init(NewInitializeRule())
-	s.initNode(s.Environment, kvs)
+	s.Init(NewInitializeRule(), kvs, s.Environment)
 
 	go s.periodicallySync(kvs)
 	s.triggeredSync(s.Environment, kvs)
 }
 
 func (s *SyncController) initNode(e *envStore.Env, kvs *stationKVS) {
-	for c := range s.InitServoRoute {
-		kvs.forceUpdate(c)
-		c2i := servo.NewCommand2Internal(c.StationState, e)
-		log.Println("initNode: ", c2i.String())
-		err := c2i.Send()
-		if err != nil {
-			log.Fatalf("initNode Send err: `%v`\n", err)
-			return
-		}
-	}
 }
 
 func (s *SyncController) triggeredSync(e *envStore.Env, kvs *stationKVS) {
-	for c := range s.ClientHandler2syncController {
+	for c := range s.StateInput {
 		err := kvs.update(c)
 		if err != nil {
 			log.Println("syncController validator err: ", err)
@@ -115,7 +103,7 @@ func (s *SyncController) triggeredSync(e *envStore.Env, kvs *stationKVS) {
 			log.Println("syncController send err: ", err)
 			continue
 		}
-		s.SyncController2clientHandler <- c
+		s.StateOutput <- c
 	}
 }
 
@@ -126,7 +114,7 @@ func (s *SyncController) periodicallySync(kvs *stationKVS) {
 		k := kvs.retrieve()
 		for _, st := range k {
 			select {
-			case s.SyncController2clientHandler <- st:
+			case s.StateOutput <- st:
 			default:
 				log.Println("buffer full for:")
 			}
@@ -135,7 +123,8 @@ func (s *SyncController) periodicallySync(kvs *stationKVS) {
 	}
 }
 
-func (s SyncController) Init(r *InitRule) {
+// Init initalize state
+func (s SyncController) Init(r *InitRule, kvs *stationKVS, e *envStore.Env) {
 	for _, sta := range r.Stations {
 		id, err := stationNameId.Name2Id(sta.Name)
 		if err != nil {
@@ -145,7 +134,7 @@ func (s SyncController) Init(r *InitRule) {
 		if !ok {
 			log.Fatalln(sta.State, "is incorrect")
 		}
-		s.InitServoRoute <- StationState{
+		c := StationState{
 			struct {
 				StationID int32
 				State     int32
@@ -154,7 +143,13 @@ func (s SyncController) Init(r *InitRule) {
 				State:     state,
 			},
 		}
+		kvs.forceUpdate(c)
+		c2i := servo.NewCommand2Internal(c.StationState, e)
+		log.Println("initNode: ", c2i.String())
+		if err := c2i.Send(); err != nil {
+			log.Fatalf("initNode Send err: `%v`\n", err)
+			return
+		}
 		time.Sleep(500 * time.Millisecond)
 	}
-	close(s.InitServoRoute)
 }

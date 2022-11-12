@@ -17,7 +17,7 @@ import (
 
 type ClientHandler struct {
 	Upgrader          websocket.Upgrader
-	ClientCommand     chan syncController.StationState
+	ClientCommand     chan<- syncController.StationState
 	ClientChannelSend chan ClientChannel
 }
 
