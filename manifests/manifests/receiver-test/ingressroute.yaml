@@ -6,7 +6,9 @@ metadata:
 spec:
   routes:
   - kind: Rule
-    match: Host(`receiver-test.chofufes2022.gotti.dev`)
+    match: Host(`receiver-test.chofufes2022.ueckoken.club`)
     services:
     - name: webrtc-receiver
       port: 80
+  tls:
+    secretName: cloudflare-cert

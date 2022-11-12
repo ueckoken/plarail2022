@@ -6,16 +6,8 @@ metadata:
 spec:
   secretName: cloudflare-cert
   dnsNames:
-    - "control.chofufes2022.gotti.dev"
-    - "chofufes2022.gotti.dev"
-    - "webrtc.chofufes2022.gotti.dev"
-    - "auth.chofufes2022.gotti.dev"
-    - "grafana.chofufes2022.gotti.dev"
-    - "prometheus.chofufes2022.gotti.dev"
-    - "alert.chofufes2022.gotti.dev"
-    - "webrtc-sender.chofufes2022.gotti.dev"
-    - "receiver-test.chofufes2022.gotti.dev"
-    - "positioning.chofufes2022.gotti.dev"
+    - "*.chofufes2022.ueckoken.club"
+    - "chofufes2022.ueckoken.club"
   issuerRef:
     name: letsencrypt-prod
     kind: ClusterIssuer

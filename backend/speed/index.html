@@ -15,7 +15,7 @@
             sock.send(`{"train_name": "TAKAO", "speed": 100}`);
         };
         window.onload = function () {
-            sock = new WebSocket("wss://speed.chofufes2021.gotti.dev/speed");
+            sock = new WebSocket("wss://speed.chofufes2022.ueckoken.club/speed");
             setInterval("send()",1000);
             sock.onmessage = function (event) {
                 var data = JSON.parse(event.data);

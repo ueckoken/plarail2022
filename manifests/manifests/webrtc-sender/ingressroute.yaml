@@ -6,9 +6,11 @@ metadata:
 spec:
   routes:
   - kind: Rule
-    match: Host(`webrtc-sender.chofufes2022.gotti.dev`)
+    match: Host(`webrtc-sender.chofufes2022.ueckoken.club`)
     middlewares:
     - name: oauth2
     services:
     - name: webrtc-sender
       port: 80
+  tls:
+    secretName: cloudflare-cert
