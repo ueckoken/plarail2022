@@ -1,0 +1,12 @@
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: logviewer
+  namespace: plarail2021
+spec:
+  routes:
+  - kind: Rule
+    match: Host(`logs-chofufes2022.gotti.dev`)
+    services:
+    - name: logviewer
+      port: 8080
