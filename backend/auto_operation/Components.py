@@ -120,7 +120,7 @@ class Sensor:
 
 @dataclass
 class Station:
-    id: int
+    id: str
     name: str
 
 

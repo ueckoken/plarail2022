@@ -49,34 +49,34 @@ class State:
         # self.sensorList.append(Sensor(1, self.getSectionById(4), State.STRAIGHT_UNIT * 2 + State.CURVE_UNIT * 2))
 
         # Station(id, name)
-        self.stationList.append(Station(0, "Shinjuku-down"))
-        self.stationList.append(Station(1, "Sakurajosui-down"))
-        self.stationList.append(Station(2, "Chofu-down"))
-        self.stationList.append(Station(3, "Hashimoto-down"))
-        self.stationList.append(Station(4, "Hachioji-down"))
-        self.stationList.append(Station(5, "Hachioji-up"))
-        self.stationList.append(Station(6, "Hashimoto-up"))
-        self.stationList.append(Station(7, "Chofu-up"))
-        self.stationList.append(Station(8, "Sakurajosui-up"))
-        self.stationList.append(Station(9, "Shinjuku-up"))
+        self.stationList.append(Station("0", "Shinjuku-down"))
+        self.stationList.append(Station("1", "Sakurajosui-down"))
+        self.stationList.append(Station("2", "Chofu-down"))
+        self.stationList.append(Station("3", "Hashimoto-down"))
+        self.stationList.append(Station("4", "Hachioji-down"))
+        self.stationList.append(Station("5", "Hachioji-up"))
+        self.stationList.append(Station("6", "Hashimoto-up"))
+        self.stationList.append(Station("7", "Chofu-up"))
+        self.stationList.append(Station("8", "Sakurajosui-up"))
+        self.stationList.append(Station("9", "Shinjuku-up"))
 
         # section.putStation(station, stationPosition)
-        self.getSectionById("0").putStation(self.getStationById(0), State.STRAIGHT_UNIT * 8)  # section0: 新宿下り
-        self.getSectionById("1").putStation(self.getStationById(1), State.STRAIGHT_UNIT * 8)  # section1: 桜上水下り
-        self.getSectionById("3").putStation(self.getStationById(2), State.STRAIGHT_UNIT * 8)  # section3: 調布下り1番:橋本方面
-        self.getSectionById("4").putStation(self.getStationById(3), State.STRAIGHT_UNIT * 8)  # section4: 橋本下り
-        self.getSectionById("5").putStation(self.getStationById(6), State.STRAIGHT_UNIT * 8)  # section5: 橋本上り
-        self.getSectionById("6").putStation(self.getStationById(7), State.STRAIGHT_UNIT * 8)  # section6: 調布上り3番:橋本方面
-        self.getSectionById("7").putStation(self.getStationById(2), State.STRAIGHT_UNIT * 8)  # section7: 調布下り2番:八王子方面
-        self.getSectionById("8").putStation(self.getStationById(4), State.STRAIGHT_UNIT * 8)  # section8: 八王子下り
-        self.getSectionById("9").putStation(self.getStationById(5), State.STRAIGHT_UNIT * 8)  # section9: 八王子上り
-        self.getSectionById("10").putStation(self.getStationById(7), State.STRAIGHT_UNIT * 8)  # section10: 調布上り4番:八王子方面
-        self.getSectionById("11").putStation(self.getStationById(8), State.STRAIGHT_UNIT * 8)  # section11: 桜上水上り
-        self.getSectionById("12").putStation(self.getStationById(9), State.STRAIGHT_UNIT * 8)  # section12: 新宿上り
+        self.getSectionById("0").putStation(self.getStationById("0"), State.STRAIGHT_UNIT * 8)  # section0: 新宿下り
+        self.getSectionById("1").putStation(self.getStationById("1"), State.STRAIGHT_UNIT * 8)  # section1: 桜上水下り
+        self.getSectionById("3").putStation(self.getStationById("2"), State.STRAIGHT_UNIT * 8)  # section3: 調布下り1番:橋本方面
+        self.getSectionById("4").putStation(self.getStationById("3"), State.STRAIGHT_UNIT * 8)  # section4: 橋本下り
+        self.getSectionById("5").putStation(self.getStationById("6"), State.STRAIGHT_UNIT * 8)  # section5: 橋本上り
+        self.getSectionById("6").putStation(self.getStationById("7"), State.STRAIGHT_UNIT * 8)  # section6: 調布上り3番:橋本方面
+        self.getSectionById("7").putStation(self.getStationById("2"), State.STRAIGHT_UNIT * 8)  # section7: 調布下り2番:八王子方面
+        self.getSectionById("8").putStation(self.getStationById("4"), State.STRAIGHT_UNIT * 8)  # section8: 八王子下り
+        self.getSectionById("9").putStation(self.getStationById("5"), State.STRAIGHT_UNIT * 8)  # section9: 八王子上り
+        self.getSectionById("10").putStation(self.getStationById("7"), State.STRAIGHT_UNIT * 8)  # section10: 調布上り4番:八王子方面
+        self.getSectionById("11").putStation(self.getStationById("8"), State.STRAIGHT_UNIT * 8)  # section11: 桜上水上り
+        self.getSectionById("12").putStation(self.getStationById("9"), State.STRAIGHT_UNIT * 8)  # section12: 新宿上り
 
         # junction.belogStation
-        self.getJunctionById("2").belongStation = self.getStationById(2)  # junction2は調布下り
-        self.getJunctionById("6").belongStation = self.getStationById(7)  # junction6は調布上り
+        self.getJunctionById("2").belongStation = self.getStationById("2")  # junction2は調布下り
+        self.getJunctionById("6").belongStation = self.getStationById("7")  # junction6は調布上り
 
         # PIDParams(r: float, INPUT_MIN: int, INPUT_MAX: int, INPUT_START: int, kp: float, ki: float, kd: float)
         pidParam0 = Train.PIDParam(1.25, 40, 55, 68, 0.70, 0, 0)  # Dr. (maxinput: 40 + 0.70*40cm/s = 68)
@@ -137,7 +137,7 @@ class State:
     def getSensorById(self, id: int) -> Sensor:
         return list(filter(lambda item: item.id == int.from_bytes(id,'little'), self.sensorList))[0]
 
-    def getStationById(self, id: int) -> Station:
+    def getStationById(self, id: str) -> Station:
         return list(filter(lambda item: item.id == id, self.stationList))[0]
 
     def getStationBySectionId(self, sectionId: str) -> Station:
