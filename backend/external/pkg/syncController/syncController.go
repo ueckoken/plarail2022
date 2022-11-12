@@ -87,9 +87,6 @@ func (s *SyncController) StartSyncController() {
 	s.triggeredSync(s.Environment, kvs)
 }
 
-func (s *SyncController) initNode(e *envStore.Env, kvs *stationKVS) {
-}
-
 func (s *SyncController) triggeredSync(e *envStore.Env, kvs *stationKVS) {
 	for c := range s.StateInput {
 		err := kvs.update(c)

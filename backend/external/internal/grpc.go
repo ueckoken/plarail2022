@@ -14,7 +14,7 @@ import (
 	"google.golang.org/grpc/credentials/insecure"
 )
 
-// GrpcHandler is a handler for gRPC
+// GrpcHandler is a handler for gRPC.
 type GrpcHandler struct {
 	env *envStore.Env
 	spec.UnimplementedControlServer
@@ -22,12 +22,12 @@ type GrpcHandler struct {
 	stateInput  <-chan syncController.StationState
 }
 
-// NewGrpcHandler creates gRPC handler
+// NewGrpcHandler creates gRPC handler.
 func NewGrpcHandler(env *envStore.Env, stateOutput chan<- syncController.StationState, stateInput <-chan syncController.StationState) *GrpcHandler {
 	return &GrpcHandler{env: env, stateOutput: stateOutput, stateInput: stateInput}
 }
 
-// Command2Internal handles requests and save requests to memory and treats internal server
+// Command2Internal handles requests and save requests to memory and treats internal server.
 func (g GrpcHandler) Command2Internal(ctx context.Context, req *spec.RequestSync) (*spec.ResponseSync, error) {
 	s := syncController.StationState{
 		StationState: servo.StationState{
@@ -49,11 +49,17 @@ func (g GrpcHandler) handleInput(ctx context.Context) {
 	defer con.Close()
 	for d := range g.stateInput {
 		client := spec.NewControlClient(con)
-		client.Command2Internal(ctx,
+		res, err := client.Command2Internal(ctx,
 			&spec.RequestSync{
 				Station: &spec.Stations{StationId: spec.Stations_StationId(d.StationID)},
 				State:   spec.RequestSync_State(d.State),
 			})
+		if err != nil {
+			log.Println("failed to send data to ATS", err)
+		}
+		if res.GetResponse() != spec.ResponseSync_SUCCESS {
+			log.Println("ATS response unsuccessfull", res.GetResponse())
+		}
 	}
 }
 
@@ -63,6 +69,7 @@ func GRPCListenAndServe(port uint, handler *GrpcHandler) {
 	if err != nil {
 		log.Fatalln("failed to listen port", err)
 	}
+	go handler.handleInput(context.Background())
 	s := grpc.NewServer()
 	spec.RegisterControlServer(s, handler)
 	if err := s.Serve(lis); err != nil {
