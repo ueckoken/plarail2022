@@ -6,7 +6,9 @@ metadata:
 spec:
   routes:
     - kind: Rule
-      match: Host(`operate.chofufes2022.gotti.dev`)
+      match: Host(`operate.chofufes2022.ueckoken.club`)
       services:
         - name: auto-operation
           port: 80
+  tls:
+    secretName: cloudflare-cert

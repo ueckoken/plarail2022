@@ -8,7 +8,6 @@
 
 エンドポイントが決まってないので適当に決めてください。
 
-https://speedcontrol.gotti.dev?trainId=takao&speed=8
 
 このデータを事前定義の構造体にまとめてgRPCでRaspberry Piに送信します。
 
