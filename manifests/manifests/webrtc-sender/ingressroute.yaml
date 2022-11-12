@@ -6,7 +6,7 @@ metadata:
 spec:
   routes:
   - kind: Rule
-    match: Host(`webrtc-sender.chofufes2021.gotti.dev`)
+    match: Host(`webrtc-sender.chofufes2022.gotti.dev`)
     middlewares:
     - name: oauth2
     services:
