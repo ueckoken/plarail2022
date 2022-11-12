@@ -6,7 +6,7 @@ metadata:
 spec:
   routes:
   - kind: Rule
-    match: Host(`receiver-test.chofufes2021.gotti.dev`)
+    match: Host(`receiver-test.chofufes2022.gotti.dev`)
     services:
-    - name: plarail2021-webrtc-receiver
+    - name: webrtc-receiver
       port: 80

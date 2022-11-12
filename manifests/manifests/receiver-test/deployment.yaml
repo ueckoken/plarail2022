@@ -1,19 +1,19 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: plarail2021-webrtc-receiver
+  name: webrtc-receiver
   namespace: plarail2021
 spec:
   selector:
     matchLabels:
-      app: plarail2021-webrtc-receiver
+      app: webrtc-receiver
   template:
     metadata:
       labels:
-        app: plarail2021-webrtc-receiver
+        app: webrtc-receiver
     spec:
       containers:
-        - name: plarail2021-webrtc-receiver
+        - name: webrtc-receiver
           image: ghcr.io/ueckoken/plarail2022-receiver-test:dee27aa-1665538624 # {"$imagepolicy": "plarail2021:webrtc-receiver"}
           imagePullPolicy: Always
           ports:

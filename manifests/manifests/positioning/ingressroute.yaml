@@ -1,12 +1,12 @@
 apiVersion: traefik.containo.us/v1alpha1
 kind: IngressRoute
 metadata:
-  name: plarial2021-positioning
+  name: positioning
   namespace: plarail2021
 spec:
   routes:
   - kind: Rule
-    match: Host(`positioning.chofufes2021.gotti.dev`)
+    match: Host(`positioning.chofufes2022.gotti.dev`)
     services:
-    - name: plarail2021-positioning
+    - name: positioning
       port: 80

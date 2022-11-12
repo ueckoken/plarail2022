@@ -8,5 +8,5 @@ spec:
   - kind: Rule
     match: Host(`chofufes2022.gotti.dev`)
     services:
-    - name: plarail2021-soft-frontend
+    - name: soft-frontend
       port: 80

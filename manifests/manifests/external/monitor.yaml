@@ -9,7 +9,7 @@ metadata:
 spec:
   selector:
     matchLabels:
-      app: plarail2021-soft-backend-external
+      app: soft-backend-external
   endpoints:
     - port: web
       path: /metrics
