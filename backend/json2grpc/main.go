@@ -17,7 +17,7 @@ import (
 )
 
 type Config struct {
-	InternalEndpoint string // `required:"true"`
+	InternalEndpoint string `required:"true"`
 	ListenAddr       string
 }
 
