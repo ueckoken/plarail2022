@@ -31,8 +31,6 @@ class ATS:
         if self.__enabled[trainId]:
             # 赤信号までの距離を取得し、出してよいスピード(speedLimit)を求める
             atsStopPoint = self.getATSStopPoint(train)
-            print(f"[ATS] train[{trainId}].stopPoint={atsStopPoint.section.id}, {atsStopPoint.mileage}")
-            print("[ATS] getDistance")
             distance = self.__state.getDistance(train.currentSection, train.mileage, atsStopPoint.section, atsStopPoint.mileage)  # 絶対停止点までの距離を計算
             if train.stopPoint == None:  # 停止点が代入されていない場合、ATSで計算した停止点を代入する
                 train.stopPoint = atsStopPoint
@@ -55,7 +53,7 @@ class ATS:
                     if atsStopPoint.section.id != train.currentSection.id:  # 目の前が赤信号ではなくなったら、ATS作動フラグを解除
                         print(f"[ATS.setSpeedCommand] ATS deactivated on train {train.id}")
                         self.__activated[train.id] = False
-        
+
         # ATS無効時、指示された速度をそのまま設定
         else:
             train.targetSpeed = speedCommand

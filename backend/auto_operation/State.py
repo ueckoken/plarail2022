@@ -155,12 +155,11 @@ class State:
             return None
 
     # 線路上のある点からある点までの距離を返す
-    # 2つの地点が同じsectionに存在する場合、s1>s2だと負の値を返す
+    # 2つの地点が同じsectionに存在する場合、s1>s2だと負の値を返す。ポイントの状態的に、ある点からある点にたどり着くのが不可能な場合、noneを返す
     def getDistance(self, s1: Section, mileage1: float, s2: Section, mileage2: float) -> float:
         distance = 0
         testSection = s1
         passedJunctionId: list[int] = []  # 一度通過したjucntionのidを記録しておく。同じjunctionを2回通った場合は到達不能と判定しnanを返す
-        print(f"[getDistance] s1.sec={s1.id}, s1.mil={mileage1}, s2.sec={s2.id}, s2.mil={mileage2}")
 
         while testSection.id != s2.id:
             if testSection.targetJunction.id in passedJunctionId:  # junctionを2回目に通過した場合、一周してしまうのでnanを返す

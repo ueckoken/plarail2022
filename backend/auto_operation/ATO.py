@@ -38,7 +38,6 @@ class ATO:
             # ATO有効時、停止点を計算し、出してよいスピードを求める
             if self.__enabled[train.id]:
                 train.stopPoint = self.getATOStopPoint(train)
-                print("[ATO] getDistance")
                 distance = self.__state.getDistance(train.currentSection, train.mileage, train.stopPoint.section, train.stopPoint.mileage)
                 if distance > 100:
                     speedLimit = self.__MAXSPEED
