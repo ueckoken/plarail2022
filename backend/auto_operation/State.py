@@ -16,33 +16,33 @@ class State:
         self.trainList: list[Train] = []
 
         # Junction(id, servoId)
-        self.junctionList.append(Junction(0, -1))
-        self.junctionList.append(Junction(1, -1))
-        self.junctionList.append(Junction(2, 0))  # 対応するサーボID=0
-        self.junctionList.append(Junction(3, -1))
-        self.junctionList.append(Junction(4, -1))
-        self.junctionList.append(Junction(5, -1))
-        self.junctionList.append(Junction(6, -1))
-        self.junctionList.append(Junction(7, -1))
-        self.junctionList.append(Junction(8, -1))
-        self.junctionList.append(Junction(9, -1))
-        self.junctionList.append(Junction(10, -1))
-        self.junctionList.append(Junction(11, -1))
+        self.junctionList.append(Junction("0", -1))
+        self.junctionList.append(Junction("1", -1))
+        self.junctionList.append(Junction("2", 0))  # 対応するサーボID=0
+        self.junctionList.append(Junction("3", -1))
+        self.junctionList.append(Junction("4", -1))
+        self.junctionList.append(Junction("5", -1))
+        self.junctionList.append(Junction("6", -1))
+        self.junctionList.append(Junction("7", -1))
+        self.junctionList.append(Junction("8", -1))
+        self.junctionList.append(Junction("9", -1))
+        self.junctionList.append(Junction("10", -1))
+        self.junctionList.append(Junction("11", -1))
 
         # Section(id, sourceJuncction, targetJuncction, sourceServoState, targetServoState, length)
-        self.sectionList.append(Section(0, self.getJunctionById(11), self.getJunctionById(0), Junction.ServoState.NoServo, Junction.ServoState.NoServo, State.STRAIGHT_UNIT * 10))
-        self.sectionList.append(Section(1, self.getJunctionById(0), self.getJunctionById(1), Junction.ServoState.NoServo, Junction.ServoState.NoServo, State.STRAIGHT_UNIT * 10))
-        self.sectionList.append(Section(2, self.getJunctionById(1), self.getJunctionById(2), Junction.ServoState.NoServo, Junction.ServoState.NoServo, State.STRAIGHT_UNIT * 10))
-        self.sectionList.append(Section(3, self.getJunctionById(2), self.getJunctionById(3), Junction.ServoState.Straight, Junction.ServoState.NoServo, State.STRAIGHT_UNIT * 10))
-        self.sectionList.append(Section(4, self.getJunctionById(3), self.getJunctionById(4), Junction.ServoState.NoServo, Junction.ServoState.NoServo, State.STRAIGHT_UNIT * 10))
-        self.sectionList.append(Section(5, self.getJunctionById(4), self.getJunctionById(5), Junction.ServoState.NoServo, Junction.ServoState.NoServo, State.STRAIGHT_UNIT * 10))
-        self.sectionList.append(Section(6, self.getJunctionById(5), self.getJunctionById(6), Junction.ServoState.NoServo, Junction.ServoState.Curve, State.STRAIGHT_UNIT * 10))
-        self.sectionList.append(Section(7, self.getJunctionById(2), self.getJunctionById(7), Junction.ServoState.Curve, Junction.ServoState.NoServo, State.STRAIGHT_UNIT * 10))
-        self.sectionList.append(Section(8, self.getJunctionById(7), self.getJunctionById(8), Junction.ServoState.NoServo, Junction.ServoState.NoServo, State.STRAIGHT_UNIT * 10))
-        self.sectionList.append(Section(9, self.getJunctionById(8), self.getJunctionById(9), Junction.ServoState.NoServo, Junction.ServoState.NoServo, State.STRAIGHT_UNIT * 10))
-        self.sectionList.append(Section(10, self.getJunctionById(9), self.getJunctionById(6), Junction.ServoState.NoServo, Junction.ServoState.Straight, State.STRAIGHT_UNIT * 10))
-        self.sectionList.append(Section(11, self.getJunctionById(6), self.getJunctionById(10), Junction.ServoState.NoServo, Junction.ServoState.NoServo, State.STRAIGHT_UNIT * 10))
-        self.sectionList.append(Section(12, self.getJunctionById(10), self.getJunctionById(11), Junction.ServoState.NoServo, Junction.ServoState.NoServo, State.STRAIGHT_UNIT * 10))
+        self.sectionList.append(Section(0, self.getJunctionById("11"), self.getJunctionById("0"), Junction.ServoState.NoServo, Junction.ServoState.NoServo, State.STRAIGHT_UNIT * 10))
+        self.sectionList.append(Section(1, self.getJunctionById("0"), self.getJunctionById("1"), Junction.ServoState.NoServo, Junction.ServoState.NoServo, State.STRAIGHT_UNIT * 10))
+        self.sectionList.append(Section(2, self.getJunctionById("1"), self.getJunctionById("2"), Junction.ServoState.NoServo, Junction.ServoState.NoServo, State.STRAIGHT_UNIT * 10))
+        self.sectionList.append(Section(3, self.getJunctionById("2"), self.getJunctionById("3"), Junction.ServoState.Straight, Junction.ServoState.NoServo, State.STRAIGHT_UNIT * 10))
+        self.sectionList.append(Section(4, self.getJunctionById("3"), self.getJunctionById("4"), Junction.ServoState.NoServo, Junction.ServoState.NoServo, State.STRAIGHT_UNIT * 10))
+        self.sectionList.append(Section(5, self.getJunctionById("4"), self.getJunctionById("5"), Junction.ServoState.NoServo, Junction.ServoState.NoServo, State.STRAIGHT_UNIT * 10))
+        self.sectionList.append(Section(6, self.getJunctionById("5"), self.getJunctionById("6"), Junction.ServoState.NoServo, Junction.ServoState.Curve, State.STRAIGHT_UNIT * 10))
+        self.sectionList.append(Section(7, self.getJunctionById("2"), self.getJunctionById("7"), Junction.ServoState.Curve, Junction.ServoState.NoServo, State.STRAIGHT_UNIT * 10))
+        self.sectionList.append(Section(8, self.getJunctionById("7"), self.getJunctionById("8"), Junction.ServoState.NoServo, Junction.ServoState.NoServo, State.STRAIGHT_UNIT * 10))
+        self.sectionList.append(Section(9, self.getJunctionById("8"), self.getJunctionById("9"), Junction.ServoState.NoServo, Junction.ServoState.NoServo, State.STRAIGHT_UNIT * 10))
+        self.sectionList.append(Section(10, self.getJunctionById("9"), self.getJunctionById("6"), Junction.ServoState.NoServo, Junction.ServoState.Straight, State.STRAIGHT_UNIT * 10))
+        self.sectionList.append(Section(11, self.getJunctionById("6"), self.getJunctionById("10"), Junction.ServoState.NoServo, Junction.ServoState.NoServo, State.STRAIGHT_UNIT * 10))
+        self.sectionList.append(Section(12, self.getJunctionById("10"), self.getJunctionById("11"), Junction.ServoState.NoServo, Junction.ServoState.NoServo, State.STRAIGHT_UNIT * 10))
 
         # Sensor(id, section, position)
         # self.sensorList.append(Sensor(0, self.getSectionById(1), State.STRAIGHT_UNIT * 2.5 + State.CURVE_UNIT * 2))
@@ -75,8 +75,8 @@ class State:
         self.getSectionById(12).putStation(self.getStationById(9), State.STRAIGHT_UNIT * 8)  # section12: 新宿上り
 
         # junction.belogStation
-        self.getJunctionById(2).belongStation = self.getStationById(2)  # junction2は調布下り
-        self.getJunctionById(6).belongStation = self.getStationById(7)  # junction6は調布上り
+        self.getJunctionById("2").belongStation = self.getStationById(2)  # junction2は調布下り
+        self.getJunctionById("6").belongStation = self.getStationById(7)  # junction6は調布上り
 
         # PIDParams(r: float, INPUT_MIN: int, INPUT_MAX: int, INPUT_START: int, kp: float, ki: float, kd: float)
         pidParam0 = Train.PIDParam(1.25, 40, 55, 68, 0.70, 0, 0)  # Dr. (maxinput: 40 + 0.70*40cm/s = 68)
@@ -90,8 +90,8 @@ class State:
         self.communication = Communication({0: pidParam0, 1: pidParam1})
 
         # 初回の着発番線に合わせてここにtoggleを書く
-        self.communication.sendToggle(self.getJunctionById(2).servoId, Junction.ServoState.Straight)
-        self.communication.sendToggle(self.getJunctionById(6).servoId, Junction.ServoState.Straight)
+        self.communication.sendToggle(self.getJunctionById("2").servoId, Junction.ServoState.Straight)
+        self.communication.sendToggle(self.getJunctionById("6").servoId, Junction.ServoState.Straight)
 
     # 現実世界の状態を取得しStateに反映する. 定期的に実行すること
     def update(self):
@@ -128,7 +128,7 @@ class State:
                 junction.toggleRequested = False
                 # inServoStateは、実際にはサーボモーターがついていないので送信しない
 
-    def getJunctionById(self, id: int) -> Junction:
+    def getJunctionById(self, id: str) -> Junction:
         return list(filter(lambda item: item.id == id, self.junctionList))[0]
 
     def getSectionById(self, id: int) -> Section:

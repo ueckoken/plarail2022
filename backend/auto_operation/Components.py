@@ -41,7 +41,7 @@ class Junction:
             else:
                 return Junction.ServoState.NoServo
 
-    id: int
+    id: str
     servoId: int
     inSectionStraight: Optional['Section']
     inSectionCurve: Optional['Section']
@@ -52,7 +52,7 @@ class Junction:
     belongStation: Optional['Station']
     toggleRequested: bool
 
-    def __init__(self, id: int, servoId: int) -> None:
+    def __init__(self, id: str, servoId: int) -> None:
         self.id = id
         self.servoId = servoId
         self.inSectionStraight = None
