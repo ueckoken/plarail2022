@@ -5,6 +5,10 @@ metadata:
   namespace: traefik
 spec:
   interval: 10m
+  values:
+    additionalArguments:
+      - --entryPoints.web.http.redirections.entryPoint.to: websecure
+      - --entryPoints.web.http.redirections.entryPoint.scheme: https
   chart:
     spec:
       chart: traefik
