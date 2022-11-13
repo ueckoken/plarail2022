@@ -63,8 +63,8 @@ type SyncController[T, U comparable] struct {
 }
 
 // NewSyncController creates new sync controller.
-func NewSyncController[T, U comparable](stateInput <-chan KV[T, U], StateOutput chan<- KV[T, U]) *SyncController[T, U] {
-	return &SyncController[T, U]{stateInput: stateInput, stateOutput: StateOutput, kvs: newStationKVS[T, U]()}
+func NewSyncController[T, U comparable](stateInput <-chan KV[T, U], stateOutput chan<- KV[T, U]) *SyncController[T, U] {
+	return &SyncController[T, U]{stateInput: stateInput, stateOutput: stateOutput, kvs: newStationKVS[T, U]()}
 }
 
 // Run runs sync controller, and this will block forever.

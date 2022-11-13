@@ -43,7 +43,7 @@ func Run() {
 		envVal,
 	)
 	StartStationSync(synccontrollerInput, synccontrollerOutput)
-	grpcHandler := NewGrpcHandler(envVal, synccontrollerInput, grpcHandlerInput)
+	grpcHandler := NewGrpcHandler(envVal, main2grpcHandler, grpcHandlerInput)
 
 	go GRPCListenAndServe(uint(envVal.ClientSideServer.GrpcPort), grpcHandler)
 	go httpServer.StartServer()

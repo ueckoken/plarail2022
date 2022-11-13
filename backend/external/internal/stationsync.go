@@ -15,7 +15,7 @@ func StartStationSync(syncInput chan synccontroller.KV[spec.Stations_StationId, 
 	initStationSync(NewRule(), syncInput)
 }
 
-// Init initalize state
+// InitStationSync initalize state.
 func initStationSync(r *InitRule, initializer chan<- synccontroller.KV[spec.Stations_StationId, spec.Command2InternalRequest_State]) {
 	for _, sta := range r.Stations {
 		id, ok := spec.Stations_StationId_value[sta.Name]
