@@ -9,13 +9,13 @@ import (
 	"go.uber.org/zap"
 )
 
-// KV is a pair of key and value
+// KV is a pair of key and value.
 type KV[T, U comparable] struct {
 	Key   T
 	Value U
 }
 
-// stationKVS is a primitive KVS to store KV
+// stationKVS is a primitive KVS to store KV.
 type stationKVS[T, U comparable] struct {
 	values map[T]*U
 	mtx    sync.Mutex

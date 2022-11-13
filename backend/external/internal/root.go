@@ -2,7 +2,6 @@ package internal
 
 import (
 	"context"
-	"time"
 	"ueckoken/plarail2022-external/pkg/envStore"
 	"ueckoken/plarail2022-external/pkg/httphandler"
 	"ueckoken/plarail2022-external/pkg/synccontroller"

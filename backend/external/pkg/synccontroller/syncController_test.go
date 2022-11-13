@@ -23,7 +23,7 @@ func TestSyncController_update(t *testing.T) {
 	station1 := KV[spec.Stations_StationId, spec.Command2InternalRequest_State]{Key: spec.Stations_StationId(1), Value: spec.Command2InternalRequest_State(1)}
 	station2 := KV[spec.Stations_StationId, spec.Command2InternalRequest_State]{Key: spec.Stations_StationId(2), Value: spec.Command2InternalRequest_State(1)}
 	kvs := newStationKVS[spec.Stations_StationId, spec.Command2InternalRequest_State]()
-	err := kvs.update(station1.Key, station1.Value)
+	err := kvs.update(station1)
 	if err != nil {
 		t.Errorf("validate failed. `%v`", err)
 	}
@@ -32,7 +32,7 @@ func TestSyncController_update(t *testing.T) {
 	}
 
 	// new station append
-	err = kvs.update(station2.Key, station2.Value)
+	err = kvs.update(station2)
 	if err != nil {
 		t.Errorf("validate failed. `%v`", err)
 	}
@@ -51,7 +51,7 @@ func TestSyncController_update(t *testing.T) {
 
 	// update exist station data
 	station1 = KV[spec.Stations_StationId, spec.Command2InternalRequest_State]{Key: spec.Stations_StationId(1), Value: spec.Command2InternalRequest_State(0)}
-	err = kvs.update(station1.Key, station1.Value)
+	err = kvs.update(station1)
 	if err != nil {
 		t.Errorf("validate failed. `%v`", err)
 	}
@@ -75,7 +75,7 @@ func TestSyncController_get(t *testing.T) {
 	}
 
 	kvs = newStationKVS[spec.Stations_StationId, spec.Command2InternalRequest_State]()
-	err = kvs.update(station1.Key, station1.Value)
+	err = kvs.update(station1)
 	if err != nil {
 		t.Errorf("return err is not nil: %e", err)
 	}
@@ -87,7 +87,7 @@ func TestSyncController_get(t *testing.T) {
 		t.Errorf("'station1' is expect but called station%d", station)
 	}
 
-	err = kvs.update(station2.Key, station2.Value)
+	err = kvs.update(station2)
 	if err != nil {
 		t.Errorf("return err is not nil: %e", err)
 	}

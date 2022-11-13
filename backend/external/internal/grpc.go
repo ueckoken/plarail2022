@@ -75,13 +75,13 @@ func NewGrpcBlockHandler(logger *zap.Logger, env *envStore.Env, stateOutput chan
 	return &GrpcBlockHandler{logger: logger, env: env, stateOutput: stateOutput, stateInput: stateInput}
 }
 
-// NotifyState handles requests from ATS
+// NotifyState handles requests from ATS.
 func (g GrpcBlockHandler) NotifyState(_ context.Context, req *spec.NotifyStateRequest) (*spec.NotifyStateResponse, error) {
 	g.stateOutput <- synccontroller.KV[spec.Blocks_BlockId, spec.NotifyStateRequest_State]{Key: req.GetBlock().GetBlockId(), Value: req.GetState()}
 	return &spec.NotifyStateResponse{Response: spec.NotifyStateResponse_SUCCESS}, nil
 }
 
-// handleInput transmits changes received in channel to ATS
+// handleInput transmits changes received in channel to ATS.
 func (g GrpcBlockHandler) handleInput(ctx context.Context) {
 	con, err := grpc.DialContext(ctx, g.env.ClientSideServer.ATSAddress.String(),
 		grpc.WithTransportCredentials(insecure.NewCredentials()),
