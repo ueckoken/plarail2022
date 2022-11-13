@@ -70,12 +70,13 @@ func TestSyncController_get(t *testing.T) {
 	_, err := kvs.get(0)
 	if err == nil {
 		t.Errorf("'err' is expect not nil")
-	} else if strings.Contains(err.Error(), "not found") {
+	} else if !strings.Contains(err.Error(), "not found") {
 		t.Errorf("err.Error() expect 'Not found' but return %e", err)
 	}
 
 	kvs = newStationKVS[spec.Stations_StationId, spec.Command2InternalRequest_State]()
-	station, err := kvs.get(1)
+	kvs.update(station1.Key, station1.Value)
+	station, err := kvs.get(spec.Stations_StationId(1))
 	if err != nil {
 		t.Errorf("return err is not nil: %e", err)
 	}
@@ -83,6 +84,7 @@ func TestSyncController_get(t *testing.T) {
 		t.Errorf("'station1' is expect but called station%d", station)
 	}
 
+	kvs.update(station2.Key, station2.Value)
 	station, err = kvs.get(2)
 	if err != nil {
 		t.Errorf("return err is not nil: %e", err)
@@ -96,7 +98,7 @@ func TestSyncController_get(t *testing.T) {
 	if err == nil {
 		t.Errorf("expect err but return nil")
 	}
-	if err.Error() != "Not found" {
+	if !strings.Contains(err.Error(), "not found") {
 		t.Errorf("err.Error() expect 'Not found' but return %e", err)
 	}
 }
