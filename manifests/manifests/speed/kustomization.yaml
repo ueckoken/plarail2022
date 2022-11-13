@@ -1,4 +1,4 @@
 resources:
   - ./endpoint.yaml
   - ./service.yaml
-  - ./monitor.yaml
+#  - ./monitor.yaml

@@ -1,0 +1,4 @@
+.venv
+protoc-gen.sh
+
+*.md

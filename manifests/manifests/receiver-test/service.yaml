@@ -1,12 +1,12 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: plarail2021-webrtc-receiver
+  name: webrtc-receiver
   namespace: plarail2021
 spec:
-  type: NodePort
+  type: ClusterIP
   selector:
-    app: plarail2021-webrtc-receiver
+    app: webrtc-receiver
   ports:
   - port: 80
     protocol: TCP

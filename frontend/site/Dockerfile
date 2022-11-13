@@ -1,5 +1,5 @@
 # Build the source code
-FROM node:16.17.1-buster-slim AS builder
+FROM node:16.18.0-buster-slim AS builder
 WORKDIR /app
 COPY package.json yarn.lock ./
 RUN yarn install --frozen-lockfile --immutable
@@ -10,5 +10,5 @@ RUN yarn next build
 RUN yarn next export
 
 # Production image, copy all the files and run nginx
-FROM nginxinc/nginx-unprivileged:1.23.1-alpine AS runner
+FROM nginxinc/nginx-unprivileged:1.23.2-alpine AS runner
 COPY --from=builder --chown=nginx:nginx /app/out/ /usr/share/nginx/html/

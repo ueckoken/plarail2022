@@ -1,0 +1,55 @@
+syntax = "proto3";
+
+option go_package = "./spec";
+
+service BlockStateSync {
+  rpc NotifyState(NotifyStateRequest) returns (NotifyStateResponse) {}
+}
+
+message NotifyStateRequest {
+  enum State {
+    UNKNOWN = 0;
+    OPEN = 1;
+    CLOSE = 2;
+  }
+  State state = 2;
+  Blocks block = 3;
+}
+
+message NotifyStateResponse {
+  enum Response {
+    UNKNOWN = 0;
+    SUCCESS = 1;
+    FAILED = 2;
+  }
+  Response response = 1;
+}
+
+message Blocks {
+  enum BlockId {
+    unknown = 0;
+    shinjuku_sakurajosui_up = 10;
+    shinjuku_sakurajosui_down = 11;
+    sakurajosui_chofu_up = 20;
+    sakurajosui_chofu_down = 21;
+    chofu_hachioji_up = 30;
+    chofu_hachioji_down = 31;
+    chofu_hashimoto_up = 40;
+    chofu_hashimoto_down = 41;
+    shinjuku_b1 = 100;
+    shinjuku_b2 = 101;
+    sakurajosui_b1 = 110;
+    sakurajosui_b2 = 111;
+    sakurajosui_b3 = 120;
+    sakurajosui_b4 = 121;
+    chofu_b1 = 130;
+    chofu_b2 = 131;
+    chofu_b3 = 132;
+    chofu_b4 = 133;
+    hashimoto_b1 = 140;
+    hashimoto_b2 = 141;
+    hachioji_b1 = 150;
+    hachioji_b2 = 151;
+  }
+  BlockId blockId = 3;
+}

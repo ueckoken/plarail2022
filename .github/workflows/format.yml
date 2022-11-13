@@ -8,7 +8,6 @@ on:
       - "main"
       - "deployment"
 
-
 jobs:
   prettier:
     runs-on: ubuntu-latest
@@ -25,20 +24,9 @@ jobs:
           cache-dependency-path: ./frontend/site/yarn.lock
       - run: yarn install --frozen-lockfile
       - run: yarn fmt
-      - name: Count changes
-        id: changes
-        run: |
-          git add -N .
-          echo "::set-output name=count::$(git diff --name-only |wc -l)"
-      - name: commit and push
-        run: |
-          git config --global user.name 'format BOT'
-          git config --global user.email 'bot@example.com'
-          git add .
-          git commit -m 'format by prettier'
-          git push
-        if: steps.changes.outputs.count > 0
-
+      - uses: EndBug/add-and-commit@v9
+        with:
+          message: format by prettier
   prettier-momo-sender:
     runs-on: ubuntu-latest
     defaults:
