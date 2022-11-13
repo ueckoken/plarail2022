@@ -75,7 +75,10 @@ func TestSyncController_get(t *testing.T) {
 	}
 
 	kvs = newStationKVS[spec.Stations_StationId, spec.Command2InternalRequest_State]()
-	kvs.update(station1.Key, station1.Value)
+	err = kvs.update(station1.Key, station1.Value)
+	if err != nil {
+		t.Errorf("return err is not nil: %e", err)
+	}
 	station, err := kvs.get(spec.Stations_StationId(1))
 	if err != nil {
 		t.Errorf("return err is not nil: %e", err)
@@ -84,7 +87,10 @@ func TestSyncController_get(t *testing.T) {
 		t.Errorf("'station1' is expect but called station%d", station)
 	}
 
-	kvs.update(station2.Key, station2.Value)
+	err = kvs.update(station2.Key, station2.Value)
+	if err != nil {
+		t.Errorf("return err is not nil: %e", err)
+	}
 	station, err = kvs.get(2)
 	if err != nil {
 		t.Errorf("return err is not nil: %e", err)

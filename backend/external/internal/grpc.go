@@ -13,8 +13,8 @@ import (
 	"google.golang.org/grpc/credentials/insecure"
 )
 
-// grpcStateHandler is a handler for gRPC.
-type grpcStateHandler struct {
+// GrpcStateHandler is a handler for gRPC.
+type GrpcStateHandler struct {
 	logger *zap.Logger
 	env    *envStore.Env
 	spec.UnimplementedControlServer
@@ -23,12 +23,12 @@ type grpcStateHandler struct {
 }
 
 // NewGrpcHandler creates gRPC handler.
-func NewGrpcHandler(logger *zap.Logger, env *envStore.Env, stateOutput chan<- synccontroller.KV[spec.Stations_StationId, spec.Command2InternalRequest_State], stateInput <-chan synccontroller.KV[spec.Stations_StationId, spec.Command2InternalRequest_State]) *grpcStateHandler {
-	return &grpcStateHandler{logger: logger, env: env, stateOutput: stateOutput, stateInput: stateInput}
+func NewGrpcHandler(logger *zap.Logger, env *envStore.Env, stateOutput chan<- synccontroller.KV[spec.Stations_StationId, spec.Command2InternalRequest_State], stateInput <-chan synccontroller.KV[spec.Stations_StationId, spec.Command2InternalRequest_State]) *GrpcStateHandler {
+	return &GrpcStateHandler{logger: logger, env: env, stateOutput: stateOutput, stateInput: stateInput}
 }
 
 // Command2Internal handles requests and save requests to memory and treats internal server.
-func (g grpcStateHandler) Command2Internal(_ context.Context, req *spec.RequestSync) (*spec.ResponseSync, error) {
+func (g GrpcStateHandler) Command2Internal(_ context.Context, req *spec.RequestSync) (*spec.ResponseSync, error) {
 	s := synccontroller.KV[spec.Stations_StationId, spec.Command2InternalRequest_State]{
 		Key:   req.GetStation().GetStationId(),
 		Value: spec.Command2InternalRequest_State(req.GetState()),
@@ -37,7 +37,7 @@ func (g grpcStateHandler) Command2Internal(_ context.Context, req *spec.RequestS
 	return &spec.ResponseSync{Response: spec.ResponseSync_SUCCESS}, nil
 }
 
-func (g grpcStateHandler) handleInput(ctx context.Context) {
+func (g GrpcStateHandler) handleInput(ctx context.Context) {
 	con, err := grpc.Dial(g.env.ClientSideServer.ATSAddress.String(),
 		grpc.WithTransportCredentials(insecure.NewCredentials()),
 	)
@@ -61,7 +61,7 @@ func (g grpcStateHandler) handleInput(ctx context.Context) {
 	}
 }
 
-type grpcBlockHandler struct {
+type GrpcBlockHandler struct {
 	env    *envStore.Env
 	logger *zap.Logger
 	spec.UnimplementedBlockStateSyncServer
@@ -70,16 +70,16 @@ type grpcBlockHandler struct {
 }
 
 // NewGrpcBlockHandler creates gRPC handler.
-func NewGrpcBlockHandler(logger *zap.Logger, env *envStore.Env, stateOutput chan<- synccontroller.KV[spec.Blocks_BlockId, spec.NotifyStateRequest_State], stateInput <-chan synccontroller.KV[spec.Blocks_BlockId, spec.NotifyStateRequest_State]) *grpcBlockHandler {
-	return &grpcBlockHandler{logger: logger, env: env, stateOutput: stateOutput, stateInput: stateInput}
+func NewGrpcBlockHandler(logger *zap.Logger, env *envStore.Env, stateOutput chan<- synccontroller.KV[spec.Blocks_BlockId, spec.NotifyStateRequest_State], stateInput <-chan synccontroller.KV[spec.Blocks_BlockId, spec.NotifyStateRequest_State]) *GrpcBlockHandler {
+	return &GrpcBlockHandler{logger: logger, env: env, stateOutput: stateOutput, stateInput: stateInput}
 }
 
-func (g grpcBlockHandler) NotifyState(_ context.Context, req *spec.NotifyStateRequest) (*spec.NotifyStateResponse, error) {
+func (g GrpcBlockHandler) NotifyState(_ context.Context, req *spec.NotifyStateRequest) (*spec.NotifyStateResponse, error) {
 	g.stateOutput <- synccontroller.KV[spec.Blocks_BlockId, spec.NotifyStateRequest_State]{Key: req.GetBlock().GetBlockId(), Value: req.GetState()}
 	return &spec.NotifyStateResponse{Response: spec.NotifyStateResponse_SUCCESS}, nil
 }
 
-func (g grpcBlockHandler) handleInput(ctx context.Context) {
+func (g GrpcBlockHandler) handleInput(ctx context.Context) {
 	con, err := grpc.Dial(g.env.ClientSideServer.ATSAddress.String(),
 		grpc.WithTransportCredentials(insecure.NewCredentials()),
 	)
@@ -104,12 +104,13 @@ func (g grpcBlockHandler) handleInput(ctx context.Context) {
 }
 
 // GRPCListenAndServe listens and serve.
-func GRPCListenAndServe(logger *zap.Logger, port uint, handler *grpcStateHandler, blockhandler *grpcBlockHandler) {
+func GRPCListenAndServe(logger *zap.Logger, port uint, handler *GrpcStateHandler, blockhandler *GrpcBlockHandler) {
 	lis, err := net.Listen("tcp", fmt.Sprintf(":%d", port))
 	if err != nil {
 		logger.Panic("failed to listen", zap.Error(err))
 	}
 	go handler.handleInput(context.Background())
+	go blockhandler.handleInput(context.Background())
 	s := grpc.NewServer()
 	spec.RegisterControlServer(s, handler)
 	spec.RegisterBlockStateSyncServer(s, blockhandler)

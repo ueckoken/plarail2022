@@ -1,6 +1,7 @@
 package internal
 
 import (
+	"time"
 	"ueckoken/plarail2022-external/pkg/envStore"
 	"ueckoken/plarail2022-external/pkg/httphandler"
 	"ueckoken/plarail2022-external/pkg/synccontroller"
@@ -56,5 +57,6 @@ func Run(logger *zap.Logger) {
 	go GRPCListenAndServe(logger, uint(envVal.ClientSideServer.GrpcPort), grpcHandler, grpcBlockHandl)
 	go httpServer.StartServer()
 	for {
+		time.Sleep(100 * time.Second)
 	}
 }
