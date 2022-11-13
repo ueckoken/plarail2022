@@ -27,11 +27,6 @@ func newStationKVS[T, U comparable]() *stationKVS[T, U] {
 func (skvs *stationKVS[T, U]) update(key T, value U) error {
 	skvs.mtx.Lock()
 	defer skvs.mtx.Unlock()
-	// err := skvs.validator.Validate(u, skvs.stations)
-	var err error
-	if err != nil {
-		return err
-	}
 	skvs.values[key] = &value
 	return nil
 }
@@ -73,6 +68,7 @@ func (s *SyncController[T, U]) Run() {
 
 func (s *SyncController[T, U]) triggeredSync() {
 	for c := range s.stateInput {
+		s.logger.Info("state input received", zap.Any("state", c))
 		err := s.kvs.update(c.Key, c.Value)
 		if err != nil {
 			log.Println("syncController validator err: ", err)
@@ -84,16 +80,19 @@ func (s *SyncController[T, U]) triggeredSync() {
 
 func (s *SyncController[T, U]) periodicallySync() {
 	ch := time.Tick(2 * time.Second)
-	s.kvs.mtx.Lock()
-	defer s.kvs.mtx.Unlock()
 	for range ch {
-		d := s.kvs.retrieve()
-		for key, value := range d {
-			select {
-			case s.stateOutput <- KV[T, U]{Key: key, Value: *value}:
-			default:
-				log.Println("buffer full for:")
+		func() {
+			s.kvs.mtx.Lock()
+			d := s.kvs.retrieve()
+			for key, value := range d {
+				select {
+				case s.stateOutput <- KV[T, U]{Key: key, Value: *value}:
+				default:
+					s.logger.Info("buffer full")
+				}
 			}
-		}
+			s.kvs.mtx.Unlock()
+			s.logger.Info("unlocked")
+		}()
 	}
 }

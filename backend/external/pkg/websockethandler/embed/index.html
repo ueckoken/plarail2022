@@ -11,10 +11,10 @@
             p1.innerHTML = data;
         };
         window.onload = function () {
-            sock = new WebSocket("wss://" + location.host + "/ws");
+            sock = new WebSocket("ws://" + location.host + "/ws");
             sock.onmessage = function (event) {
                 var data = JSON.parse(event.data);
-                sock.send(`{"station_name": "chofu_b1", "state": "ON"}`);
+              sock.send(`{"station": {"stationId":26}, "state": 1}`);
                 console.log(data);
                 update();
             };

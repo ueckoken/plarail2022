@@ -92,6 +92,7 @@ func (h *HTTPServer[T]) StartServer() {
 		WriteTimeout:      5 * time.Second,
 	}
 
+	h.logger.Info("start listening")
 	if err := srv.ListenAndServe(); err != nil {
 		h.logger.Panic("failed to serve", zap.Error(err))
 	}

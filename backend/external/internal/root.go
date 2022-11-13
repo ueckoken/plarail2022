@@ -22,8 +22,16 @@ func Run(logger *zap.Logger) {
 
 	go func() {
 		for c := range synccontrollerOutput {
-			main2grpcHandler <- c
-			httpInputKV <- c
+			select {
+			case main2grpcHandler <- c:
+			default:
+				logger.Info("buffer full", zap.String("buffer", "main2grpcHandler"))
+			}
+			select {
+			case httpInputKV <- c:
+			default:
+				logger.Info("buffer full", zap.String("buffer", "httpInputKV"))
+			}
 		}
 	}()
 	go func() {
@@ -46,13 +54,19 @@ func Run(logger *zap.Logger) {
 		httpInput,
 		envVal,
 	)
+	logger.Info("1")
 	StartStationSync(logger.Named("station-sync"), synccontrollerInput, synccontrollerOutput)
+	logger.Info("2")
 	grpcHandler := NewGrpcHandler(logger.Named("grpc-handler"), envVal, main2grpcHandler, grpcHandlerInput)
+
+	logger.Info("3")
 
 	client2blocksync := make(chan synccontroller.KV[spec.Blocks_BlockId, spec.NotifyStateRequest_State])
 	blocksync2client := make(chan synccontroller.KV[spec.Blocks_BlockId, spec.NotifyStateRequest_State])
 	startBlockSync(logger.Named("blocksync"), client2blocksync, blocksync2client)
+	logger.Info("4")
 	grpcBlockHandl := NewGrpcBlockHandler(logger.Named("grpc-block-handler"), envVal, client2blocksync, blocksync2client)
+	logger.Info("5")
 
 	go GRPCListenAndServe(logger, uint(envVal.ClientSideServer.GrpcPort), grpcHandler, grpcBlockHandl)
 	go httpServer.StartServer()

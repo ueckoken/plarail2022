@@ -1,7 +1,6 @@
 package internal
 
 import (
-	"log"
 	"time"
 	"ueckoken/plarail2022-external/pkg/synccontroller"
 	"ueckoken/plarail2022-external/spec"
@@ -14,20 +13,21 @@ func StartStationSync(logger *zap.Logger, syncInput chan synccontroller.KV[spec.
 	s := synccontroller.NewSyncController(logger, syncInput, syncOutput)
 
 	go s.Run()
-	initStationSync(NewRule(), syncInput)
+	initStationSync(logger.Named("initialization"), NewRule(), syncInput)
 }
 
 // InitStationSync initalize state.
-func initStationSync(r *InitRule, initializer chan<- synccontroller.KV[spec.Stations_StationId, spec.Command2InternalRequest_State]) {
+func initStationSync(logger *zap.Logger, r *InitRule, initializer chan<- synccontroller.KV[spec.Stations_StationId, spec.Command2InternalRequest_State]) {
 	for _, sta := range r.Stations {
 		id, ok := spec.Stations_StationId_value[sta.Name]
 		if !ok {
-			log.Println("unknown station name", sta.Name)
+			logger.Error("unknown station name", zap.String("station", sta.Name))
 			continue
 		}
 		state, ok := spec.RequestSync_State_value[sta.State]
 		if !ok {
-			log.Println("unknown state", sta.State)
+			logger.Error("unknown state", zap.String("state", sta.State))
+			continue
 		}
 		initializer <- synccontroller.KV[spec.Stations_StationId, spec.Command2InternalRequest_State]{Key: spec.Stations_StationId(id), Value: spec.Command2InternalRequest_State(state)}
 		time.Sleep(500 * time.Millisecond)
