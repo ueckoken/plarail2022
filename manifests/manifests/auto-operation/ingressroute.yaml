@@ -1,0 +1,14 @@
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: auto-operation
+  namespace: plarail2021
+spec:
+  routes:
+    - kind: Rule
+      match: Host(`operate.chofufes2022.ueckoken.club`)
+      services:
+        - name: auto-operation
+          port: 80
+  tls:
+    secretName: cloudflare-cert

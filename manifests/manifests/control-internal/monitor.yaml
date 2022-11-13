@@ -8,7 +8,7 @@ metadata:
 spec:
   selector:
     matchLabels:
-      app: plarail2021-test
+      app: control-internal
   endpoints:
     - port: prom
       path: /metrics

@@ -6,7 +6,9 @@ metadata:
 spec:
   routes:
   - kind: Rule
-    match: Host(`webrtc.chofufes2021.gotti.dev`)
+    match: Host(`webrtc.chofufes2022.ueckoken.club`)
     services:
-    - name: plarail2021-soft-python
+    - name: soft-python
       port: 80
+  tls:
+    secretName: cloudflare-cert

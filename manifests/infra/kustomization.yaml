@@ -1,4 +1,4 @@
 resources:
   - ./helm
-  - ./nginx
+#  - ./nginx
   - ./certificate

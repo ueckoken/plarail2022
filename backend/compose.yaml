@@ -26,7 +26,7 @@ services:
       context: ./speed
       dockerfile: ./Dockerfile
     labels:
-      - "traefik.http.routers.speed.rule=Host(`speed.chofufes2021.gotti.dev`)"
+      - "traefik.http.routers.speed.rule=Host(`speed.chofufes2022.ueckoken.club`)"
       - "traefik.http.routers.speed.entrypoints=websecure"
       - "traefik.http.routers.speed.tls.certresolver=myresolver"
       - "traefik.http.services.speed.loadbalancer.server.port=8080"

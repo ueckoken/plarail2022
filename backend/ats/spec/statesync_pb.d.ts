@@ -3,6 +3,40 @@
 
 import * as jspb from "google-protobuf";
 
+export class Command2InternalRequest extends jspb.Message {
+  hasStation(): boolean;
+  clearStation(): void;
+  getStation(): Stations | undefined;
+  setStation(value?: Stations): void;
+
+  getState(): Command2InternalRequest.StateMap[keyof Command2InternalRequest.StateMap];
+  setState(value: Command2InternalRequest.StateMap[keyof Command2InternalRequest.StateMap]): void;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): Command2InternalRequest.AsObject;
+  static toObject(includeInstance: boolean, msg: Command2InternalRequest): Command2InternalRequest.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: Command2InternalRequest, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): Command2InternalRequest;
+  static deserializeBinaryFromReader(message: Command2InternalRequest, reader: jspb.BinaryReader): Command2InternalRequest;
+}
+
+export namespace Command2InternalRequest {
+  export type AsObject = {
+    station?: Stations.AsObject,
+    state: Command2InternalRequest.StateMap[keyof Command2InternalRequest.StateMap],
+  }
+
+  export interface StateMap {
+    UNKNOWN: 0;
+    ON: 1;
+    OFF: 2;
+  }
+
+  export const State: StateMap;
+}
+
 export class RequestSync extends jspb.Message {
   hasStation(): boolean;
   clearStation(): void;
@@ -54,6 +88,34 @@ export class ResponseSync extends jspb.Message {
 export namespace ResponseSync {
   export type AsObject = {
     response: ResponseSync.ResponseMap[keyof ResponseSync.ResponseMap],
+  }
+
+  export interface ResponseMap {
+    UNKNOWN: 0;
+    SUCCESS: 1;
+    FAILED: 2;
+  }
+
+  export const Response: ResponseMap;
+}
+
+export class Command2InternalResponse extends jspb.Message {
+  getResponse(): Command2InternalResponse.ResponseMap[keyof Command2InternalResponse.ResponseMap];
+  setResponse(value: Command2InternalResponse.ResponseMap[keyof Command2InternalResponse.ResponseMap]): void;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): Command2InternalResponse.AsObject;
+  static toObject(includeInstance: boolean, msg: Command2InternalResponse): Command2InternalResponse.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: Command2InternalResponse, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): Command2InternalResponse;
+  static deserializeBinaryFromReader(message: Command2InternalResponse, reader: jspb.BinaryReader): Command2InternalResponse;
+}
+
+export namespace Command2InternalResponse {
+  export type AsObject = {
+    response: Command2InternalResponse.ResponseMap[keyof Command2InternalResponse.ResponseMap],
   }
 
   export interface ResponseMap {

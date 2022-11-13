@@ -16,7 +16,7 @@ interface Prop {
   roomIds: string[]
   styles: CSSProperties[]
 }
-const SW_WSURL = "wss://webrtc.chofufes2022.gotti.dev/"
+const SW_WSURL = "wss://webrtc.chofufes2022.ueckoken.club/"
 const SKYWAY_APIKEY =
   process.env.SKYWAY_APIKEY === undefined
     ? "c07e8954-ce1b-4783-a45e-e8421ece83ce"

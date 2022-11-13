@@ -21,3 +21,4 @@ typing_extensions==4.4.0
 Werkzeug==2.2.2
 zope.event==4.5.0
 zope.interface==5.5.1
+grpcio-tools==1.50.0
