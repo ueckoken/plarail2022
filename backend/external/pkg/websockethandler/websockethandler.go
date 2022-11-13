@@ -5,26 +5,31 @@ import (
 	_ "embed"
 	"encoding/json"
 	"fmt"
-	"github.com/gorilla/websocket"
-	"google.golang.org/protobuf/proto"
-	"log"
 	"net/http"
 	"time"
+
+	"github.com/gorilla/websocket"
+	"go.uber.org/zap"
+	"google.golang.org/protobuf/proto"
 )
 
 type ClientHandler[T proto.Message] struct {
+	logger            *zap.Logger
 	upgrader          websocket.Upgrader
 	commandFromClient chan<- T
 	channelClient     chan ClientChannel[T]
 }
 
-func NewClientHandler[T proto.Message](clientHandlerOutput chan<- T, channelClient chan ClientChannel[T]) ClientHandler[T] {
-	return ClientHandler[T]{upgrader: websocket.Upgrader{
-		ReadBufferSize:  1024,
-		WriteBufferSize: 1024,
-		CheckOrigin: func(r *http.Request) bool {
-			return true
-		}},
+// NewClientHandler creates client handler.
+func NewClientHandler[T proto.Message](logger *zap.Logger, clientHandlerOutput chan<- T, channelClient chan ClientChannel[T]) ClientHandler[T] {
+	return ClientHandler[T]{
+		logger: logger,
+		upgrader: websocket.Upgrader{
+			ReadBufferSize:  1024,
+			WriteBufferSize: 1024,
+			CheckOrigin: func(r *http.Request) bool {
+				return true
+			}},
 		commandFromClient: clientHandlerOutput,
 		channelClient:     channelClient,
 	}
@@ -42,7 +47,7 @@ func (m ClientHandler[T]) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
 	c, err := m.upgrader.Upgrade(w, r, nil)
 	if err != nil {
-		log.Println(err)
+		m.logger.Error("failed to upgrade", zap.Error(err))
 		return
 	}
 	defer c.Close()
@@ -55,16 +60,16 @@ func (m ClientHandler[T]) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		return c.SetReadDeadline(time.Now().Add(20 * time.Second))
 	})
 	c.SetCloseHandler(func(code int, text string) error {
-		log.Println("connection closed")
+		m.logger.Info("connection closed")
 		cancel()
 		return nil
 	})
-	go handleClientCommand(ctx, c, m.commandFromClient)
-	go handleClientPing(ctx, c)
+	go handleClientCommand(ctx, m.logger.Named("client-handler"), c, m.commandFromClient)
+	go handleClientPing(ctx, m.logger.Named("ping-handler"), c)
 	for cChan := range cChannel.SyncToClient {
 		err := c.WriteJSON(cChan)
 		if err != nil {
-			log.Println("err", err)
+			m.logger.Info("failed to send data to client, closing connection...", zap.Error(err))
 			cDone <- struct{}{}
 			cancel()
 			break
@@ -72,14 +77,14 @@ func (m ClientHandler[T]) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func handleClientPing(ctx context.Context, c *websocket.Conn) {
+func handleClientPing(ctx context.Context, logger *zap.Logger, c *websocket.Conn) {
 	ticker := time.NewTicker(10 * time.Second)
 	defer ticker.Stop()
 	for {
 		select {
 		case <-ticker.C:
 			if err := c.WriteControl(websocket.PingMessage, []byte{}, time.Now().Add(1*time.Second)); err != nil {
-				log.Printf("err occured in clientHandler.handleClientPing, err=%s", err)
+				logger.Error("failed to send ping", zap.Error(err))
 			}
 		case <-ctx.Done():
 			ticker.Stop()
@@ -88,7 +93,7 @@ func handleClientPing(ctx context.Context, c *websocket.Conn) {
 	}
 }
 
-func handleClientCommand[T proto.Message](ctx context.Context, c *websocket.Conn, ch chan<- T) {
+func handleClientCommand[T proto.Message](ctx context.Context, logger *zap.Logger, c *websocket.Conn, ch chan<- T) {
 	for {
 		select {
 		case <-ctx.Done():
@@ -96,7 +101,7 @@ func handleClientCommand[T proto.Message](ctx context.Context, c *websocket.Conn
 		default:
 			r, err := readClientData[T](c)
 			if err != nil {
-				log.Println(err)
+				logger.Error("failed to read client packet", zap.Error(err))
 				return
 			}
 			ch <- *r

@@ -5,11 +5,13 @@ import (
 	"time"
 	"ueckoken/plarail2022-external/pkg/synccontroller"
 	"ueckoken/plarail2022-external/spec"
+
+	"go.uber.org/zap"
 )
 
 // StartStationSync starts sync controller for station state.
-func StartStationSync(syncInput chan synccontroller.KV[spec.Stations_StationId, spec.Command2InternalRequest_State], syncOutput chan<- synccontroller.KV[spec.Stations_StationId, spec.Command2InternalRequest_State]) {
-	s := synccontroller.NewSyncController(syncInput, syncOutput)
+func StartStationSync(logger *zap.Logger, syncInput chan synccontroller.KV[spec.Stations_StationId, spec.Command2InternalRequest_State], syncOutput chan<- synccontroller.KV[spec.Stations_StationId, spec.Command2InternalRequest_State]) {
+	s := synccontroller.NewSyncController(logger, syncInput, syncOutput)
 
 	go s.Run()
 	initStationSync(NewRule(), syncInput)

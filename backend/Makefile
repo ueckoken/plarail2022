@@ -7,7 +7,7 @@ pull:
 
 start: pull up
 
-pb: statesync speedControl ats
+pb: statesync speedControl ats block
 	
 statesync: statesync_internal statesync_external statesync_positioning
 
@@ -76,3 +76,14 @@ ats_go:
 ats_python:
 	cd auto_operation && \
 	./protoc-gen.sh
+
+block: block_external
+
+block_external:
+	protoc \
+	--go_out=external \
+	--go_opt=Mproto/block.proto=./spec \
+	--go-grpc_out=external/spec \
+	--go-grpc_opt=Mproto/block.proto=. \
+	-I./ \
+	proto/block.proto

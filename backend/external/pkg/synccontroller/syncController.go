@@ -5,6 +5,8 @@ import (
 	"log"
 	"sync"
 	"time"
+
+	"go.uber.org/zap"
 )
 
 type KV[T, U comparable] struct {
@@ -50,14 +52,15 @@ func (skvs *stationKVS[T, U]) retrieve() map[T]*U {
 }
 
 type SyncController[T, U comparable] struct {
+	logger      *zap.Logger
 	stateInput  <-chan KV[T, U]
 	stateOutput chan<- KV[T, U]
 	kvs         *stationKVS[T, U]
 }
 
 // NewSyncController creates new sync controller.
-func NewSyncController[T, U comparable](stateInput <-chan KV[T, U], stateOutput chan<- KV[T, U]) *SyncController[T, U] {
-	return &SyncController[T, U]{stateInput: stateInput, stateOutput: stateOutput, kvs: newStationKVS[T, U]()}
+func NewSyncController[T, U comparable](logger *zap.Logger, stateInput <-chan KV[T, U], stateOutput chan<- KV[T, U]) *SyncController[T, U] {
+	return &SyncController[T, U]{logger: logger, stateInput: stateInput, stateOutput: stateOutput, kvs: newStationKVS[T, U]()}
 }
 
 // Run runs sync controller, and this will block forever.

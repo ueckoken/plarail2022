@@ -2,7 +2,6 @@ package httphandler
 
 import (
 	"fmt"
-	"log"
 	"net/http"
 	"sync"
 	"time"
@@ -12,10 +11,12 @@ import (
 	"github.com/gorilla/mux"
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
+	"go.uber.org/zap"
 	"google.golang.org/protobuf/proto"
 )
 
 type HTTPServer[T proto.Message] struct {
+	logger                   *zap.Logger
 	httpOutput               chan<- T
 	httpInput                <-chan T
 	environment              *envStore.Env
@@ -25,7 +26,7 @@ type HTTPServer[T proto.Message] struct {
 	clients                  *ClientsCollection[T]
 }
 
-func NewHTTPServer[T proto.Message](httpOutput chan<- T, httpInput <-chan T, env *envStore.Env) *HTTPServer[T] {
+func NewHTTPServer[T proto.Message](logger *zap.Logger, httpOutput chan<- T, httpInput <-chan T, env *envStore.Env) *HTTPServer[T] {
 	const namespace = "plarailexternal"
 	clientConn := prometheus.NewGaugeVec(
 		prometheus.GaugeOpts{
@@ -54,6 +55,7 @@ func NewHTTPServer[T proto.Message](httpOutput chan<- T, httpInput <-chan T, env
 		[]string{},
 	)
 	return &HTTPServer[T]{
+		logger:                   logger,
 		httpOutput:               httpOutput,
 		httpInput:                httpInput,
 		environment:              env,
@@ -80,7 +82,7 @@ func (h *HTTPServer[T]) StartServer() {
 	prometheus.MustRegister(h.totalClientConnection)
 	prometheus.MustRegister(h.totalCLientCommands)
 	r.HandleFunc("/", websockethandler.HandleStatic)
-	r.Handle("/ws", websockethandler.NewClientHandler(handlerInput, clientChannelSend))
+	r.Handle("/ws", websockethandler.NewClientHandler(h.logger.Named("ws-handler"), handlerInput, clientChannelSend))
 	r.Handle("/metrics", promhttp.Handler())
 	srv := &http.Server{
 		Handler:           r,
@@ -90,7 +92,9 @@ func (h *HTTPServer[T]) StartServer() {
 		WriteTimeout:      5 * time.Second,
 	}
 
-	log.Fatal(srv.ListenAndServe())
+	if err := srv.ListenAndServe(); err != nil {
+		h.logger.Panic("failed to serve", zap.Error(err))
+	}
 }
 
 func (h *HTTPServer[T]) handleChanges() {
@@ -101,7 +105,7 @@ func (h *HTTPServer[T]) handleChanges() {
 			select {
 			case c.SyncToClient <- d:
 			default:
-				log.Println("buffer is full when send...")
+				h.logger.Info("client buffer is full...")
 				continue
 			}
 		}

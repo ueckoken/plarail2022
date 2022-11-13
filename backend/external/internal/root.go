@@ -5,10 +5,12 @@ import (
 	"ueckoken/plarail2022-external/pkg/httphandler"
 	"ueckoken/plarail2022-external/pkg/synccontroller"
 	"ueckoken/plarail2022-external/spec"
+
+	"go.uber.org/zap"
 )
 
 // Run runs external server.
-func Run() {
+func Run(logger *zap.Logger) {
 	synccontrollerInput := make(chan synccontroller.KV[spec.Stations_StationId, spec.Command2InternalRequest_State])
 	synccontrollerOutput := make(chan synccontroller.KV[spec.Stations_StationId, spec.Command2InternalRequest_State])
 	grpcHandlerInput := make(chan synccontroller.KV[spec.Stations_StationId, spec.Command2InternalRequest_State])
@@ -38,13 +40,21 @@ func Run() {
 	envVal := envStore.GetEnv()
 
 	httpServer := httphandler.NewHTTPServer(
+		logger.Named("sync-controller"),
 		httpOutput,
 		httpInput,
 		envVal,
 	)
-	StartStationSync(synccontrollerInput, synccontrollerOutput)
-	grpcHandler := NewGrpcHandler(envVal, main2grpcHandler, grpcHandlerInput)
+	StartStationSync(logger.Named("station-sync"), synccontrollerInput, synccontrollerOutput)
+	grpcHandler := NewGrpcHandler(logger.Named("grpc-handler"), envVal, main2grpcHandler, grpcHandlerInput)
 
-	go GRPCListenAndServe(uint(envVal.ClientSideServer.GrpcPort), grpcHandler)
+	client2blocksync := make(chan synccontroller.KV[spec.Blocks_BlockId, spec.NotifyStateRequest_State])
+	blocksync2client := make(chan synccontroller.KV[spec.Blocks_BlockId, spec.NotifyStateRequest_State])
+	startBlockSync(logger.Named("blocksync"), client2blocksync, blocksync2client)
+	grpcBlockHandl := NewGrpcBlockHandler(logger.Named("grpc-block-handler"), envVal, client2blocksync, blocksync2client)
+
+	go GRPCListenAndServe(logger, uint(envVal.ClientSideServer.GrpcPort), grpcHandler, grpcBlockHandl)
 	go httpServer.StartServer()
+	for {
+	}
 }
