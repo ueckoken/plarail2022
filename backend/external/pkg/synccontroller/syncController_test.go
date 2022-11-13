@@ -1,0 +1,101 @@
+package synccontroller
+
+import (
+	"strings"
+	"testing"
+	"ueckoken/plarail2022-external/spec"
+)
+
+func (skvs *stationKVS[T, U]) contain(dat KV[T, U]) bool {
+	d, ok := skvs.values[dat.Key]
+	if !ok {
+		return false
+	}
+	if *d != dat.Value {
+		return false
+	}
+	return true
+}
+
+type ValidatorMock struct{}
+
+func TestSyncController_update(t *testing.T) {
+	station1 := KV[spec.Stations_StationId, spec.Command2InternalRequest_State]{Key: spec.Stations_StationId(1), Value: spec.Command2InternalRequest_State(1)}
+	station2 := KV[spec.Stations_StationId, spec.Command2InternalRequest_State]{Key: spec.Stations_StationId(2), Value: spec.Command2InternalRequest_State(1)}
+	kvs := newStationKVS[spec.Stations_StationId, spec.Command2InternalRequest_State]()
+	err := kvs.update(station1.Key, station1.Value)
+	if err != nil {
+		t.Errorf("validate failed. `%v`", err)
+	}
+	if !kvs.contain(station1) {
+		t.Errorf("append failed")
+	}
+
+	// new station append
+	err = kvs.update(station2.Key, station2.Value)
+	if err != nil {
+		t.Errorf("validate failed. `%v`", err)
+	}
+	if !kvs.contain(station2) {
+		t.Errorf("station add failed")
+	}
+	if len(kvs.values) != 2 {
+		t.Errorf("append failed")
+	}
+	if !kvs.contain(station1) {
+		t.Errorf("stations before update are not keeping")
+	}
+	if !kvs.contain(station1) && !kvs.contain(station2) {
+		t.Errorf("station2 is not append with `update` method")
+	}
+
+	// update exist station data
+	station1 = KV[spec.Stations_StationId, spec.Command2InternalRequest_State]{Key: spec.Stations_StationId(1), Value: spec.Command2InternalRequest_State(0)}
+	err = kvs.update(station1.Key, station1.Value)
+	if err != nil {
+		t.Errorf("validate failed. `%v`", err)
+	}
+	if len(kvs.values) != 2 {
+		t.Errorf("append failed")
+	}
+	if !kvs.contain(station1) {
+		t.Errorf("not update station data")
+	}
+}
+func TestSyncController_get(t *testing.T) {
+	station1 := KV[spec.Stations_StationId, spec.Command2InternalRequest_State]{Key: spec.Stations_StationId(1), Value: spec.Command2InternalRequest_State(1)}
+	station2 := KV[spec.Stations_StationId, spec.Command2InternalRequest_State]{Key: spec.Stations_StationId(2), Value: spec.Command2InternalRequest_State(1)}
+	kvs := newStationKVS[spec.Stations_StationId, spec.Command2InternalRequest_State]()
+	// member is not exist
+	station, err := kvs.get(0)
+	if err == nil {
+		t.Errorf("'err' is expect not nil")
+	} else if strings.Contains(err.Error(), "not found") {
+		t.Errorf("err.Error() expect 'Not found' but return %e", err)
+	}
+
+	kvs = newStationKVS[spec.Stations_StationId, spec.Command2InternalRequest_State]()
+	station, err = kvs.get(1)
+	if *station != station1.Value {
+		t.Errorf("'station1' is expect but called station%d", station)
+	}
+	if err != nil {
+		t.Errorf("return err is not nil: %e", err)
+	}
+
+	station, err = kvs.get(2)
+	if *station != station2.Value {
+		t.Errorf("'station2' is expect but called station%d", station)
+	}
+	if err != nil {
+		t.Errorf("return err is not nil: %e", err)
+	}
+
+	// test for call 'get' not exist record
+	station, err = kvs.get(3)
+	if err == nil {
+		t.Errorf("expect err but return nil")
+	} else if err.Error() != "Not found" {
+		t.Errorf("err.Error() expect 'Not found' but return %e", err)
+	}
+}

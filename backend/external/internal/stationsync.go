@@ -9,7 +9,7 @@ import (
 
 // StartStationSync starts sync controller for station state.
 func StartStationSync(syncInput chan synccontroller.KV[spec.Stations_StationId, spec.Command2InternalRequest_State], syncOutput chan<- synccontroller.KV[spec.Stations_StationId, spec.Command2InternalRequest_State]) {
-	s := synccontroller.NewSyncController[spec.Stations_StationId, spec.Command2InternalRequest_State](syncInput, syncOutput)
+	s := synccontroller.NewSyncController(syncInput, syncOutput)
 
 	go s.Run()
 	initStationSync(NewRule(), syncInput)

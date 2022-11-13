@@ -1,0 +1,32 @@
+<html>
+<head>
+    <title>Hello WebSocket</title>
+
+    <script type="text/javascript">
+        var sock = null;
+        var data = "";
+
+        function update() {
+            var p1 = document.getElementById("plot");
+            p1.innerHTML = data;
+        };
+        window.onload = function () {
+            sock = new WebSocket("wss://" + location.host + "/ws");
+            sock.onmessage = function (event) {
+                var data = JSON.parse(event.data);
+                sock.send(`{"station_name": "chofu_b1", "state": "ON"}`);
+                console.log(data);
+                update();
+            };
+        };
+    </script>
+</head>
+<body>
+<div id="header">
+    <h1>Hello WebSocket</h1>
+</div>
+<div id="content">
+    <div id="plot"></div>
+</div>
+</body>
+</html>

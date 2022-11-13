@@ -37,7 +37,7 @@ func Run() {
 
 	envVal := envStore.GetEnv()
 
-	httpServer := httphandler.NewHTTPServer[*spec.Command2InternalRequest](
+	httpServer := httphandler.NewHTTPServer(
 		httpOutput,
 		httpInput,
 		envVal,
