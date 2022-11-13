@@ -6,7 +6,7 @@ import (
 	"ueckoken/plarail2022-external/spec"
 )
 
-// StartStationSync starts sync controller for station state.
+// startBlockSync starts sync controller for block state.
 func startBlockSync(logger *zap.Logger, syncInput chan synccontroller.KV[spec.Blocks_BlockId, spec.NotifyStateRequest_State], syncOutput chan<- synccontroller.KV[spec.Blocks_BlockId, spec.NotifyStateRequest_State]) {
 	s := synccontroller.NewSyncController(logger, syncInput, syncOutput)
 

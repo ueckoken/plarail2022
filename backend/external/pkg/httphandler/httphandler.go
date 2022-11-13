@@ -15,6 +15,7 @@ import (
 	"google.golang.org/protobuf/proto"
 )
 
+// HTTPServer is a server managing websockethandler and websocket clients.
 type HTTPServer[T proto.Message] struct {
 	logger                   *zap.Logger
 	httpOutput               chan<- T
@@ -26,6 +27,7 @@ type HTTPServer[T proto.Message] struct {
 	clients                  *ClientsCollection[T]
 }
 
+// NewHTTPServer creates HTTP server.
 func NewHTTPServer[T proto.Message](logger *zap.Logger, httpOutput chan<- T, httpInput <-chan T, env *envStore.Env) *HTTPServer[T] {
 	const namespace = "plarailexternal"
 	clientConn := prometheus.NewGaugeVec(
@@ -66,17 +68,20 @@ func NewHTTPServer[T proto.Message](logger *zap.Logger, httpOutput chan<- T, htt
 	}
 }
 
+// ClientsCollection is a set of clients.
+// When client is disconnected, this will remove it and stop sending data.
 type ClientsCollection[T proto.Message] struct {
 	clients []websockethandler.ClientChannel[T]
 	mtx     sync.Mutex
 }
 
+// StartServer starts HTTP server and websocket server.
 func (h *HTTPServer[T]) StartServer() {
 	clientChannelSend := make(chan websockethandler.ClientChannel[T])
 	handlerInput := make(chan T)
 	go h.registerClient(clientChannelSend)
-	go h.handleChanges()
-	go h.unregisterClient()
+	go h.broadcastChanges()
+	go h.unregisterClients()
 	r := mux.NewRouter()
 	prometheus.MustRegister(h.numberOfClientConnection)
 	prometheus.MustRegister(h.totalClientConnection)
@@ -98,7 +103,8 @@ func (h *HTTPServer[T]) StartServer() {
 	}
 }
 
-func (h *HTTPServer[T]) handleChanges() {
+// broadcastChanges receives the change from main channel and broadcast it to clients.
+func (h *HTTPServer[T]) broadcastChanges() {
 	for d := range h.httpInput {
 		h.clients.mtx.Lock()
 		h.totalCLientCommands.With(prometheus.Labels{}).Inc()
@@ -112,9 +118,9 @@ func (h *HTTPServer[T]) handleChanges() {
 		}
 		h.clients.mtx.Unlock()
 	}
-	time.Sleep(1 * time.Second)
 }
 
+// registerClient registers a client that listening changes.
 func (h *HTTPServer[T]) registerClient(cn <-chan websockethandler.ClientChannel[T]) {
 	for n := range cn {
 		func(h *HTTPServer[T], n websockethandler.ClientChannel[T]) {
@@ -126,7 +132,8 @@ func (h *HTTPServer[T]) registerClient(cn <-chan websockethandler.ClientChannel[
 	}
 }
 
-func (h *HTTPServer[T]) unregisterClient() {
+// unregisterClients remove clients that seems to be disconnected.
+func (h *HTTPServer[T]) unregisterClients() {
 	for {
 		h.clients.mtx.Lock()
 		var deletionList []int
@@ -141,10 +148,10 @@ func (h *HTTPServer[T]) unregisterClient() {
 		h.clients.deleteClient(deletionList)
 		h.clients.mtx.Unlock()
 		h.numberOfClientConnection.With(prometheus.Labels{}).Set(float64(len(h.clients.clients)))
-		time.Sleep(1 * time.Second)
 	}
 }
 
+// deleteClient deletes clients specified with arg.
 func (cl *ClientsCollection[T]) deleteClient(deletion []int) {
 	var tmp []websockethandler.ClientChannel[T]
 	for i, c := range cl.clients {

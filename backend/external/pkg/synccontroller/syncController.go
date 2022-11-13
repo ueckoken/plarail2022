@@ -9,11 +9,13 @@ import (
 	"go.uber.org/zap"
 )
 
+// KV is a pair of key and value
 type KV[T, U comparable] struct {
 	Key   T
 	Value U
 }
 
+// stationKVS is a primitive KVS to store KV
 type stationKVS[T, U comparable] struct {
 	values map[T]*U
 	mtx    sync.Mutex
@@ -24,10 +26,10 @@ func newStationKVS[T, U comparable]() *stationKVS[T, U] {
 	return &skvs
 }
 
-func (skvs *stationKVS[T, U]) update(key T, value U) error {
+func (skvs *stationKVS[T, U]) update(kv KV[T, U]) error {
 	skvs.mtx.Lock()
 	defer skvs.mtx.Unlock()
-	skvs.values[key] = &value
+	skvs.values[kv.Key] = &kv.Value
 	return nil
 }
 
@@ -46,6 +48,7 @@ func (skvs *stationKVS[T, U]) retrieve() map[T]*U {
 	return skvs.values
 }
 
+// SyncController is a struct that stores KVs.
 type SyncController[T, U comparable] struct {
 	logger      *zap.Logger
 	stateInput  <-chan KV[T, U]
@@ -54,6 +57,7 @@ type SyncController[T, U comparable] struct {
 }
 
 // NewSyncController creates new sync controller.
+// This update KVs when a KV arrives in stateInput, if runs triggeredSync.
 func NewSyncController[T, U comparable](logger *zap.Logger, stateInput <-chan KV[T, U], stateOutput chan<- KV[T, U]) *SyncController[T, U] {
 	return &SyncController[T, U]{logger: logger, stateInput: stateInput, stateOutput: stateOutput, kvs: newStationKVS[T, U]()}
 }
@@ -69,7 +73,7 @@ func (s *SyncController[T, U]) Run() {
 func (s *SyncController[T, U]) triggeredSync() {
 	for c := range s.stateInput {
 		s.logger.Info("state input received", zap.Any("state", c))
-		err := s.kvs.update(c.Key, c.Value)
+		err := s.kvs.update(c)
 		if err != nil {
 			log.Println("syncController validator err: ", err)
 			continue

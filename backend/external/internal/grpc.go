@@ -27,7 +27,7 @@ func NewGrpcHandler(logger *zap.Logger, env *envStore.Env, stateOutput chan<- sy
 	return &GrpcStateHandler{logger: logger, env: env, stateOutput: stateOutput, stateInput: stateInput}
 }
 
-// Command2Internal handles requests and save requests to memory and treats internal server.
+// Command2Internal handles requests from ATS.
 func (g GrpcStateHandler) Command2Internal(_ context.Context, req *spec.RequestSync) (*spec.ResponseSync, error) {
 	s := synccontroller.KV[spec.Stations_StationId, spec.Command2InternalRequest_State]{
 		Key:   req.GetStation().GetStationId(),
@@ -37,6 +37,7 @@ func (g GrpcStateHandler) Command2Internal(_ context.Context, req *spec.RequestS
 	return &spec.ResponseSync{Response: spec.ResponseSync_SUCCESS}, nil
 }
 
+// / handleInput transmits changes received in channel to ATS.
 func (g GrpcStateHandler) handleInput(ctx context.Context) {
 	con, err := grpc.Dial(g.env.ClientSideServer.ATSAddress.String(),
 		grpc.WithTransportCredentials(insecure.NewCredentials()),
@@ -74,11 +75,13 @@ func NewGrpcBlockHandler(logger *zap.Logger, env *envStore.Env, stateOutput chan
 	return &GrpcBlockHandler{logger: logger, env: env, stateOutput: stateOutput, stateInput: stateInput}
 }
 
+// NotifyState handles requests from ATS
 func (g GrpcBlockHandler) NotifyState(_ context.Context, req *spec.NotifyStateRequest) (*spec.NotifyStateResponse, error) {
 	g.stateOutput <- synccontroller.KV[spec.Blocks_BlockId, spec.NotifyStateRequest_State]{Key: req.GetBlock().GetBlockId(), Value: req.GetState()}
 	return &spec.NotifyStateResponse{Response: spec.NotifyStateResponse_SUCCESS}, nil
 }
 
+// handleInput transmits changes received in channel to ATS
 func (g GrpcBlockHandler) handleInput(ctx context.Context) {
 	con, err := grpc.Dial(g.env.ClientSideServer.ATSAddress.String(),
 		grpc.WithTransportCredentials(insecure.NewCredentials()),
