@@ -1,6 +1,7 @@
-package syncController
+package internal
 
 import (
+	// embed for rule
 	_ "embed"
 	"gopkg.in/yaml.v2"
 	"log"
@@ -17,7 +18,7 @@ type StationInitRule struct {
 //go:embed embed/stationInit.yml
 var initRuleFile []byte
 
-func NewInitializeRule() *InitRule {
+func NewRule() *InitRule {
 	r := new(InitRule)
 	err := yaml.Unmarshal(initRuleFile, r)
 	if err != nil {

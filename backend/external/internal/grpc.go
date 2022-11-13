@@ -6,8 +6,7 @@ import (
 	"log"
 	"net"
 	"ueckoken/plarail2022-external/pkg/envStore"
-	"ueckoken/plarail2022-external/pkg/servo"
-	"ueckoken/plarail2022-external/pkg/syncController"
+	"ueckoken/plarail2022-external/pkg/synccontroller"
 	"ueckoken/plarail2022-external/spec"
 
 	"google.golang.org/grpc"
@@ -18,22 +17,20 @@ import (
 type GrpcHandler struct {
 	env *envStore.Env
 	spec.UnimplementedControlServer
-	stateOutput chan<- syncController.StationState
-	stateInput  <-chan syncController.StationState
+	stateOutput chan<- synccontroller.KV[spec.Stations_StationId, spec.Command2InternalRequest_State]
+	stateInput  <-chan synccontroller.KV[spec.Stations_StationId, spec.Command2InternalRequest_State]
 }
 
 // NewGrpcHandler creates gRPC handler.
-func NewGrpcHandler(env *envStore.Env, stateOutput chan<- syncController.StationState, stateInput <-chan syncController.StationState) *GrpcHandler {
+func NewGrpcHandler(env *envStore.Env, stateOutput chan<- synccontroller.KV[spec.Stations_StationId, spec.Command2InternalRequest_State], stateInput <-chan synccontroller.KV[spec.Stations_StationId, spec.Command2InternalRequest_State]) *GrpcHandler {
 	return &GrpcHandler{env: env, stateOutput: stateOutput, stateInput: stateInput}
 }
 
 // Command2Internal handles requests and save requests to memory and treats internal server.
 func (g GrpcHandler) Command2Internal(ctx context.Context, req *spec.RequestSync) (*spec.ResponseSync, error) {
-	s := syncController.StationState{
-		StationState: servo.StationState{
-			StationID: int32(req.GetStation().GetStationId()),
-			State:     int32(req.GetState()),
-		},
+	s := synccontroller.KV[spec.Stations_StationId, spec.Command2InternalRequest_State]{
+		Key:   req.GetStation().GetStationId(),
+		Value: spec.Command2InternalRequest_State(req.GetState()),
 	}
 	g.stateOutput <- s
 	return &spec.ResponseSync{Response: spec.ResponseSync_SUCCESS}, nil
@@ -51,8 +48,8 @@ func (g GrpcHandler) handleInput(ctx context.Context) {
 		client := spec.NewControlClient(con)
 		res, err := client.Command2Internal(ctx,
 			&spec.RequestSync{
-				Station: &spec.Stations{StationId: spec.Stations_StationId(d.StationID)},
-				State:   spec.RequestSync_State(d.State),
+				Station: &spec.Stations{StationId: d.Key},
+				State:   spec.RequestSync_State(d.Value),
 			})
 		if err != nil {
 			log.Println("failed to send data to ATS", err)

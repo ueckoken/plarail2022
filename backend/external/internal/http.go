@@ -6,33 +6,33 @@ import (
 	"net/http"
 	"sync"
 	"time"
-	"ueckoken/plarail2022-external/pkg/clientHandler"
 	"ueckoken/plarail2022-external/pkg/envStore"
-	"ueckoken/plarail2022-external/pkg/syncController"
+	"ueckoken/plarail2022-external/pkg/websockethandler"
 
 	"github.com/gorilla/mux"
-	"github.com/gorilla/websocket"
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
+	"google.golang.org/protobuf/proto"
 )
 
-type HTTPServer struct {
-	StateOutput              chan<- syncController.StationState
-	StateInput               <-chan syncController.StationState
+type HTTPServer[T proto.Message] struct {
+	StateOutput              chan<- T
+	StateInput               <-chan T
 	Environment              *envStore.Env
 	NumberOfClientConnection *prometheus.GaugeVec
 	TotalClientConnection    *prometheus.CounterVec
 	TotalCLientCommands      *prometheus.CounterVec
-	Clients                  *ClientsCollection
+	Clients                  *ClientsCollection[T]
 }
 
-type ClientsCollection struct {
-	Clients []clientHandler.ClientChannel
+type ClientsCollection[T proto.Message] struct {
+	Clients []websockethandler.ClientChannel[T]
 	mtx     sync.Mutex
 }
 
-func (h *HTTPServer) StartServer() {
-	clientChannelSend := make(chan clientHandler.ClientChannel)
+func (h *HTTPServer[T]) StartServer() {
+	clientChannelSend := make(chan websockethandler.ClientChannel[T])
+	handlerInput := make(chan T)
 	go h.registerClient(clientChannelSend)
 	go h.handleChanges()
 	go h.unregisterClient()
@@ -40,15 +40,8 @@ func (h *HTTPServer) StartServer() {
 	prometheus.MustRegister(h.NumberOfClientConnection)
 	prometheus.MustRegister(h.TotalClientConnection)
 	prometheus.MustRegister(h.TotalCLientCommands)
-	r.HandleFunc("/", clientHandler.HandleStatic)
-	var upgrader = websocket.Upgrader{
-		ReadBufferSize:  1024,
-		WriteBufferSize: 1024,
-		CheckOrigin: func(r *http.Request) bool {
-			return true
-		},
-	}
-	r.Handle("/ws", clientHandler.ClientHandler{Upgrader: upgrader, ClientCommand: h.StateOutput, ClientChannelSend: clientChannelSend})
+	r.HandleFunc("/", websockethandler.HandleStatic)
+	r.Handle("/ws", websockethandler.NewClientHandler(handlerInput, clientChannelSend))
 	r.Handle("/metrics", promhttp.Handler())
 	srv := &http.Server{
 		Handler:           r,
@@ -61,13 +54,13 @@ func (h *HTTPServer) StartServer() {
 	log.Fatal(srv.ListenAndServe())
 }
 
-func (h *HTTPServer) handleChanges() {
+func (h *HTTPServer[T]) handleChanges() {
 	for d := range h.StateInput {
 		h.Clients.mtx.Lock()
 		h.TotalCLientCommands.With(prometheus.Labels{}).Inc()
 		for _, c := range h.Clients.Clients {
 			select {
-			case c.ClientSync <- d:
+			case c.SyncToClient <- d:
 			default:
 				log.Println("buffer is full when send...")
 				continue
@@ -78,9 +71,9 @@ func (h *HTTPServer) handleChanges() {
 	time.Sleep(1 * time.Second)
 }
 
-func (h *HTTPServer) registerClient(cn <-chan clientHandler.ClientChannel) {
+func (h *HTTPServer[T]) registerClient(cn <-chan websockethandler.ClientChannel[T]) {
 	for n := range cn {
-		func(h *HTTPServer, n clientHandler.ClientChannel) {
+		func(h *HTTPServer[T], n websockethandler.ClientChannel[T]) {
 			h.Clients.mtx.Lock()
 			defer h.Clients.mtx.Unlock()
 			h.TotalClientConnection.With(prometheus.Labels{}).Inc()
@@ -89,7 +82,7 @@ func (h *HTTPServer) registerClient(cn <-chan clientHandler.ClientChannel) {
 	}
 }
 
-func (h *HTTPServer) unregisterClient() {
+func (h *HTTPServer[T]) unregisterClient() {
 	for {
 		h.Clients.mtx.Lock()
 		var deletionList []int
@@ -108,8 +101,8 @@ func (h *HTTPServer) unregisterClient() {
 	}
 }
 
-func (cl *ClientsCollection) deleteClient(deletion []int) {
-	var tmp []clientHandler.ClientChannel
+func (cl *ClientsCollection[T]) deleteClient(deletion []int) {
+	var tmp []websockethandler.ClientChannel[T]
 	for i, c := range cl.Clients {
 		if !contain(deletion, i) {
 			tmp = append(tmp, c)
