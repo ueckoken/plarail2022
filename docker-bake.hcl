@@ -1,5 +1,16 @@
 group "default" {
-  targets = ["auto-operation", "external", "internal", "multicaster", "positioning", "webrtc-sender", "frontend", "receiver-test", "logviewer"]
+  targets = [
+    "auto-operation",
+    "external",
+    "internal",
+    "json2grpc",
+    "multicaster",
+    "positioning",
+    "webrtc-sender",
+    "frontend",
+    "receiver-test",
+    "logviewer",
+  ]
 }
 
 variable "PREFIX" {
@@ -33,6 +44,12 @@ target "internal" {
   context = "./backend/internal"
   tags = [
     GET_TAG("internal")
+  ]
+}
+target "json2grpc" {
+  context = "./backend/json2grpc"
+  tags = [
+    GET_TAG("json2grpc")
   ]
 }
 
