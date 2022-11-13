@@ -1,7 +1,7 @@
 package internal
 
 import (
-	// embed for rule
+	// embed for rule.
 	_ "embed"
 	"gopkg.in/yaml.v2"
 	"log"

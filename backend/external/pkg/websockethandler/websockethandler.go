@@ -5,34 +5,34 @@ import (
 	_ "embed"
 	"encoding/json"
 	"fmt"
+	"github.com/gorilla/websocket"
+	"google.golang.org/protobuf/proto"
 	"log"
 	"net/http"
 	"time"
-	"github.com/gorilla/websocket"
-	"google.golang.org/protobuf/proto"
 )
 
 type ClientHandler[T proto.Message] struct {
 	upgrader          websocket.Upgrader
-	commandFromClient     chan<- T
-	channelClient chan ClientChannel[T]
+	commandFromClient chan<- T
+	channelClient     chan ClientChannel[T]
 }
 
-func NewClientHandler[T proto.Message](clientHandlerOutput chan <- T, channelClient chan ClientChannel[T]) ClientHandler[T]{
+func NewClientHandler[T proto.Message](clientHandlerOutput chan<- T, channelClient chan ClientChannel[T]) ClientHandler[T] {
 	return ClientHandler[T]{upgrader: websocket.Upgrader{
-			ReadBufferSize:  1024,
-			WriteBufferSize: 1024,
-			CheckOrigin: func(r *http.Request) bool {
-				return true
-			}},
-			commandFromClient: clientHandlerOutput,
-			channelClient: channelClient,
-		}
+		ReadBufferSize:  1024,
+		WriteBufferSize: 1024,
+		CheckOrigin: func(r *http.Request) bool {
+			return true
+		}},
+		commandFromClient: clientHandlerOutput,
+		channelClient:     channelClient,
+	}
 }
 
 type ClientChannel[T proto.Message] struct {
 	SyncToClient chan T
-	Done       chan struct{}
+	Done         chan struct{}
 }
 
 func (m ClientHandler[T]) ServeHTTP(w http.ResponseWriter, r *http.Request) {
@@ -88,7 +88,7 @@ func handleClientPing(ctx context.Context, c *websocket.Conn) {
 	}
 }
 
-func handleClientCommand[T proto.Message](ctx context.Context, c *websocket.Conn, ch chan <- T) {
+func handleClientCommand[T proto.Message](ctx context.Context, c *websocket.Conn, ch chan<- T) {
 	for {
 		select {
 		case <-ctx.Done():

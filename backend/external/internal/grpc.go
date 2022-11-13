@@ -60,7 +60,7 @@ func (g GrpcHandler) handleInput(ctx context.Context) {
 	}
 }
 
-// GRPCListenAndServe listens and serve
+// GRPCListenAndServe listens and serve.
 func GRPCListenAndServe(port uint, handler *GrpcHandler) {
 	lis, err := net.Listen("tcp", fmt.Sprintf(":%d", port))
 	if err != nil {

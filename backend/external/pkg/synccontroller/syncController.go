@@ -34,13 +34,6 @@ func (skvs *stationKVS[T, U]) update(key T, value U) error {
 	return nil
 }
 
-// forceUpdate differs from update for ignore route validation.
-func (skvs *stationKVS[T, U]) forceUpdate(key T, value U) {
-	skvs.mtx.Lock()
-	defer skvs.mtx.Unlock()
-	skvs.values[key] = &value
-}
-
 func (skvs *stationKVS[T, U]) get(key T) (value *U, err error) {
 	skvs.mtx.Lock()
 	defer skvs.mtx.Unlock()

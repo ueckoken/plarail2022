@@ -16,8 +16,8 @@ import (
 )
 
 type HTTPServer[T proto.Message] struct {
-	httpOutput              chan<- T
-	httpInput               <-chan T
+	httpOutput               chan<- T
+	httpInput                <-chan T
 	environment              *envStore.Env
 	numberOfClientConnection *prometheus.GaugeVec
 	totalClientConnection    *prometheus.CounterVec
@@ -25,7 +25,7 @@ type HTTPServer[T proto.Message] struct {
 	clients                  *ClientsCollection[T]
 }
 
-func NewHTTPServer[T proto.Message](httpOutput chan <- T, httpInput <- chan T, env *envStore.Env) *HTTPServer[T]{
+func NewHTTPServer[T proto.Message](httpOutput chan<- T, httpInput <-chan T, env *envStore.Env) *HTTPServer[T] {
 	const namespace = "plarailexternal"
 	clientConn := prometheus.NewGaugeVec(
 		prometheus.GaugeOpts{
@@ -54,13 +54,13 @@ func NewHTTPServer[T proto.Message](httpOutput chan <- T, httpInput <- chan T, e
 		[]string{},
 	)
 	return &HTTPServer[T]{
-		httpOutput: httpOutput,
-		httpInput: httpInput,
-		environment: env,
+		httpOutput:               httpOutput,
+		httpInput:                httpInput,
+		environment:              env,
 		numberOfClientConnection: clientConn,
-		totalClientConnection: clientConnTotal,
-		totalCLientCommands: controlCommandTotal,
-		clients: &ClientsCollection[T]{},
+		totalClientConnection:    clientConnTotal,
+		totalCLientCommands:      controlCommandTotal,
+		clients:                  &ClientsCollection[T]{},
 	}
 }
 
