@@ -43,4 +43,4 @@ jobs:
           push: ${{ github.event_name == 'push' && startsWith( steps.extract_branch.outputs.branch , 'deployment' ) }}
           set: |
             *.cache-from=type=gha
-            *.cache-to=type=gha,mode-max
+            *.cache-to=type=gha,mode=max
