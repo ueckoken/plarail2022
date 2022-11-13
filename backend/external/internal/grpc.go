@@ -39,7 +39,7 @@ func (g GrpcStateHandler) Command2Internal(_ context.Context, req *spec.RequestS
 
 // / handleInput transmits changes received in channel to ATS.
 func (g GrpcStateHandler) handleInput(ctx context.Context) {
-	con, err := grpc.Dial(g.env.ClientSideServer.ATSAddress.String(),
+	con, err := grpc.DialContext(ctx, g.env.ClientSideServer.ATSAddress.String(),
 		grpc.WithTransportCredentials(insecure.NewCredentials()),
 	)
 	if err != nil {
@@ -83,7 +83,7 @@ func (g GrpcBlockHandler) NotifyState(_ context.Context, req *spec.NotifyStateRe
 
 // handleInput transmits changes received in channel to ATS
 func (g GrpcBlockHandler) handleInput(ctx context.Context) {
-	con, err := grpc.Dial(g.env.ClientSideServer.ATSAddress.String(),
+	con, err := grpc.DialContext(ctx, g.env.ClientSideServer.ATSAddress.String(),
 		grpc.WithTransportCredentials(insecure.NewCredentials()),
 	)
 	if err != nil {
@@ -107,13 +107,13 @@ func (g GrpcBlockHandler) handleInput(ctx context.Context) {
 }
 
 // GRPCListenAndServe listens and serve.
-func GRPCListenAndServe(logger *zap.Logger, port uint, handler *GrpcStateHandler, blockhandler *GrpcBlockHandler) {
+func GRPCListenAndServe(ctx context.Context, logger *zap.Logger, port uint, handler *GrpcStateHandler, blockhandler *GrpcBlockHandler) {
 	lis, err := net.Listen("tcp", fmt.Sprintf(":%d", port))
 	if err != nil {
 		logger.Panic("failed to listen", zap.Error(err))
 	}
-	go handler.handleInput(context.Background())
-	go blockhandler.handleInput(context.Background())
+	go handler.handleInput(ctx)
+	go blockhandler.handleInput(ctx)
 	s := grpc.NewServer()
 	spec.RegisterControlServer(s, handler)
 	spec.RegisterBlockStateSyncServer(s, blockhandler)
