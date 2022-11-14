@@ -86,12 +86,12 @@ class DiaPlanner:
             #             print("[DiaPlanner.update] wait flag switched!")
 
     # 指定した列車の、指定した駅に対するダイヤを取得
-    def getDia(self, trainId: int, stationId: str) -> Dia:
+    def getDia(self, trainId: int, stationId: Station.StationId) -> Dia:
         result = list(filter(lambda x: (x.trainId == trainId and x.stationId == stationId), self.__diaList))
         return result[0]
 
     # 指定した列車の、指定した駅に対するダイヤを更新
-    def setDia(self, trainId: int, stationId: str, wait: bool, stopTime: int, arriveSectionId: str, destSectionId: str) -> None:
+    def setDia(self, trainId: int, stationId: Station.StationId, wait: bool, stopTime: int, arriveSectionId: Section.SectionId, destSectionId: Section.SectionId) -> None:
         for dia in self.__diaList:
             if dia.trainId == trainId and dia.stationId == stationId:
                 dia.wait = wait
