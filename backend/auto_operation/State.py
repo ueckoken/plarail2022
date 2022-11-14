@@ -95,8 +95,10 @@ class State:
         pidParam1 = Train.PIDParam(1.18, 55, 90, 70, 0.40, 0, 0)  # Raspi (maxinput: 50 + 0.50*40cm/s= 70)
 
         # Train(initialSection, initialPosition)
-        self.trainList.append(Train(0, self.getSectionById("shinjuku_b2"), State.STRAIGHT_UNIT * 4, pidParam0))  # 列車0をsection0に配置
-        self.trainList.append(Train(1, self.getSectionById("chofu_b4"), State.STRAIGHT_UNIT * 4, pidParam1))  # 列車1をsection8(八王子の手前)に配置:DiaPlannerで八王子行に指定しているため
+        self.trainList.append(Train(0, self.getSectionById("shinjuku_b2"), State.STRAIGHT_UNIT * 4, pidParam0))  # 列車0を新宿b2に配置
+        self.trainList.append(Train(1, self.getSectionById("hachioji_b1"), State.STRAIGHT_UNIT * 4, pidParam1))  # 列車1を八王子b1(八王子の手前)に配置:DiaPlannerで八王子行に指定しているため
+        self.trainList.append(Train(2, self.getSectionById("hashimoto_b1"), State.STRAIGHT_UNIT * 4, pidParam1)) # 列車2を橋本b2に配置
+        self.trainList.append(Train(3, self.getSectionById("sakurajosui_b4"), State.STRAIGHT_UNIT * 4, pidParam1)) # 列車3を桜上水b4に配置
 
         # start communication
         self.communication = Communication({0: pidParam0, 1: pidParam1})
