@@ -1,3 +1,4 @@
+from dataclasses import dataclass
 from State import *
 
 # ダイヤを管理、更新する
@@ -20,18 +21,18 @@ from State import *
 #   まず、退避はない前提で組む。八王子に行くか調布に行くかは、arriveSectionIdとdestSectionIdを指定して決める
 
 
+@dataclass
 class Dia:
-    def __init__(self, trainId: int, stationId: str, wait: bool, stopTime: int, arriveSectionId: str, destSectionId: str):
-        self.trainId = trainId
-        self.stationId = stationId
-        self.wait = wait
-        self.stopTime = stopTime
-        self.arriveSectionId = arriveSectionId
-        self.destSectionId = destSectionId
+    trainId: int
+    stationId: Station.StationId
+    wait: bool
+    stopTime: int
+    arriveSectionId: Section.SectionId
+    destSectionId: Section.SectionId
 
 
 class DiaPlanner:
-    def __init__(self, state: State):
+    def __init__(self, state: State) -> None:
         self.__state = state
         self.__autoUpdate = True  # 自動更新の有効/無効
         self.__diaList: list[Dia] = []  # ダイヤリスト
