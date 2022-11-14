@@ -18,7 +18,7 @@ class Communication:
 
     def __init__(self, pidParamMap: dict[int, Train.PIDParam]):
         self.simulationMode = False
-        self.simulationSpeedMap: dict[int, int] = {}
+        self.simulationSpeedMap: dict[int, float] = {}
         self.pidParamMap = pidParamMap
         self.prevUpdate = 0.0
         self.arduino = None
