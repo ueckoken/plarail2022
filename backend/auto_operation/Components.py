@@ -3,11 +3,37 @@ from enum import Enum
 from typing import Literal, Optional
 
 
+StopId = Literal[
+    'shinjuku_s1', 'shinjuku_s2',
+    'sakurajosui_s1', 'sakurajosui_s2', 'sakurajosui_s3', 'sakurajosui_s4',
+    'sakurajosui_s5',
+    'chofu_s0',
+    'chofu_s1', 'chofu_s2', 'chofu_s3', 'chofu_s4',
+    'hashimoto_s1', 'hashimoto_s2',
+    'hachioji_s1', 'hachioji_s2',
+]
+
+
+SensorId = Literal[
+    'shinjuku_d1', 'shinjuku_d2',
+    'sakurajosui_d1', 'sakurajosui_d2', 'sakurajosui_d3', 'sakurajosui_d4', 'sakurajosui_d5', 'sakurajosui_d6',
+    'chofu_d1', 'chofu_d2', 'chofu_d3', 'chofu_d4', 'chofu_d5',
+    'hashimoto_d1', 'hashimoto_d2',
+    'hachioji_d1', 'hachioji_d2',
+]
+
+
+PointId = Literal[
+    'sakurajosui_p1', 'sakurajosui_p2', 'sakurajosui_p3', 'sakurajosui_p4',
+    'chofu_p1', 'chofu_p2',
+]
+
+
 class Section:
     SectionId = Literal[
         'shinjuku_b1', 'shinjuku_b2',
         'sakurajosui_b1', 'sakurajosui_b2', 'sakurajosui_b3', 'sakurajosui_b4', 'sakurajosui_b5', 'sakurajosui_b6',
-        'chofu_b1', 'chofu_b2', 'chofu_b3', 'chofu_b4',
+        'chofu_b1', 'chofu_b2', 'chofu_b3', 'chofu_b4', 'chofu_b5',
         'hashimoto_b1', 'hashimoto_b2',
         'hachioji_b1', 'hachioji_b2',
     ]
@@ -137,13 +163,11 @@ class Sensor:
 @dataclass
 class Station:
     StationId = Literal[
-        'shinjuku_s1', 'shinjuku_s2',
-        'sakurajosui_s1', 'sakurajosui_s2', 'sakurajosui_s3', 'sakurajosui_s4',
-        'sakurajosui_s5',
-        'chofu_s0',
-        'chofu_s1', 'chofu_s2', 'chofu_s3', 'chofu_s4',
-        'hashimoto_s1', 'hashimoto_s2',
-        'hachioji_s1', 'hachioji_s2',
+        'shinjuku_up', 'shinjuku_down',
+        'sakurajosui_up', 'sakurajosui_down',
+        'chofu_up', 'chofu_down',
+        'hashimoto_up', 'hashimoto_down',
+        'hachioji_up', 'hachioji_down',
     ]
 
     id: StationId
