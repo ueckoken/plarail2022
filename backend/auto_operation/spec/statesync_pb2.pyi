@@ -59,10 +59,7 @@ class Stations(_message.Message):
         __slots__ = []
     STATIONID_FIELD_NUMBER: _ClassVar[int]
     chofu_p1: Stations.StationId
-    chofu_p2: Stations.StationId
-    chofu_p3: Stations.StationId
-    chofu_p4: Stations.StationId
-    chofu_p5: Stations.StationId
+    chofu_s0: Stations.StationId
     chofu_s1: Stations.StationId
     chofu_s2: Stations.StationId
     chofu_s3: Stations.StationId
@@ -77,13 +74,10 @@ class Stations(_message.Message):
     sakurajosui_s2: Stations.StationId
     sakurajosui_s3: Stations.StationId
     sakurajosui_s4: Stations.StationId
-    shinjuku_p1: Stations.StationId
+    sakurajosui_s5: Stations.StationId
+    sakurajosui_s6: Stations.StationId
     shinjuku_s1: Stations.StationId
     shinjuku_s2: Stations.StationId
     stationId: Stations.StationId
     unknown: Stations.StationId
-    wakabadai_p1: Stations.StationId
-    wakabadai_p2: Stations.StationId
-    wakabadai_s1: Stations.StationId
-    wakabadai_s2: Stations.StationId
     def __init__(self, stationId: _Optional[_Union[Stations.StationId, str]] = ...) -> None: ...
