@@ -1,9 +1,6 @@
 name: formatter
 on:
   push:
-    paths:
-      - "frontend/**/*"
-      - "backend/multicaster/*"
     branches-ignore:
       - "main"
       - "deployment"
