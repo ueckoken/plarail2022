@@ -14,7 +14,7 @@ services:
     environment:
       - "CLIENTSIDESERVER_PORT=8080" #specify websocket server listening port
       - "INTERNALSERVER_ADDR=internal:54321" #specify internal address
-      - "CLIENTSIDESERVER_ATSADDRESS=ats:54321" #specify ATS address
+      - "CLIENTSIDESERVER_ATSADDRESS=ats:54321" #specify auto_operation address
   internal:
     build:
       context: ./internal
@@ -23,5 +23,5 @@ services:
       - "6060:6060"
   #ats: #TODO: create this service
   #  build:
-  #    context: ./ats
+  #    context: ./auto_operation
   #    dockerfile: ./Dockerfile
