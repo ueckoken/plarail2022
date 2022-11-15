@@ -59,7 +59,7 @@ class Connection:
         thread.start()
         return thread
 
-    def updateStatus(self, stationId: str, state: str) -> None:
+    def sendStop(self, stationId: str, state: str) -> None:
         with grpc.insecure_channel(self.externalServer) as channel:
             stub = statesync_pb2_grpc.ControlStub(channel)
             response = stub.Command2Internal(
@@ -67,17 +67,15 @@ class Connection:
                     state=state, station=statesync_pb2.Stations(stationId=stationId)
                 )
             )
-        print("Update Status: " + str(statesync_pb2.ResponseSync.Response.Name(response.response)))
+        print(f"Send Stop: {statesync_pb2.ResponseSync.Response.Name(response.response)}")
 
-    def updateBlock(self, blockId: str, state: str) -> None:
+    def sendBlock(self, blockId: str, state: str) -> None:
         with grpc.insecure_channel("localhost:6543") as channel:
             stub = block_pb2_grpc.BlockStateSyncStub(channel)
             response = stub.NotifyState(
                 block_pb2.NotifyStateRequest(state=state, block=block_pb2.Blocks(blockId=blockId))
             )
-        print(
-            "Update Block: " + str(block_pb2.NotifyStateResponse.Response.Name(response.response))
-        )
+        print(f"Send Block: {block_pb2.NotifyStateResponse.Response.Name(response.response)}")
 
 
 # Proxyと通信するためのサーバー(センサーの検知結果が飛んでくる)
@@ -142,13 +140,13 @@ def main() -> None:
 
         # ストップ情報を送信
         try:
-            connection.updateStatus(stationId="shinjuku_s1", state="ON")
+            connection.sendStop(stationId="shinjuku_s1", state="ON")
         except:
             pass
 
         # 閉塞情報を送信
         try:
-            connection.updateBlock(blockId="shinjuku_b1", state="OPEN")
+            connection.sendBlock(blockId="shinjuku_b1", state="OPEN")
         except:
             pass
 
