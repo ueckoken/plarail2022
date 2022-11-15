@@ -132,10 +132,10 @@ class PointSwitcher:
             # 駅で退避するつもりのtrainを取得
             trainsWantToGo: list[Train] = list(
                 filter(
-                    lambda t: (self.__diaPlanner.getDia(t.id, station.id).wait is False), # type: ignore
+                    lambda t: (self.__diaPlanner.getDia(t.id, station.id).wait is False),  # type: ignore
                     trains,
-                ) 
-            ) 
+                )
+            )
             if len(trainsWantToGo) == 0:  # 全列車が退避したい場合、どれを先に出すか決めようがないので、とりあえず0番を返す
                 return trains[0]
             elif len(trainsWantToGo) == 1:  # 退避するつもりのない(追い抜きたい)列車が1つのとき、それを先に行かせる
@@ -143,7 +143,7 @@ class PointSwitcher:
             else:  # 退避するつもりのない列車が2つ以上のとき、最もjunctionに近いものを返す
                 trainsWantToGo.sort(
                     key=lambda t: self.__state.getDistance(
-                        t.currentSection, t.mileage, junction.getOutSection(), 0 # type: ignore
+                        t.currentSection, t.mileage, junction.getOutSection(), 0  # type: ignore
                     )
                 )
                 return trainsWantToGo[0]
