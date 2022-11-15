@@ -15,24 +15,19 @@ class Blocks(_message.Message):
     chofu_b2: Blocks.BlockId
     chofu_b3: Blocks.BlockId
     chofu_b4: Blocks.BlockId
-    chofu_hachioji_down: Blocks.BlockId
-    chofu_hachioji_up: Blocks.BlockId
-    chofu_hashimoto_down: Blocks.BlockId
-    chofu_hashimoto_up: Blocks.BlockId
+    chofu_b5: Blocks.BlockId
     hachioji_b1: Blocks.BlockId
-    hachioji_b2: Blocks.BlockId
     hashimoto_b1: Blocks.BlockId
     hashimoto_b2: Blocks.BlockId
+    hashioji_b2: Blocks.BlockId
     sakurajosui_b1: Blocks.BlockId
     sakurajosui_b2: Blocks.BlockId
     sakurajosui_b3: Blocks.BlockId
     sakurajosui_b4: Blocks.BlockId
-    sakurajosui_chofu_down: Blocks.BlockId
-    sakurajosui_chofu_up: Blocks.BlockId
+    sakurajosui_b5: Blocks.BlockId
+    sakurajosui_b6: Blocks.BlockId
     shinjuku_b1: Blocks.BlockId
     shinjuku_b2: Blocks.BlockId
-    shinjuku_sakurajosui_down: Blocks.BlockId
-    shinjuku_sakurajosui_up: Blocks.BlockId
     unknown: Blocks.BlockId
     def __init__(self, blockId: _Optional[_Union[Blocks.BlockId, str]] = ...) -> None: ...
 
