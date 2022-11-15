@@ -80,10 +80,11 @@ jobs:
           cache: pip
           cache-dependency-path: ./backend/auto_operation/requirements.dev.txt
       - run: pip install -r requirements.dev.txt
-      - run: black .
+      - run: make format
       - uses: EndBug/add-and-commit@v9
         with:
           message: format by black
+          default_author: github_actions
 
   black-multicaster:
     runs-on: ubuntu-latest

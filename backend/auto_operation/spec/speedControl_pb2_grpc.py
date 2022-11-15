@@ -15,10 +15,10 @@ class SpeedStub(object):
             channel: A grpc.Channel.
         """
         self.ControlSpeed = channel.unary_unary(
-            "/Speed/ControlSpeed",
-            request_serializer=speedControl__pb2.SendSpeed.SerializeToString,
-            response_deserializer=speedControl__pb2.StatusCode.FromString,
-        )
+                '/Speed/ControlSpeed',
+                request_serializer=speedControl__pb2.SendSpeed.SerializeToString,
+                response_deserializer=speedControl__pb2.StatusCode.FromString,
+                )
 
 
 class SpeedServicer(object):
@@ -27,51 +27,40 @@ class SpeedServicer(object):
     def ControlSpeed(self, request, context):
         """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
-        context.set_details("Method not implemented!")
-        raise NotImplementedError("Method not implemented!")
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
 
 
 def add_SpeedServicer_to_server(servicer, server):
     rpc_method_handlers = {
-        "ControlSpeed": grpc.unary_unary_rpc_method_handler(
-            servicer.ControlSpeed,
-            request_deserializer=speedControl__pb2.SendSpeed.FromString,
-            response_serializer=speedControl__pb2.StatusCode.SerializeToString,
-        ),
+            'ControlSpeed': grpc.unary_unary_rpc_method_handler(
+                    servicer.ControlSpeed,
+                    request_deserializer=speedControl__pb2.SendSpeed.FromString,
+                    response_serializer=speedControl__pb2.StatusCode.SerializeToString,
+            ),
     }
-    generic_handler = grpc.method_handlers_generic_handler("Speed", rpc_method_handlers)
+    generic_handler = grpc.method_handlers_generic_handler(
+            'Speed', rpc_method_handlers)
     server.add_generic_rpc_handlers((generic_handler,))
 
 
-# This class is part of an EXPERIMENTAL API.
+ # This class is part of an EXPERIMENTAL API.
 class Speed(object):
     """Missing associated documentation comment in .proto file."""
 
     @staticmethod
-    def ControlSpeed(
-        request,
-        target,
-        options=(),
-        channel_credentials=None,
-        call_credentials=None,
-        insecure=False,
-        compression=None,
-        wait_for_ready=None,
-        timeout=None,
-        metadata=None,
-    ):
-        return grpc.experimental.unary_unary(
-            request,
+    def ControlSpeed(request,
             target,
-            "/Speed/ControlSpeed",
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/Speed/ControlSpeed',
             speedControl__pb2.SendSpeed.SerializeToString,
             speedControl__pb2.StatusCode.FromString,
-            options,
-            channel_credentials,
-            insecure,
-            call_credentials,
-            compression,
-            wait_for_ready,
-            timeout,
-            metadata,
-        )
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)

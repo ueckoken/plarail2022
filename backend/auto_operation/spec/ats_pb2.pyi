@@ -7,7 +7,6 @@ DESCRIPTOR: _descriptor.FileDescriptor
 
 class SendStatusRequest(_message.Message):
     __slots__ = ["sensor"]
-
     class SensorName(int, metaclass=_enum_type_wrapper.EnumTypeWrapper):
         __slots__ = []
     SENSOR_FIELD_NUMBER: _ClassVar[int]
@@ -31,13 +30,10 @@ class SendStatusRequest(_message.Message):
     unknown: SendStatusRequest.SensorName
     wakabadai_d1: SendStatusRequest.SensorName
     wakabadai_d2: SendStatusRequest.SensorName
-    def __init__(
-        self, sensor: _Optional[_Union[SendStatusRequest.SensorName, str]] = ...
-    ) -> None: ...
+    def __init__(self, sensor: _Optional[_Union[SendStatusRequest.SensorName, str]] = ...) -> None: ...
 
 class SendStatusResponse(_message.Message):
     __slots__ = ["response"]
-
     class Response(int, metaclass=_enum_type_wrapper.EnumTypeWrapper):
         __slots__ = []
     FAILED: SendStatusResponse.Response
@@ -45,6 +41,4 @@ class SendStatusResponse(_message.Message):
     SUCCESS: SendStatusResponse.Response
     UNKNOWN: SendStatusResponse.Response
     response: SendStatusResponse.Response
-    def __init__(
-        self, response: _Optional[_Union[SendStatusResponse.Response, str]] = ...
-    ) -> None: ...
+    def __init__(self, response: _Optional[_Union[SendStatusResponse.Response, str]] = ...) -> None: ...
