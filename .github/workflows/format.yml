@@ -78,7 +78,7 @@ jobs:
         with:
           python-version-file: ./backend/auto_operation/.python-version
           cache: pip
-          cache-dependency-path: ./backend/auto_operation/requirements-dev.txt
+          cache-dependency-path: ./backend/auto_operation/requirements.dev.txt
       - run: pip install -r requirements.dev.txt
       - run: black .
       - uses: EndBug/add-and-commit@v9
