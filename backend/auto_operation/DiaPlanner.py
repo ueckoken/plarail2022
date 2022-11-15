@@ -16,12 +16,20 @@ from State import *
 #     arriveSectionId: 3,
 #     destSectionId: 4 }
 #   -> 列車1は駅1で退避. 最低10秒停車. section3に到着しsection4へ出発
-#   
+#
 #   まず、退避はない前提で組む。八王子に行くか調布に行くかは、arriveSectionIdとdestSectionIdを指定して決める
 
 
 class Dia:
-    def __init__(self, trainId: int, stationId: int, wait: bool, stopTime: int, arriveSectionId: int, destSectionId: int):
+    def __init__(
+        self,
+        trainId: int,
+        stationId: int,
+        wait: bool,
+        stopTime: int,
+        arriveSectionId: int,
+        destSectionId: int,
+    ):
         self.trainId = trainId
         self.stationId = stationId
         self.wait = wait
@@ -45,24 +53,36 @@ class DiaPlanner:
         # 初期値として、列車0は橋本経由の経路とする
         self.setDia(0, 0, False, 5, 0, 1)  # 列車0は駅0(新宿下り)に5秒停車、section0着->section1へ出発
         self.setDia(0, 1, False, 5, 1, 2)  # 列車0は駅1(桜上水下り)に5秒停車、section1着->section2へ出発
-        self.setDia(0, 2, False, 5, 3, 4)  # 列車0は駅2(調布下り)に5秒停車、section3(橋本方面)着->section4へ出発
+        self.setDia(
+            0, 2, False, 5, 3, 4
+        )  # 列車0は駅2(調布下り)に5秒停車、section3(橋本方面)着->section4へ出発
         self.setDia(0, 3, False, 5, 4, 5)  # 列車0は駅3(橋本下り)に5秒停車、section4着->section5へ出発
         self.setDia(0, 4, False, 5, 8, 9)  # 列車0は駅4(八王子下り)に5秒停車、section8着->section9へ出発
         self.setDia(0, 5, False, 5, 9, 10)  # 列車0は駅5(八王子上り)に5秒停車、section9着->section10へ出発
         self.setDia(0, 6, False, 5, 5, 6)  # 列車0は駅6(橋本上り)に5秒停車、section5着->section6へ出発
-        self.setDia(0, 7, False, 5, 6, 11)  # 列車0は駅7(調布上り)に5秒停車、section6(橋本方面)着->section11へ出発
-        self.setDia(0, 8, False, 5, 11, 12)  # 列車0は駅8(桜上水上り)に5秒停車、section11着->section12へ出発
+        self.setDia(
+            0, 7, False, 5, 6, 11
+        )  # 列車0は駅7(調布上り)に5秒停車、section6(橋本方面)着->section11へ出発
+        self.setDia(
+            0, 8, False, 5, 11, 12
+        )  # 列車0は駅8(桜上水上り)に5秒停車、section11着->section12へ出発
         self.setDia(0, 9, False, 5, 12, 0)  # 列車0は駅9(新宿上り)に5秒停車、section12着->section0へ出発
         # 初期値として、列車1は八王子経由の経路とする
         self.setDia(1, 0, False, 5, 0, 1)  # 列車1は駅0(新宿下り)に5秒停車、section0着->section1へ出発
         self.setDia(1, 1, False, 5, 1, 2)  # 列車1は駅1(桜上水下り)に5秒停車、section1着->section2へ出発
-        self.setDia(1, 2, False, 5, 7, 8)  # 列車1は駅2(調布下り)に5秒停車、section7(八王子方面)着->section8へ出発
+        self.setDia(
+            1, 2, False, 5, 7, 8
+        )  # 列車1は駅2(調布下り)に5秒停車、section7(八王子方面)着->section8へ出発
         self.setDia(1, 3, False, 5, 4, 5)  # 列車1は駅3(橋本下り)に5秒停車、section4着->section5へ出発
         self.setDia(1, 4, False, 5, 8, 9)  # 列車1は駅4(八王子下り)に5秒停車、section8着->section9へ出発
         self.setDia(1, 5, False, 5, 9, 10)  # 列車1は駅5(八王子上り)に5秒停車、section9着->section10へ出発
         self.setDia(1, 6, False, 5, 5, 6)  # 列車1は駅6(橋本上り)に5秒停車、section5着->section6へ出発
-        self.setDia(1, 7, False, 5, 10, 11)  # 列車1は駅7(調布上り)に5秒停車、section10(八王子方面)着->section11へ出発
-        self.setDia(1, 8, False, 5, 11, 12)  # 列車1は駅8(桜上水上り)に5秒停車、section11着->section12へ出発
+        self.setDia(
+            1, 7, False, 5, 10, 11
+        )  # 列車1は駅7(調布上り)に5秒停車、section10(八王子方面)着->section11へ出発
+        self.setDia(
+            1, 8, False, 5, 11, 12
+        )  # 列車1は駅8(桜上水上り)に5秒停車、section11着->section12へ出発
         self.setDia(1, 9, False, 5, 12, 0)  # 列車1は駅9(新宿上り)に5秒停車、section12着->section0へ出発
 
     # ダイヤ自動更新のルールを記述. 毎update時によぶ
@@ -87,11 +107,24 @@ class DiaPlanner:
 
     # 指定した列車の、指定した駅に対するダイヤを取得
     def getDia(self, trainId: int, stationId: int) -> Dia:
-        result = list(filter(lambda x: (x.trainId == trainId and x.stationId == stationId), self.__diaList))
+        result = list(
+            filter(
+                lambda x: (x.trainId == trainId and x.stationId == stationId),
+                self.__diaList,
+            )
+        )
         return result[0]
 
     # 指定した列車の、指定した駅に対するダイヤを更新
-    def setDia(self, trainId: int, staionId: int, wait: bool, stopTime: int, arriveSectionId: int, destSectionId: int) -> None:
+    def setDia(
+        self,
+        trainId: int,
+        staionId: int,
+        wait: bool,
+        stopTime: int,
+        arriveSectionId: int,
+        destSectionId: int,
+    ) -> None:
         for dia in self.__diaList:
             if dia.trainId == trainId and dia.stationId == staionId:
                 dia.wait = wait

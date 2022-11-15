@@ -7,6 +7,7 @@ DESCRIPTOR: _descriptor.FileDescriptor
 
 class SendSpeed(_message.Message):
     __slots__ = ["Speed", "train"]
+
     class Train(int, metaclass=_enum_type_wrapper.EnumTypeWrapper):
         __slots__ = []
     CHICHIBU: SendSpeed.Train
@@ -22,10 +23,15 @@ class SendSpeed(_message.Message):
     UNKNOWN: SendSpeed.Train
     YOKOSUKA: SendSpeed.Train
     train: SendSpeed.Train
-    def __init__(self, Speed: _Optional[int] = ..., train: _Optional[_Union[SendSpeed.Train, str]] = ...) -> None: ...
+    def __init__(
+        self,
+        Speed: _Optional[int] = ...,
+        train: _Optional[_Union[SendSpeed.Train, str]] = ...,
+    ) -> None: ...
 
 class StatusCode(_message.Message):
     __slots__ = ["code"]
+
     class Code(int, metaclass=_enum_type_wrapper.EnumTypeWrapper):
         __slots__ = []
     CODE_FIELD_NUMBER: _ClassVar[int]

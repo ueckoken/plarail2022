@@ -2,7 +2,15 @@ from enum import Enum
 
 
 class Section:
-    def __init__(self, id: int, sourceJunction: 'Junction', targetJunction: 'Junction', sourceServoState: 'Junction.ServoState', targetServoState: 'Junction.ServoState', length: float):
+    def __init__(
+        self,
+        id: int,
+        sourceJunction: "Junction",
+        targetJunction: "Junction",
+        sourceServoState: "Junction.ServoState",
+        targetServoState: "Junction.ServoState",
+        length: float,
+    ):
         self.id = id
         self.length = length
         self.station = None
@@ -12,7 +20,7 @@ class Section:
         self.targetJunction = targetJunction
         self.targetJunction.addInSection(self, targetServoState)
 
-    def putStation(self, station: 'Station', stationPosition: float):
+    def putStation(self, station: "Station", stationPosition: float):
         self.station = station
         self.stationPosition = stationPosition
 
@@ -24,7 +32,7 @@ class Junction:
         Curve = 2
 
         @staticmethod
-        def invert(input: 'Junction.ServoState'):
+        def invert(input: "Junction.ServoState"):
             if input == Junction.ServoState.Straight:
                 return Junction.ServoState.Curve
             elif input == Junction.ServoState.Curve:
@@ -73,9 +81,13 @@ class Junction:
             self.toggleRequested = True
 
     def setServoState(self, servoState: ServoState):
-        if self.inSectionStraight and self.inSectionCurve:  # IN側に2本入ってくる分岐点の場合inServoStateをセット
+        if (
+            self.inSectionStraight and self.inSectionCurve
+        ):  # IN側に2本入ってくる分岐点の場合inServoStateをセット
             self.inServoState = servoState
-        if self.outSectionStraight and self.outSectionCurve:  # OUT側に2本入ってくる分岐点の場合outServoStateをセット
+        if (
+            self.outSectionStraight and self.outSectionCurve
+        ):  # OUT側に2本入ってくる分岐点の場合outServoStateをセット
             self.outServoState = servoState
 
     def getOutSection(self) -> Section:
@@ -106,7 +118,16 @@ class Station:
 
 class Train:
     class PIDParam:
-        def __init__(self, r: float, INPUT_MIN: int, INPUT_MAX: int, INPUT_START: int, kp: float, ki: float, kd: float):
+        def __init__(
+            self,
+            r: float,
+            INPUT_MIN: int,
+            INPUT_MAX: int,
+            INPUT_START: int,
+            kp: float,
+            ki: float,
+            kd: float,
+        ):
             self.r = r
             self.INPUT_MIN = INPUT_MIN
             self.INPUT_MAX = INPUT_MAX
@@ -115,7 +136,13 @@ class Train:
             self.ki = ki
             self.kd = kd
 
-    def __init__(self, id: int, initialSection: Section, initialPosition: float, pidParam: PIDParam):
+    def __init__(
+        self,
+        id: int,
+        initialSection: Section,
+        initialPosition: float,
+        pidParam: PIDParam,
+    ):
         self.id = id
         self.targetSpeed = 0.0
         self.currentSection = initialSection
@@ -127,6 +154,6 @@ class Train:
     def move(self, delta: float):
         self.prevMileage = self.mileage
         self.mileage += delta
-        if (self.mileage >= self.currentSection.length):  # junctionを通過したとき
+        if self.mileage >= self.currentSection.length:  # junctionを通過したとき
             self.mileage = self.mileage - self.currentSection.length
             self.currentSection = self.currentSection.targetJunction.getOutSection()

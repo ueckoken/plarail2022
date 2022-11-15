@@ -67,7 +67,7 @@ class Communication:
         dt = now - self.prevUpdate
         self.prevUpdate = now
 
-        if (self.simulationMode):
+        if self.simulationMode:
             for trainId in self.deltaMap.keys():
                 self.deltaMap[trainId] += self.simulationSpeedMap[trainId] * dt
 
@@ -81,13 +81,14 @@ class Communication:
                 if esp32 != None:
                     while esp32.in_waiting > 0:
                         # ホールセンサ信号が来たら、車輪0.5回転分deltaを進める
-                        self.deltaMap[trainId] += 2 * pi * self.pidParamMap[trainId].r / 2
+                        self.deltaMap[trainId] += (
+                            2 * pi * self.pidParamMap[trainId].r / 2
+                        )
                         # 同時刻に複数の信号が来る不具合のため、1回のループですべて消費する
                         while esp32.in_waiting > 0:
                             esp32.read()
                 else:  # 実機がない場合はsimulationを更新
                     self.deltaMap[trainId] += self.simulationSpeedMap[trainId] * dt
-
 
             if self.arduino != None:
                 while self.arduino.in_waiting > 0:
@@ -118,7 +119,7 @@ class Communication:
                 else:
                     input = 0
                 if esp32 != None:
-                    esp32.write(input.to_bytes(1,'little'))
+                    esp32.write(input.to_bytes(1, "little"))
             else:  # ESP32の実機がないときはsimulationを更新
                 self.simulationSpeedMap[trainId] = speed
 
@@ -134,6 +135,8 @@ class Communication:
                 servoStateCode = 1
             else:
                 return
-            self.arduino.write(servoId.to_bytes(1, 'little'))
-            self.arduino.write(servoStateCode.to_bytes(1, 'little'))
-            print(f"[Communication.sendToggle] servoId {servoId} toggle to {servoStateCode}")
+            self.arduino.write(servoId.to_bytes(1, "little"))
+            self.arduino.write(servoStateCode.to_bytes(1, "little"))
+            print(
+                f"[Communication.sendToggle] servoId {servoId} toggle to {servoStateCode}"
+            )

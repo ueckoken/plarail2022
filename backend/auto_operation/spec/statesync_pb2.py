@@ -6,41 +6,42 @@ from google.protobuf.internal import builder as _builder
 from google.protobuf import descriptor as _descriptor
 from google.protobuf import descriptor_pool as _descriptor_pool
 from google.protobuf import symbol_database as _symbol_database
+
 # @@protoc_insertion_point(imports)
 
 _sym_db = _symbol_database.Default()
 
 
-
-
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x0fstatesync.proto\"\x8b\x01\n\x17\x43ommand2InternalRequest\x12\x1a\n\x07station\x18\x01 \x01(\x0b\x32\t.Stations\x12-\n\x05state\x18\x02 \x01(\x0e\x32\x1e.Command2InternalRequest.State\"%\n\x05State\x12\x0b\n\x07UNKNOWN\x10\x00\x12\x06\n\x02ON\x10\x01\x12\x07\n\x03OFF\x10\x02\"s\n\x0bRequestSync\x12\x1a\n\x07station\x18\x01 \x01(\x0b\x32\t.Stations\x12!\n\x05state\x18\x02 \x01(\x0e\x32\x12.RequestSync.State\"%\n\x05State\x12\x0b\n\x07UNKNOWN\x10\x00\x12\x06\n\x02ON\x10\x01\x12\x07\n\x03OFF\x10\x02\"j\n\x0cResponseSync\x12(\n\x08response\x18\x01 \x01(\x0e\x32\x16.ResponseSync.Response\"0\n\x08Response\x12\x0b\n\x07UNKNOWN\x10\x00\x12\x0b\n\x07SUCCESS\x10\x01\x12\n\n\x06\x46\x41ILED\x10\x02\"\x82\x01\n\x18\x43ommand2InternalResponse\x12\x34\n\x08response\x18\x01 \x01(\x0e\x32\".Command2InternalResponse.Response\"0\n\x08Response\x12\x0b\n\x07UNKNOWN\x10\x00\x12\x0b\n\x07SUCCESS\x10\x01\x12\n\n\x06\x46\x41ILED\x10\x02\"\x84\x04\n\x08Stations\x12&\n\tstationId\x18\x01 \x01(\x0e\x32\x13.Stations.StationId\"\xcf\x03\n\tStationId\x12\x0b\n\x07unknown\x10\x00\x12\x0f\n\x0bshinjuku_p1\x10\x01\x12\x0f\n\x0bshinjuku_s1\x10\x02\x12\x0f\n\x0bshinjuku_s2\x10\x03\x12\x12\n\x0esakurajosui_p1\x10\x0b\x12\x12\n\x0esakurajosui_p2\x10\x0c\x12\x12\n\x0esakurajosui_s1\x10\r\x12\x12\n\x0esakurajosui_s2\x10\x0e\x12\x12\n\x0esakurajosui_s3\x10\x0f\x12\x12\n\x0esakurajosui_s4\x10\x10\x12\x0c\n\x08\x63hofu_p1\x10\x15\x12\x0c\n\x08\x63hofu_p2\x10\x16\x12\x0c\n\x08\x63hofu_p3\x10\x17\x12\x0c\n\x08\x63hofu_p4\x10\x18\x12\x0c\n\x08\x63hofu_p5\x10\x19\x12\x0c\n\x08\x63hofu_s1\x10\x1a\x12\x0c\n\x08\x63hofu_s2\x10\x1b\x12\x0c\n\x08\x63hofu_s3\x10\x1c\x12\x0c\n\x08\x63hofu_s4\x10\x1d\x12\x10\n\x0chashimoto_s1\x10\x1f\x12\x10\n\x0chashimoto_s2\x10 \x12\x0f\n\x0bhachioji_s1\x10)\x12\x0f\n\x0bhachioji_s2\x10*\x12\x10\n\x0cwakabadai_p1\x10\x33\x12\x10\n\x0cwakabadai_p2\x10\x34\x12\x10\n\x0cwakabadai_s1\x10\x35\x12\x10\n\x0cwakabadai_s2\x10\x36\x32<\n\x07\x43ontrol\x12\x31\n\x10\x43ommand2Internal\x12\x0c.RequestSync\x1a\r.ResponseSync\"\x00\x42\x08Z\x06./specb\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(
+    b'\n\x0fstatesync.proto"\x8b\x01\n\x17\x43ommand2InternalRequest\x12\x1a\n\x07station\x18\x01 \x01(\x0b\x32\t.Stations\x12-\n\x05state\x18\x02 \x01(\x0e\x32\x1e.Command2InternalRequest.State"%\n\x05State\x12\x0b\n\x07UNKNOWN\x10\x00\x12\x06\n\x02ON\x10\x01\x12\x07\n\x03OFF\x10\x02"s\n\x0bRequestSync\x12\x1a\n\x07station\x18\x01 \x01(\x0b\x32\t.Stations\x12!\n\x05state\x18\x02 \x01(\x0e\x32\x12.RequestSync.State"%\n\x05State\x12\x0b\n\x07UNKNOWN\x10\x00\x12\x06\n\x02ON\x10\x01\x12\x07\n\x03OFF\x10\x02"j\n\x0cResponseSync\x12(\n\x08response\x18\x01 \x01(\x0e\x32\x16.ResponseSync.Response"0\n\x08Response\x12\x0b\n\x07UNKNOWN\x10\x00\x12\x0b\n\x07SUCCESS\x10\x01\x12\n\n\x06\x46\x41ILED\x10\x02"\x82\x01\n\x18\x43ommand2InternalResponse\x12\x34\n\x08response\x18\x01 \x01(\x0e\x32".Command2InternalResponse.Response"0\n\x08Response\x12\x0b\n\x07UNKNOWN\x10\x00\x12\x0b\n\x07SUCCESS\x10\x01\x12\n\n\x06\x46\x41ILED\x10\x02"\x84\x04\n\x08Stations\x12&\n\tstationId\x18\x01 \x01(\x0e\x32\x13.Stations.StationId"\xcf\x03\n\tStationId\x12\x0b\n\x07unknown\x10\x00\x12\x0f\n\x0bshinjuku_p1\x10\x01\x12\x0f\n\x0bshinjuku_s1\x10\x02\x12\x0f\n\x0bshinjuku_s2\x10\x03\x12\x12\n\x0esakurajosui_p1\x10\x0b\x12\x12\n\x0esakurajosui_p2\x10\x0c\x12\x12\n\x0esakurajosui_s1\x10\r\x12\x12\n\x0esakurajosui_s2\x10\x0e\x12\x12\n\x0esakurajosui_s3\x10\x0f\x12\x12\n\x0esakurajosui_s4\x10\x10\x12\x0c\n\x08\x63hofu_p1\x10\x15\x12\x0c\n\x08\x63hofu_p2\x10\x16\x12\x0c\n\x08\x63hofu_p3\x10\x17\x12\x0c\n\x08\x63hofu_p4\x10\x18\x12\x0c\n\x08\x63hofu_p5\x10\x19\x12\x0c\n\x08\x63hofu_s1\x10\x1a\x12\x0c\n\x08\x63hofu_s2\x10\x1b\x12\x0c\n\x08\x63hofu_s3\x10\x1c\x12\x0c\n\x08\x63hofu_s4\x10\x1d\x12\x10\n\x0chashimoto_s1\x10\x1f\x12\x10\n\x0chashimoto_s2\x10 \x12\x0f\n\x0bhachioji_s1\x10)\x12\x0f\n\x0bhachioji_s2\x10*\x12\x10\n\x0cwakabadai_p1\x10\x33\x12\x10\n\x0cwakabadai_p2\x10\x34\x12\x10\n\x0cwakabadai_s1\x10\x35\x12\x10\n\x0cwakabadai_s2\x10\x36\x32<\n\x07\x43ontrol\x12\x31\n\x10\x43ommand2Internal\x12\x0c.RequestSync\x1a\r.ResponseSync"\x00\x42\x08Z\x06./specb\x06proto3'
+)
 
 _builder.BuildMessageAndEnumDescriptors(DESCRIPTOR, globals())
-_builder.BuildTopDescriptorsAndMessages(DESCRIPTOR, 'statesync_pb2', globals())
+_builder.BuildTopDescriptorsAndMessages(DESCRIPTOR, "statesync_pb2", globals())
 if _descriptor._USE_C_DESCRIPTORS == False:
 
-  DESCRIPTOR._options = None
-  DESCRIPTOR._serialized_options = b'Z\006./spec'
-  _COMMAND2INTERNALREQUEST._serialized_start=20
-  _COMMAND2INTERNALREQUEST._serialized_end=159
-  _COMMAND2INTERNALREQUEST_STATE._serialized_start=122
-  _COMMAND2INTERNALREQUEST_STATE._serialized_end=159
-  _REQUESTSYNC._serialized_start=161
-  _REQUESTSYNC._serialized_end=276
-  _REQUESTSYNC_STATE._serialized_start=122
-  _REQUESTSYNC_STATE._serialized_end=159
-  _RESPONSESYNC._serialized_start=278
-  _RESPONSESYNC._serialized_end=384
-  _RESPONSESYNC_RESPONSE._serialized_start=336
-  _RESPONSESYNC_RESPONSE._serialized_end=384
-  _COMMAND2INTERNALRESPONSE._serialized_start=387
-  _COMMAND2INTERNALRESPONSE._serialized_end=517
-  _COMMAND2INTERNALRESPONSE_RESPONSE._serialized_start=336
-  _COMMAND2INTERNALRESPONSE_RESPONSE._serialized_end=384
-  _STATIONS._serialized_start=520
-  _STATIONS._serialized_end=1036
-  _STATIONS_STATIONID._serialized_start=573
-  _STATIONS_STATIONID._serialized_end=1036
-  _CONTROL._serialized_start=1038
-  _CONTROL._serialized_end=1098
+    DESCRIPTOR._options = None
+    DESCRIPTOR._serialized_options = b"Z\006./spec"
+    _COMMAND2INTERNALREQUEST._serialized_start = 20
+    _COMMAND2INTERNALREQUEST._serialized_end = 159
+    _COMMAND2INTERNALREQUEST_STATE._serialized_start = 122
+    _COMMAND2INTERNALREQUEST_STATE._serialized_end = 159
+    _REQUESTSYNC._serialized_start = 161
+    _REQUESTSYNC._serialized_end = 276
+    _REQUESTSYNC_STATE._serialized_start = 122
+    _REQUESTSYNC_STATE._serialized_end = 159
+    _RESPONSESYNC._serialized_start = 278
+    _RESPONSESYNC._serialized_end = 384
+    _RESPONSESYNC_RESPONSE._serialized_start = 336
+    _RESPONSESYNC_RESPONSE._serialized_end = 384
+    _COMMAND2INTERNALRESPONSE._serialized_start = 387
+    _COMMAND2INTERNALRESPONSE._serialized_end = 517
+    _COMMAND2INTERNALRESPONSE_RESPONSE._serialized_start = 336
+    _COMMAND2INTERNALRESPONSE_RESPONSE._serialized_end = 384
+    _STATIONS._serialized_start = 520
+    _STATIONS._serialized_end = 1036
+    _STATIONS_STATIONID._serialized_start = 573
+    _STATIONS_STATIONID._serialized_end = 1036
+    _CONTROL._serialized_start = 1038
+    _CONTROL._serialized_end = 1098
 # @@protoc_insertion_point(module_scope)

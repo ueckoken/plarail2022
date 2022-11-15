@@ -16,9 +16,11 @@ class Conf(pydantic.BaseModel):
 
 
 try:
-    conf = Conf(esp_eye_endpoint=os.getenv("ESP_EYE_ENDPOINT"),
-                secret_key=os.getenv("SECRET_KEY"),
-                simulation_mode=os.getenv("SIMURATION_MODE"))
+    conf = Conf(
+        esp_eye_endpoint=os.getenv("ESP_EYE_ENDPOINT"),
+        secret_key=os.getenv("SECRET_KEY"),
+        simulation_mode=os.getenv("SIMURATION_MODE"),
+    )
 except pydantic.ValidationError as e:
     print(e.json)
     raise e
@@ -30,11 +32,11 @@ operation.ato.setEnabled(1, True)
 
 # Flaskウェブサーバの初期化
 app = Flask(__name__)
-app.config['SECRET_KEY'] = conf.secret_key
+app.config["SECRET_KEY"] = conf.secret_key
 socketio = SocketIO(
     app,
     cors_allowed_origins="*",  # ビジュアライザからのアクセスを許可する
-    async_mode='gevent'  # WindowsでCtrl-Cが効かない問題への対処
+    async_mode="gevent",  # WindowsでCtrl-Cが効かない問題への対処
 )
 CORS(app)  # ビジュアライザからのアクセスを許可する
 
@@ -57,34 +59,32 @@ def send_signal_to_browser():
         train_taiken = operation.state.getTrainById(1)  # ラズパイ体験車(id=1)を取得
         signal = operation.signalSystem.getSignal(
             train_taiken.currentSection.id,
-            train_taiken.currentSection.targetJunction.getOutSection(
-            ).id)  # 体験車から見た信号機を取得
-        distance = operation.ato.getDistanceUntilStop(
-            train_taiken)  # 停止位置までの距離を取得
+            train_taiken.currentSection.targetJunction.getOutSection().id,
+        )  # 体験車から見た信号機を取得
+        distance = operation.ato.getDistanceUntilStop(train_taiken)  # 停止位置までの距離を取得
         blocks = {}  # 閉塞を送る。区間0と3に列車がいるなら、{'s0': True, 's3': True} のような文字列
         for train in operation.state.trainList:
             blocks["s" + str(train.currentSection.id)] = True
 
         # websocketで送信
-        socketio.emit('signal_taiken', {
-            'signal': signal.value,
-            'distance': int(distance),
-            'blocks': blocks
-        })
+        socketio.emit(
+            "signal_taiken",
+            {"signal": signal.value, "distance": int(distance), "blocks": blocks},
+        )
 
 
 # ブラウザからwebsocketで速度指令を受け取って、体験車の速度を変更する関数
-@socketio.on('speed')
+@socketio.on("speed")
 def receive_speed_from_browser(json):
     # 体験車のID:1, 受け取ったspeed: json['speed']で速度制御
-    operation.ato.setSpeed(1, json['speed'])
+    operation.ato.setSpeed(1, json["speed"])
 
 
-@app.route('/')
+@app.route("/")
 def index():
     # ブラウザにwebページのデータを返す
     return render_template(
-        'index.html',
+        "index.html",
         esp_eye_ip_addr=conf.esp_eye_endpoint,
         max_speed=Operation.MAXSPEED,
     )
@@ -109,4 +109,4 @@ def reset():
 if __name__ == "__main__":
     thread1 = threading.Thread(target=operation_loop, daemon=True)
     thread1.start()  # 自動運転のオペレーションを開始
-    socketio.run(app, host='0.0.0.0', port=50050)  # Flaskソケットを起動
+    socketio.run(app, host="0.0.0.0", port=50050)  # Flaskソケットを起動
