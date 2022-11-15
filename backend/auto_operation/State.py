@@ -76,7 +76,7 @@ class State:
 
         # junction.belogStation
         self.getJunctionById(2).belongStation = self.getStationById(2)  # junction2は調布下り
-        self.getJunctionById(6).belongStation = self.getSectionById(7)  # junction6は調布上り
+        self.getJunctionById(6).belongStation = self.getStationById(7)  # junction6は調布上り
 
         # PIDParams(r: float, INPUT_MIN: int, INPUT_MAX: int, INPUT_START: int, kp: float, ki: float, kd: float)
         pidParam0 = Train.PIDParam(1.25, 40, 55, 68, 0.70, 0, 0)  # Dr. (maxinput: 40 + 0.70*40cm/s = 68)
@@ -104,16 +104,17 @@ class State:
             train.move(delta)
 
         # センサによる補正
-        # while self.communication.availableSensorSignal() > 0:
-        #     id = self.communication.receiveSensorSignal()
-        #     sensor = self.getSensorById(id)
-        #     # sensorと同じセクションにいるtrainを取得して位置を補正
-        #     train = self.getTrainInSection(sensor.belongSection)
-        #     if train != None:
-        #         train.move(sensor.position - train.mileage)
-        #         print(f"[State.update] sensor {sensor.id}: train{train.id} position calibrated")
-        #     else:
-        #         print(f"[State.update] sensor {sensor.id}: train is not detected")
+        while self.communication.availableSensorSignal() > 0:
+            id = self.communication.receiveSensorSignal()
+            sensor = self.getSensorById(id)
+            # センサに近づいてくる列車で一番近いものを取得
+            approachingTrain = self.getApproachingTrain(sensor.belongSection, sensor.position)
+            if approachingTrain != None:
+                approachingTrain.currentSection = sensor.belongSection
+                approachingTrain.mileage = sensor.position + 1.0  # センサより僅かに先に進める（センサを通過したことを示すため）
+                print(f"[State.update] sensor {sensor.id}: train{train.id} position updated")
+            else:
+                print(f"[State.update] sensor {sensor.id}: train is not detected")
 
     # Stateに格納されている状態を現実世界に送信する. 各種計算後に実行すること
     def sendCommand(self):
@@ -153,6 +154,22 @@ class State:
             return trains[0]
         else:
             return None
+
+    # 指定された地点に近づいてくる列車で一番近いものを取得
+    def getApproachingTrain(self, section: Section, mileage: float) -> Train:
+        testSection = section
+        testedSectionId = []  # 一度確認したセクションIDを記録しておき、2回通ったら抜けられないとみてNoneを返す
+        while True:
+            approachingTrain = self.getTrainInSection(testSection)
+            # testSectionに列車が存在しない、または存在しても引数で指定された地点より進んだ位置にいる（＝遠ざかっている）場合、探索セクションをひとつ前へ
+            if approachingTrain == None or (approachingTrain.currentSection.id == section.id and approachingTrain.mileage > mileage):
+                testedSectionId.append(testSection.id)  # 一度確認したセクションIDを記録しておく
+                testSection = testSection.sourceJunction.getInSection()  # ひとつ前のセクションに検索範囲を移す
+                if testSection.id in testedSectionId:  # すでに確認済みの場合、一周して戻ってしまったので、列車はいない。Noneを返す
+                    return None
+            # 存在すればその列車を返す
+            else:
+                return approachingTrain
 
     # 線路上のある点からある点までの距離を返す
     # 2つの地点が同じsectionに存在する場合、s1>s2だと負の値を返す
