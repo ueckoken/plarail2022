@@ -40,7 +40,10 @@ class DiaPlanner:
         self.__diaList: list[Dia] = []  # ダイヤリスト
         for train in self.__state.trainList:  # trainIdとstationIdからダイヤリストを生成
             for station in self.__state.stationList:
-                self.__diaList.append(Dia(train.id, station.id, False, 10, 0, 0))
+                self.__diaList.append(
+                    # 初期値として適当な値を投入
+                    Dia(train.id, station.id, False, 10, "shinjuku_b2", "shinjuku_b1")
+                )
 
     # ダイヤ自動更新の初期値を記述
     def setup(self) -> None:
