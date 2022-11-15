@@ -24,7 +24,7 @@ jobs:
   #     - name: Set up Python
   #       uses: actions/setup-python@v4
   #       with:
-  #         python-version: "3.11.0"
+  #         python-version-file: backend/auto_operation/.python-version
   #         cache: "pip"
   #     - name: install libraries
   #       run: pip install -r requirements.txt -r requirements.dev.txt
