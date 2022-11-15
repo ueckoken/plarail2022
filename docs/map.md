@@ -26,12 +26,12 @@ shinjuku_d2
 桜上水駅
 sakurajosui_p1
 sakurajosui_p2
+sakurajosui_s0
 sakurajosui_s1
 sakurajosui_s2
 sakurajosui_s3
 sakurajosui_s4
 sakurajosui_s5
-sakurajosui_s6
 sakurajosui_d1
 sakurajosui_d2
 sakurajosui_d3
