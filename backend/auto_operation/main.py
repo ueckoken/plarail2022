@@ -101,12 +101,6 @@ def index():
     )
 
 
-@app.before_first_request
-def before_first_request():
-    # ブラウザへデータを送信するタスクの開始
-    socketio.start_background_task(target=send_signal_to_browser)
-
-
 @atexit.register
 def reset():
     state = operation.state
@@ -118,6 +112,8 @@ def reset():
 
 
 if __name__ == "__main__":
-    thread1 = threading.Thread(target=operation_loop, daemon=True)
-    thread1.start()  # 自動運転のオペレーションを開始
+    operationThread = threading.Thread(target=operation_loop, daemon=True)
+    operationThread.start()  # 自動運転のオペレーションを開始
+    signalThread = threading.Thread(target=send_signal_to_browser, daemon=True)
+    signalThread.start()  # ブラウザへデータを送信するタスクの開始
     socketio.run(app, host="0.0.0.0", port=50050)  # Flaskソケットを起動
