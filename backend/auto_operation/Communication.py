@@ -1,6 +1,7 @@
 import queue
 import time
-from typing import Union
+from dataclasses import dataclass
+from typing import Optional
 
 import serial
 from numpy import pi
@@ -12,21 +13,30 @@ from Components import Junction, Train
 
 
 class Communication:
+    @dataclass
     class TrainSignal:
-        def __init__(self, trainId: int):
-            self.trainId = trainId
+        trainId: int
 
-    def __init__(self, pidParamMap: dict[int, Train.PIDParam]):
+    simulationMode: bool
+    simulationSpeedMap: dict[int, float]
+    pidParamMap: dict[int, Train.PIDParam]
+    prevUpdate: float
+    arduino: Optional[serial.Serial]
+    esp32Map: dict[int, serial.Serial]
+    deltaMap: dict[int, float]
+    sensorSignalBuffer: queue.Queue[int]
+
+    def __init__(self, pidParamMap: dict[int, Train.PIDParam]) -> None:
         self.simulationMode = False
-        self.simulationSpeedMap: dict[int, float] = {}
+        self.simulationSpeedMap = {}
         self.pidParamMap = pidParamMap
         self.prevUpdate = 0.0
         self.arduino = None
-        self.esp32Map: dict[int, serial.Serial] = {}
-        self.deltaMap: dict[int, float] = {}
+        self.esp32Map = {}
+        self.deltaMap = {}
         self.sensorSignalBuffer = queue.Queue()
 
-    def setup(self, simulationMode):
+    def setup(self, simulationMode: bool) -> None:
         self.simulationMode = simulationMode
         if self.simulationMode:
             self.simulationSpeedMap[0] = 0.0
@@ -47,7 +57,7 @@ class Communication:
             self.arduino = serial.Serial("/dev/ttyS0", 9600)
         self.update()
 
-    def update(self):
+    def update(self) -> None:
         now = time.time()
         dt = now - self.prevUpdate
         self.prevUpdate = now
@@ -77,7 +87,7 @@ class Communication:
                 while self.arduino.in_waiting > 0:
                     self.sensorSignalBuffer.put(self.arduino.read())
 
-    def receiveTrainDelta(self, trainId) -> float:
+    def receiveTrainDelta(self, trainId: int) -> float:
         retval = self.deltaMap[trainId]
         self.deltaMap[trainId] = 0.0
         return retval
@@ -89,7 +99,7 @@ class Communication:
         return self.sensorSignalBuffer.get()
 
     # 指定した車両にspeedを送る. PID制御もここで行う
-    def sendSpeed(self, trainId: int, speed: float):
+    def sendSpeed(self, trainId: int, speed: float) -> None:
         if self.simulationMode:
             self.simulationSpeedMap[trainId] = speed
         else:
@@ -107,7 +117,7 @@ class Communication:
                 self.simulationSpeedMap[trainId] = speed
 
     # 指定したポイントに切替命令を送る
-    def sendToggle(self, servoId: int, servoState: Junction.ServoState):
+    def sendToggle(self, servoId: int, servoState: Junction.ServoState) -> None:
         if self.arduino != None:
             servoStateCode = 0
             if servoState == Junction.ServoState.NoServo:
