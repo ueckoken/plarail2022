@@ -47,6 +47,9 @@ def operation_loop():
         print(
             f"[main.operation_loop] t0.section: {operation.state.getTrainById(0).currentSection.id}, t0.mil: {operation.state.getTrainById(0).mileage:.2f}, t0.spd: {operation.state.getTrainById(0).targetSpeed:.2f}, t1.section: {operation.state.getTrainById(1).currentSection.id}, t1.mil: {operation.state.getTrainById(1).mileage:.2f}, t1.spd: {operation.state.getTrainById(1).targetSpeed:.2f}"
         )
+        print(
+            f"[main.operation_loop] t2.section: {operation.state.getTrainById(2).currentSection.id}, t2.mil: {operation.state.getTrainById(2).mileage:.2f}, t2.spd: {operation.state.getTrainById(2).targetSpeed:.2f}, t3.section: {operation.state.getTrainById(3).currentSection.id}, t3.mil: {operation.state.getTrainById(3).mileage:.2f}, t3.spd: {operation.state.getTrainById(3).targetSpeed:.2f}"
+        )
         time.sleep(0.1)
 
 

@@ -9,7 +9,7 @@ class State:
     CURVE_UNIT = 16.9  # 曲線レールの長さ[cm]
 
     # __init__で線路形状と車両の配置を定義する
-    def __init__(self):
+    def __init__(self) -> None:
         self.junctionList: list[Junction] = []
         self.sectionList: list[Section] = []
         self.sensorList: list[Sensor] = []
@@ -17,25 +17,27 @@ class State:
         self.trainList: list[Train] = []
 
         # Junction(id, servoId)
-        self.junctionList.append(Junction(0, -1))
-        self.junctionList.append(Junction(1, -1))
-        self.junctionList.append(Junction(2, 0))  # 対応するサーボID=0
-        self.junctionList.append(Junction(3, -1))
-        self.junctionList.append(Junction(4, -1))
-        self.junctionList.append(Junction(5, -1))
-        self.junctionList.append(Junction(6, -1))
-        self.junctionList.append(Junction(7, -1))
-        self.junctionList.append(Junction(8, -1))
-        self.junctionList.append(Junction(9, -1))
-        self.junctionList.append(Junction(10, -1))
-        self.junctionList.append(Junction(11, -1))
+        self.junctionList.append(Junction("shinjuku_j1", -1))
+        self.junctionList.append(Junction("shinjuku_j2", -1))
+        self.junctionList.append(Junction("sakurajosui_j1", -1))
+        self.junctionList.append(Junction("sakurajosui_j2", -1))
+        self.junctionList.append(Junction("sakurajosui_j3", -1))
+        self.junctionList.append(Junction("sakurajosui_j4", -1))
+        self.junctionList.append(Junction("chofu_j1", -1))
+        self.junctionList.append(Junction("chofu_j2", -1))
+        self.junctionList.append(Junction("chofu_j3", -1))
+        self.junctionList.append(Junction("chofu_j4", -1))
+        self.junctionList.append(Junction("hashimoto_j1", -1))
+        self.junctionList.append(Junction("hashimoto_j2", -1))
+        self.junctionList.append(Junction("hachioji_j1", -1))
+        self.junctionList.append(Junction("hachioji_j2", -1))
 
         # Section(id, sourceJuncction, targetJuncction, sourceServoState, targetServoState, length)
         self.sectionList.append(
             Section(
-                0,
-                self.getJunctionById(11),
-                self.getJunctionById(0),
+                "shinjuku_b1",
+                self.getJunctionById("shinjuku_j1"),
+                self.getJunctionById("sakurajosui_j1"),
                 Junction.ServoState.NoServo,
                 Junction.ServoState.NoServo,
                 State.STRAIGHT_UNIT * 10,
@@ -43,9 +45,9 @@ class State:
         )
         self.sectionList.append(
             Section(
-                1,
-                self.getJunctionById(0),
-                self.getJunctionById(1),
+                "shinjuku_b2",
+                self.getJunctionById("shinjuku_j2"),
+                self.getJunctionById("shinjuku_j1"),
                 Junction.ServoState.NoServo,
                 Junction.ServoState.NoServo,
                 State.STRAIGHT_UNIT * 10,
@@ -53,9 +55,49 @@ class State:
         )
         self.sectionList.append(
             Section(
-                2,
-                self.getJunctionById(1),
-                self.getJunctionById(2),
+                "sakurajosui_b1",
+                self.getJunctionById("sakurajosui_j1"),
+                self.getJunctionById("sakurajosui_j3"),
+                Junction.ServoState.Curve,
+                Junction.ServoState.Curve,
+                State.STRAIGHT_UNIT * 10,
+            )
+        )
+        self.sectionList.append(
+            Section(
+                "sakurajosui_b2",
+                self.getJunctionById("sakurajosui_j1"),
+                self.getJunctionById("sakurajosui_j3"),
+                Junction.ServoState.Straight,
+                Junction.ServoState.Straight,
+                State.STRAIGHT_UNIT * 10,
+            )
+        )
+        self.sectionList.append(
+            Section(
+                "sakurajosui_b3",
+                self.getJunctionById("sakurajosui_j2"),
+                self.getJunctionById("sakurajosui_j4"),
+                Junction.ServoState.Straight,
+                Junction.ServoState.Straight,
+                State.STRAIGHT_UNIT * 10,
+            )
+        )
+        self.sectionList.append(
+            Section(
+                "sakurajosui_b4",
+                self.getJunctionById("sakurajosui_j2"),
+                self.getJunctionById("sakurajosui_j4"),
+                Junction.ServoState.Curve,
+                Junction.ServoState.Curve,
+                State.STRAIGHT_UNIT * 10,
+            )
+        )
+        self.sectionList.append(
+            Section(
+                "sakurajosui_b5",
+                self.getJunctionById("sakurajosui_j3"),
+                self.getJunctionById("chofu_j1"),
                 Junction.ServoState.NoServo,
                 Junction.ServoState.NoServo,
                 State.STRAIGHT_UNIT * 10,
@@ -63,9 +105,19 @@ class State:
         )
         self.sectionList.append(
             Section(
-                3,
-                self.getJunctionById(2),
-                self.getJunctionById(3),
+                "sakurajosui_b6",
+                self.getJunctionById("sakurajosui_j4"),
+                self.getJunctionById("shinjuku_j2"),
+                Junction.ServoState.NoServo,
+                Junction.ServoState.NoServo,
+                State.STRAIGHT_UNIT * 10,
+            )
+        )
+        self.sectionList.append(
+            Section(
+                "chofu_b1",
+                self.getJunctionById("chofu_j1"),
+                self.getJunctionById("chofu_j3"),
                 Junction.ServoState.Straight,
                 Junction.ServoState.NoServo,
                 State.STRAIGHT_UNIT * 10,
@@ -73,39 +125,9 @@ class State:
         )
         self.sectionList.append(
             Section(
-                4,
-                self.getJunctionById(3),
-                self.getJunctionById(4),
-                Junction.ServoState.NoServo,
-                Junction.ServoState.NoServo,
-                State.STRAIGHT_UNIT * 10,
-            )
-        )
-        self.sectionList.append(
-            Section(
-                5,
-                self.getJunctionById(4),
-                self.getJunctionById(5),
-                Junction.ServoState.NoServo,
-                Junction.ServoState.NoServo,
-                State.STRAIGHT_UNIT * 10,
-            )
-        )
-        self.sectionList.append(
-            Section(
-                6,
-                self.getJunctionById(5),
-                self.getJunctionById(6),
-                Junction.ServoState.NoServo,
-                Junction.ServoState.Curve,
-                State.STRAIGHT_UNIT * 10,
-            )
-        )
-        self.sectionList.append(
-            Section(
-                7,
-                self.getJunctionById(2),
-                self.getJunctionById(7),
+                "chofu_b2",
+                self.getJunctionById("chofu_j1"),
+                self.getJunctionById("chofu_j4"),
                 Junction.ServoState.Curve,
                 Junction.ServoState.NoServo,
                 State.STRAIGHT_UNIT * 10,
@@ -113,9 +135,9 @@ class State:
         )
         self.sectionList.append(
             Section(
-                8,
-                self.getJunctionById(7),
-                self.getJunctionById(8),
+                "chofu_b3",
+                self.getJunctionById("chofu_j3"),
+                self.getJunctionById("hashimoto_j1"),
                 Junction.ServoState.NoServo,
                 Junction.ServoState.NoServo,
                 State.STRAIGHT_UNIT * 10,
@@ -123,9 +145,9 @@ class State:
         )
         self.sectionList.append(
             Section(
-                9,
-                self.getJunctionById(8),
-                self.getJunctionById(9),
+                "chofu_b4",
+                self.getJunctionById("chofu_j4"),
+                self.getJunctionById("hachioji_j1"),
                 Junction.ServoState.NoServo,
                 Junction.ServoState.NoServo,
                 State.STRAIGHT_UNIT * 10,
@@ -133,31 +155,51 @@ class State:
         )
         self.sectionList.append(
             Section(
-                10,
-                self.getJunctionById(9),
-                self.getJunctionById(6),
+                "chofu_b5",
+                self.getJunctionById("chofu_j2"),
+                self.getJunctionById("sakurajosui_j2"),
+                Junction.ServoState.NoServo,
+                Junction.ServoState.NoServo,
+                State.STRAIGHT_UNIT * 10,
+            )
+        )
+        self.sectionList.append(
+            Section(
+                "hashimoto_b1",
+                self.getJunctionById("hashimoto_j1"),
+                self.getJunctionById("hashimoto_j2"),
+                Junction.ServoState.NoServo,
+                Junction.ServoState.NoServo,
+                State.STRAIGHT_UNIT * 10,
+            )
+        )
+        self.sectionList.append(
+            Section(
+                "hashimoto_b2",
+                self.getJunctionById("hashimoto_j2"),
+                self.getJunctionById("chofu_j2"),
+                Junction.ServoState.NoServo,
+                Junction.ServoState.Curve,
+                State.STRAIGHT_UNIT * 10,
+            )
+        )
+        self.sectionList.append(
+            Section(
+                "hachioji_b1",
+                self.getJunctionById("hachioji_j1"),
+                self.getJunctionById("hachioji_j2"),
+                Junction.ServoState.NoServo,
+                Junction.ServoState.NoServo,
+                State.STRAIGHT_UNIT * 10,
+            )
+        )
+        self.sectionList.append(
+            Section(
+                "hachioji_b2",
+                self.getJunctionById("hachioji_j2"),
+                self.getJunctionById("chofu_j2"),
                 Junction.ServoState.NoServo,
                 Junction.ServoState.Straight,
-                State.STRAIGHT_UNIT * 10,
-            )
-        )
-        self.sectionList.append(
-            Section(
-                11,
-                self.getJunctionById(6),
-                self.getJunctionById(10),
-                Junction.ServoState.NoServo,
-                Junction.ServoState.NoServo,
-                State.STRAIGHT_UNIT * 10,
-            )
-        )
-        self.sectionList.append(
-            Section(
-                12,
-                self.getJunctionById(10),
-                self.getJunctionById(11),
-                Junction.ServoState.NoServo,
-                Junction.ServoState.NoServo,
                 State.STRAIGHT_UNIT * 10,
             )
         )
@@ -167,58 +209,80 @@ class State:
         # self.sensorList.append(Sensor(1, self.getSectionById(4), State.STRAIGHT_UNIT * 2 + State.CURVE_UNIT * 2))
 
         # Station(id, name)
-        self.stationList.append(Station(0, "Shinjuku-down"))
-        self.stationList.append(Station(1, "Sakurajosui-down"))
-        self.stationList.append(Station(2, "Chofu-down"))
-        self.stationList.append(Station(3, "Hashimoto-down"))
-        self.stationList.append(Station(4, "Hachioji-down"))
-        self.stationList.append(Station(5, "Hachioji-up"))
-        self.stationList.append(Station(6, "Hashimoto-up"))
-        self.stationList.append(Station(7, "Chofu-up"))
-        self.stationList.append(Station(8, "Sakurajosui-up"))
-        self.stationList.append(Station(9, "Shinjuku-up"))
+        self.stationList.append(Station("shinjuku_up", "shinjuku_up"))
+        self.stationList.append(Station("shinjuku_down", "shinjuku_down"))
+        self.stationList.append(Station("sakurajosui_up", "sakurajosui_up"))
+        self.stationList.append(Station("sakurajosui_down", "sakurajosui_down"))
+        self.stationList.append(Station("chofu_up", "chofu_up"))
+        self.stationList.append(Station("chofu_down", "chofu_down"))
+        self.stationList.append(Station("hashimoto_up", "hashimoto_up"))
+        self.stationList.append(Station("hashimoto_down", "hashimoto_down"))
+        self.stationList.append(Station("hachioji_up", "hachioji_up"))
+        self.stationList.append(Station("hachioji_down", "hachioji_down"))
 
         # section.putStation(station, stationPosition)
-        self.getSectionById(0).putStation(
-            self.getStationById(0), State.STRAIGHT_UNIT * 8
-        )  # section0: 新宿下り
-        self.getSectionById(1).putStation(
-            self.getStationById(1), State.STRAIGHT_UNIT * 8
-        )  # section1: 桜上水下り
-        self.getSectionById(3).putStation(
-            self.getStationById(2), State.STRAIGHT_UNIT * 8
-        )  # section3: 調布下り1番:橋本方面
-        self.getSectionById(4).putStation(
-            self.getStationById(3), State.STRAIGHT_UNIT * 8
-        )  # section4: 橋本下り
-        self.getSectionById(5).putStation(
-            self.getStationById(6), State.STRAIGHT_UNIT * 8
-        )  # section5: 橋本上り
-        self.getSectionById(6).putStation(
-            self.getStationById(7), State.STRAIGHT_UNIT * 8
-        )  # section6: 調布上り3番:橋本方面
-        self.getSectionById(7).putStation(
-            self.getStationById(2), State.STRAIGHT_UNIT * 8
-        )  # section7: 調布下り2番:八王子方面
-        self.getSectionById(8).putStation(
-            self.getStationById(4), State.STRAIGHT_UNIT * 8
-        )  # section8: 八王子下り
-        self.getSectionById(9).putStation(
-            self.getStationById(5), State.STRAIGHT_UNIT * 8
-        )  # section9: 八王子上り
-        self.getSectionById(10).putStation(
-            self.getStationById(7), State.STRAIGHT_UNIT * 8
-        )  # section10: 調布上り4番:八王子方面
-        self.getSectionById(11).putStation(
-            self.getStationById(8), State.STRAIGHT_UNIT * 8
-        )  # section11: 桜上水上り
-        self.getSectionById(12).putStation(
-            self.getStationById(9), State.STRAIGHT_UNIT * 8
-        )  # section12: 新宿上り
+        self.getSectionById("sakurajosui_b6").putStation(
+            self.getStationById("shinjuku_up"), State.STRAIGHT_UNIT * 8
+        )  # 新宿上り
+        self.getSectionById("shinjuku_b2").putStation(
+            self.getStationById("shinjuku_down"), State.STRAIGHT_UNIT * 8
+        )  # 新宿下り
+        self.getSectionById("sakurajosui_b1").putStation(
+            self.getStationById("sakurajosui_down"), State.STRAIGHT_UNIT * 8
+        )  # 桜上水下り1番線
+        self.getSectionById("sakurajosui_b2").putStation(
+            self.getStationById("sakurajosui_down"), State.STRAIGHT_UNIT * 8
+        )  # 桜上水下り2番線
+        self.getSectionById("chofu_b1").putStation(
+            self.getStationById("chofu_down"), State.STRAIGHT_UNIT * 8
+        )  # 調布下り1番線
+        self.getSectionById("chofu_b2").putStation(
+            self.getStationById("chofu_down"), State.STRAIGHT_UNIT * 8
+        )  # 調布下り2番線
+        self.getSectionById("chofu_b4").putStation(
+            self.getStationById("hachioji_down"), State.STRAIGHT_UNIT * 8
+        )  # 八王子下り
+        self.getSectionById("hachioji_b1").putStation(
+            self.getStationById("hachioji_up"), State.STRAIGHT_UNIT * 8
+        )  # 八王子上り
+        self.getSectionById("chofu_b3").putStation(
+            self.getStationById("hashimoto_down"), State.STRAIGHT_UNIT * 8
+        )  # 橋本下り
+        self.getSectionById("hashimoto_b1").putStation(
+            self.getStationById("hashimoto_up"), State.STRAIGHT_UNIT * 8
+        )  # 橋本上り
+        self.getSectionById("hachioji_b2").putStation(
+            self.getStationById("chofu_up"), State.STRAIGHT_UNIT * 8
+        )  # 調布上り4番線
+        self.getSectionById("hashimoto_b2").putStation(
+            self.getStationById("chofu_up"), State.STRAIGHT_UNIT * 8
+        )  # 調布上り3番線
+        self.getSectionById("sakurajosui_b3").putStation(
+            self.getStationById("sakurajosui_up"), State.STRAIGHT_UNIT * 8
+        )  # 桜上水上り3番線
+        self.getSectionById("sakurajosui_b4").putStation(
+            self.getStationById("sakurajosui_up"), State.STRAIGHT_UNIT * 8
+        )  # 桜上水上り4番線
 
         # junction.belogStation
-        self.getJunctionById(2).belongStation = self.getStationById(2)  # junction2は調布下り
-        self.getJunctionById(6).belongStation = self.getSectionById(7)  # junction6は調布上り
+        self.getJunctionById("chofu_j1").belongStation = self.getStationById(
+            "chofu_down"
+        )  # junction2は調布下り
+        self.getJunctionById("chofu_j2").belongStation = self.getStationById(
+            "chofu_up"
+        )  # junction6は調布上り
+        self.getJunctionById("sakurajosui_j1").belongStation = self.getStationById(
+            "sakurajosui_down"
+        )
+        self.getJunctionById("sakurajosui_j3").belongStation = self.getStationById(
+            "sakurajosui_down"
+        )
+        self.getJunctionById("sakurajosui_j2").belongStation = self.getStationById(
+            "sakurajosui_up"
+        )
+        self.getJunctionById("sakurajosui_j4").belongStation = self.getStationById(
+            "sakurajosui_up"
+        )
 
         # PIDParams(r: float, INPUT_MIN: int, INPUT_MAX: int, INPUT_START: int, kp: float, ki: float, kd: float)
         pidParam0 = Train.PIDParam(
@@ -230,21 +294,53 @@ class State:
 
         # Train(initialSection, initialPosition)
         self.trainList.append(
-            Train(0, self.getSectionById(0), State.STRAIGHT_UNIT * 4, pidParam0)
-        )  # 列車0をsection0に配置
+            Train(
+                0,
+                self.getSectionById("shinjuku_b2"),
+                State.STRAIGHT_UNIT * 4,
+                pidParam0,
+            )
+        )  # 列車0を新宿b2に配置
         self.trainList.append(
-            Train(1, self.getSectionById(8), State.STRAIGHT_UNIT * 4, pidParam1)
-        )  # 列車1をsection8(八王子の手前)に配置:DiaPlannerで八王子行に指定しているため
+            Train(
+                1,
+                self.getSectionById("hachioji_b1"),
+                State.STRAIGHT_UNIT * 4,
+                pidParam1,
+            )
+        )  # 列車1を八王子b1(八王子の手前)に配置:DiaPlannerで八王子行に指定しているため
+        self.trainList.append(
+            Train(
+                2,
+                self.getSectionById("hashimoto_b1"),
+                State.STRAIGHT_UNIT * 4,
+                pidParam1,
+            )
+        )  # 列車2を橋本b2に配置
+        self.trainList.append(
+            Train(
+                3,
+                self.getSectionById("sakurajosui_b4"),
+                State.STRAIGHT_UNIT * 4,
+                pidParam1,
+            )
+        )  # 列車3を桜上水b4に配置
 
         # start communication
         self.communication = Communication({0: pidParam0, 1: pidParam1})
 
         # 初回の着発番線に合わせてここにtoggleを書く
         self.communication.sendToggle(
-            self.getJunctionById(2).servoId, Junction.ServoState.Straight
+            self.getJunctionById("sakurajosui_j1").servoId, Junction.ServoState.Straight
         )
         self.communication.sendToggle(
-            self.getJunctionById(6).servoId, Junction.ServoState.Straight
+            self.getJunctionById("sakurajosui_j2").servoId, Junction.ServoState.Straight
+        )
+        self.communication.sendToggle(
+            self.getJunctionById("chofu_j1").servoId, Junction.ServoState.Curve
+        )
+        self.communication.sendToggle(
+            self.getJunctionById("chofu_j2").servoId, Junction.ServoState.Straight
         )
 
     # 現実世界の状態を取得しStateに反映する. 定期的に実行すること
@@ -282,10 +378,10 @@ class State:
                 junction.toggleRequested = False
                 # inServoStateは、実際にはサーボモーターがついていないので送信しない
 
-    def getJunctionById(self, id: int) -> Junction:
+    def getJunctionById(self, id: Junction.JunctionId) -> Junction:
         return list(filter(lambda item: item.id == id, self.junctionList))[0]
 
-    def getSectionById(self, id: int) -> Section:
+    def getSectionById(self, id: Section.SectionId) -> Section:
         return list(filter(lambda item: item.id == id, self.sectionList))[0]
 
     def getSensorById(self, id: int) -> Sensor:
@@ -295,10 +391,10 @@ class State:
             )
         )[0]
 
-    def getStationById(self, id: int) -> Station:
+    def getStationById(self, id: Station.StationId) -> Station:
         return list(filter(lambda item: item.id == id, self.stationList))[0]
 
-    def getStationBySectionId(self, sectionId: int) -> Station:
+    def getStationBySectionId(self, sectionId: Section.SectionId) -> Station:
         return self.getSectionById(sectionId).station
 
     def getTrainById(self, id: int) -> Train:
