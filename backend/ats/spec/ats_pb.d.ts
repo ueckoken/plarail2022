@@ -30,18 +30,17 @@ export namespace SendStatusRequest {
     SAKURAJOSUI_D2: 12;
     SAKURAJOSUI_D3: 13;
     SAKURAJOSUI_D4: 14;
+    SAKURAJOSUI_D5: 15;
+    SAKURAJOSUI_D6: 16;
     CHOFU_D1: 21;
     CHOFU_D2: 22;
     CHOFU_D3: 23;
     CHOFU_D4: 24;
     CHOFU_D5: 25;
-    CHOFU_D6: 26;
     HASHIMOTO_D1: 31;
     HASHIMOTO_D2: 32;
     HACHIOJI_D1: 41;
     HACHIOJI_D2: 42;
-    WAKABADAI_D1: 51;
-    WAKABADAI_D2: 52;
   }
 
   export const SensorName: SensorNameMap;
