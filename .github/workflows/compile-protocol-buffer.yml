@@ -2,10 +2,6 @@ name: compile_PB
 
 on:
   push:
-    paths:
-      - "backend/proto/*"
-      - ".github/workflows/compile-protocol-buffer.yml"
-      - "backend/Makefile"
     branches-ignore:
       - "main"
       - "deployment"
