@@ -5,18 +5,23 @@ services:
       dockerfile: ./Dockerfile
     links:
       - internal
+      # - ats
     depends_on:
       - internal
     ports:
       - "8080:8080"
       - "9100:9100"
     environment:
-      - "CLIENTSIDESERVER_PORT=8080"
-      - "INTERNALSERVER_ADDR=internal:54321"
-      - "CLIENTSIDESERVER_ATSADDRESS=internal:54321"
+      - "CLIENTSIDESERVER_PORT=8080" #specify websocket server listening port
+      - "INTERNALSERVER_ADDR=internal:54321" #specify internal address
+      - "CLIENTSIDESERVER_ATSADDRESS=ats:54321" #specify ATS address
   internal:
     build:
       context: ./internal
       dockerfile: ./Dockerfile
     ports:
       - "6060:6060"
+  #ats: #TODO: create this service
+  #  build:
+  #    context: ./ats
+  #    dockerfile: ./Dockerfile
