@@ -15,7 +15,6 @@ class SendStatusRequest(_message.Message):
     chofu_d3: SendStatusRequest.SensorName
     chofu_d4: SendStatusRequest.SensorName
     chofu_d5: SendStatusRequest.SensorName
-    chofu_d6: SendStatusRequest.SensorName
     hachioji_d1: SendStatusRequest.SensorName
     hachioji_d2: SendStatusRequest.SensorName
     hashimoto_d1: SendStatusRequest.SensorName
@@ -24,12 +23,12 @@ class SendStatusRequest(_message.Message):
     sakurajosui_d2: SendStatusRequest.SensorName
     sakurajosui_d3: SendStatusRequest.SensorName
     sakurajosui_d4: SendStatusRequest.SensorName
+    sakurajosui_d5: SendStatusRequest.SensorName
+    sakurajosui_d6: SendStatusRequest.SensorName
     sensor: SendStatusRequest.SensorName
     shinjuku_d1: SendStatusRequest.SensorName
     shinjuku_d2: SendStatusRequest.SensorName
     unknown: SendStatusRequest.SensorName
-    wakabadai_d1: SendStatusRequest.SensorName
-    wakabadai_d2: SendStatusRequest.SensorName
     def __init__(self, sensor: _Optional[_Union[SendStatusRequest.SensorName, str]] = ...) -> None: ...
 
 class SendStatusResponse(_message.Message):
