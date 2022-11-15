@@ -5,6 +5,7 @@ from typing import Literal, Optional
 
 StopId = Literal[
     'shinjuku_s1', 'shinjuku_s2',
+    'sakurajosui_s0',
     'sakurajosui_s1', 'sakurajosui_s2', 'sakurajosui_s3', 'sakurajosui_s4',
     'sakurajosui_s5',
     'chofu_s0',
