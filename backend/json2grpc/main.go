@@ -17,20 +17,24 @@ import (
 )
 
 type Config struct {
-	internalEndpoint string
-	listenAddr       string
+	InternalEndpoint string `required:"true"`
+	ListenAddr       string `default:":8080"`
 }
 
 func main() {
 	var conf Config
 	envconfig.MustProcess("", &conf)
-	conn, err := grpc.Dial(
-		conf.internalEndpoint,
+	baseCtx := context.Background()
+	grpcCtx, cancel := context.WithTimeout(baseCtx, 5*time.Second)
+	defer cancel()
+	conn, err := grpc.DialContext(
+		grpcCtx,
+		conf.InternalEndpoint,
 		grpc.WithTransportCredentials(insecure.NewCredentials()),
 		grpc.WithBlock(),
 	)
 	if err != nil {
-		log.Fatal("Connection failed")
+		log.Println("Connection failed in grpc conn initializing", err)
 		return
 	}
 	defer conn.Close()
@@ -38,7 +42,7 @@ func main() {
 	mux := http.NewServeMux()
 	mux.Handle("/sensor", proxy.NewHandler(client))
 	srv := &http.Server{
-		Addr:              conf.listenAddr,
+		Addr:              conf.ListenAddr,
 		Handler:           mux,
 		ReadHeaderTimeout: 3 * time.Second,
 		ReadTimeout:       5 * time.Second,
@@ -53,9 +57,9 @@ func main() {
 	signal.Notify(c, os.Interrupt)
 	<-c
 
-	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	shutdownCtx, cancel := context.WithTimeout(baseCtx, 5*time.Second)
 	defer cancel()
-	if err := srv.Shutdown(ctx); err != nil {
+	if err := srv.Shutdown(shutdownCtx); err != nil {
 		log.Print(err)
 	}
 }

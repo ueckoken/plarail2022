@@ -13,6 +13,24 @@ jobs:
         run: |
           bash <(curl https://raw.githubusercontent.com/rhysd/actionlint/main/scripts/download-actionlint.bash)
           ./actionlint -color -shellcheck=
+  # backend-auto-operation:
+  #   defaults:
+  #     run:
+  #       working-directory: ./backend/auto_operation
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: checkout
+  #       uses: actions/checkout@v3
+  #     - name: Set up Python
+  #       uses: actions/setup-python@v4
+  #       with:
+  #         python-version-file: backend/auto_operation/.python-version
+  #         cache: "pip"
+  #     - name: install libraries
+  #       run: pip install -r requirements.txt -r requirements.dev.txt
+  #     - name: Run test
+  #       run: |-
+  #         make test
   backend-external:
     defaults:
       run:
@@ -32,6 +50,7 @@ jobs:
         with:
           version: v1.50
           working-directory: ./backend/external/
+          skip-pkg-cache: true
       - name: Build Go binary
         run: |-
           make build
@@ -57,6 +76,7 @@ jobs:
         with:
           version: v1.50
           working-directory: ./backend/internal/
+          skip-pkg-cache: true
       - name: Build Go binary
         run: |-
           make build
@@ -84,6 +104,7 @@ jobs:
         with:
           version: v1.50
           working-directory: ./backend/json2grpc/
+          skip-pkg-cache: true
       - name: Build Go binary
         run: |-
           make build
@@ -127,6 +148,7 @@ jobs:
         with:
           version: v1.50
           working-directory: ./backend/positioning/
+          skip-pkg-cache: true
       - name: Build Go binary
         run: |-
           make build
@@ -169,6 +191,7 @@ jobs:
         with:
           version: v1.50
           working-directory: ./backend/speed/
+          skip-pkg-cache: true
       - name: Build Go binary
         run: |-
           make buildGoBin
