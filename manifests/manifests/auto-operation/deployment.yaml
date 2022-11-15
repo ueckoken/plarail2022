@@ -1,0 +1,20 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: auto-operation
+  namespace: plarail2021
+spec:
+  selector:
+    matchLabels:
+      app: auto-operation
+  template:
+    metadata:
+      labels:
+        app: auto-operation
+    spec:
+      containers:
+        - name: soft-backend-auto-operation
+          image: ghcr.io/ueckoken/plarail2022-auto-operation:58f9e55-1667923961
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 50050

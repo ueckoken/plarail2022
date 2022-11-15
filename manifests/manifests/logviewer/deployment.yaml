@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: logviewer
+  namespace: plarail2021
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: logviewer
+  template:
+    metadata:
+      labels:
+        app: logviewer
+    spec:
+      containers:
+      - image: asia-northeast1-docker.pkg.dev/gotti-dev/plarail-logviewer/logviewer-401bd39657a23ac59c9a6cfad7dfbc52@sha256:1efc8ec1469c5c12902f775489546609c99e3d4f09d8abf695c799b98d861333
+        name: logviewer
+        ports:
+        - containerPort: 8080
+          name: http
+          protocol: TCP
+        resources:
+          limits:
+            cpu: 500m
+            memory: 128Mi
+          requests:
+            cpu: 5m
+            memory: 64Mi
+      serviceAccountName: logviewer

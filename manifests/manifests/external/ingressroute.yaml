@@ -6,7 +6,9 @@ metadata:
 spec:
   routes:
   - kind: Rule
-    match: Host(`control.chofufes2022.gotti.dev`)
+    match: Host(`control.chofufes2022.ueckoken.club`)
     services:
-    - name: plarail2021-soft-backend-external
+    - name: soft-backend-external
       port: 80
+  tls:
+    secretName: cloudflare-cert

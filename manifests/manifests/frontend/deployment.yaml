@@ -1,19 +1,19 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: plarail2021-soft-frontend
+  name: soft-frontend
   namespace: plarail2021
 spec:
   selector:
     matchLabels:
-      app: plarail2021-soft-frontend
+      app: soft-frontend
   template:
     metadata:
       labels:
-        app: plarail2021-soft-frontend
+        app: soft-frontend
     spec:
       containers:
-        - name: plarail2021-soft-frontend
+        - name: plarail2022-soft-frontend
           image: ghcr.io/ueckoken/plarail2022-frontend:dee27aa-1665538636 # {"$imagepolicy": "plarail2021:frontend"}
           imagePullPolicy: Always
           ports:

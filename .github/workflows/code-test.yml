@@ -32,6 +32,7 @@ jobs:
         with:
           version: v1.50
           working-directory: ./backend/external/
+          skip-pkg-cache: true
       - name: Build Go binary
         run: |-
           make build
@@ -57,6 +58,7 @@ jobs:
         with:
           version: v1.50
           working-directory: ./backend/internal/
+          skip-pkg-cache: true
       - name: Build Go binary
         run: |-
           make build
@@ -84,6 +86,7 @@ jobs:
         with:
           version: v1.50
           working-directory: ./backend/json2grpc/
+          skip-pkg-cache: true
       - name: Build Go binary
         run: |-
           make build
@@ -127,6 +130,7 @@ jobs:
         with:
           version: v1.50
           working-directory: ./backend/positioning/
+          skip-pkg-cache: true
       - name: Build Go binary
         run: |-
           make build
@@ -169,6 +173,7 @@ jobs:
         with:
           version: v1.50
           working-directory: ./backend/speed/
+          skip-pkg-cache: true
       - name: Build Go binary
         run: |-
           make buildGoBin
