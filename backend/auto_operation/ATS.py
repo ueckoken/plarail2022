@@ -32,11 +32,13 @@ class ATS:
     # 指定した列車に対して速度を指令する. このとき、衝突しないような速度に変えて送信する
     def setSpeedCommand(self, trainId: int, speedCommand: float):
         train = self.__state.getTrainById(trainId)
-        signal = self.__signalSystem.getSignal(
-            train.currentSection.id,
-            train.currentSection.targetJunction.getOutSection().id,
-        )
-        if signal.value == "R":  # 赤信号の場合、信号までの距離から、非常停止できる最高速度を計算
+        if train.currentSection is None:
+            return
+        outSection = train.currentSection.targetJunction.getOutSection()
+        if outSection is None:
+            return
+        signal = self.__signalSystem.getSignal(train.currentSection.id, outSection.id)
+        if signal is not None and signal.value == "R":  # 赤信号の場合、信号までの距離から、非常停止できる最高速度を計算
             distance = self.__state.getDistance(
                 train.currentSection,
                 train.mileage,
