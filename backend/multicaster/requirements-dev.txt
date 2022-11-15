@@ -1,3 +1,0 @@
--r requirements.txt
-black==22.10.0
-mypy==0.982

@@ -1,8 +1,0 @@
-apiVersion: image.toolkit.fluxcd.io/v1beta1
-kind: ImageRepository
-metadata:
-  name: frontend-python
-  namespace: plarail2021
-spec:
-  image: ghcr.io/ueckoken/plarail2022-frontend-python
-  interval: 1m0s
