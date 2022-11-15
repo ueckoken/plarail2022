@@ -58,7 +58,7 @@ class PointSwitcher:
         self,
         junction: Junction,
         maxSearchNum: int = -1,
-        originalJunction: Junction = None,
+        originalJunction: Optional[Junction] = None,
     ) -> Optional[Train]:
         """
         指定したjunctionに一番先に到着する列車を取得する。指定したjunctionの手前に向かってセクションを辿っていき、列車を見つけたらそれを返す

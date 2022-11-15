@@ -410,7 +410,7 @@ class State:
         mileage1: float,
         s2: Section,
         mileage2: float,
-        originalStartSection: Section = None,
+        originalStartSection: Optional[Section] = None,
     ) -> float:
         distance = 0.0
         testSection = s1
