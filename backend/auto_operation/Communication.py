@@ -1,6 +1,7 @@
 import platform
 import queue
 import time
+from queue import Queue
 
 import serial
 from numpy import pi
@@ -24,7 +25,7 @@ class Communication:
         self.arduino = None
         self.esp32Map: dict[int, serial.Serial] = {}
         self.deltaMap: dict[int, float] = {}
-        self.sensorSignalBuffer = queue.Queue()
+        self.sensorSignalBuffer: Queue[int] = queue.Queue()
 
     def setup(self, simulationMode):
         self.simulationMode = simulationMode

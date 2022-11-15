@@ -1,3 +1,5 @@
+from typing import Optional
+
 from Communication import Communication
 from Components import Junction, Section, Sensor, Station, Train
 
@@ -379,24 +381,23 @@ class State:
         return list(filter(lambda item: item.id == id, self.sectionList))[0]
 
     def getSensorById(self, id: int) -> Sensor:
-        return list(filter(lambda item: item.id == int.from_bytes(id, "little"), self.sensorList))[
-            0
-        ]
+        # https://github.com/python/mypy/issues/12682
+        return list(filter(lambda item: item.id == int.from_bytes(id, "little"), self.sensorList))[0]  # type: ignore
 
     def getStationById(self, id: Station.StationId) -> Station:
         return list(filter(lambda item: item.id == id, self.stationList))[0]
 
-    def getStationBySectionId(self, sectionId: Section.SectionId) -> Station:
+    def getStationBySectionId(self, sectionId: Section.SectionId) -> Optional[Station]:
         return self.getSectionById(sectionId).station
 
     def getTrainById(self, id: int) -> Train:
         return list(filter(lambda item: item.id == id, self.trainList))[0]
 
     # 指定されたsectionにいる列車を返す。列車がいなければNoneを返す
-    def getTrainInSection(self, section: Section) -> Train:
-        trains = list(filter(lambda train: train.currentSection.id == section.id, self.trainList))
-        if trains != []:
-            return trains[0]
+    def getTrainInSection(self, section: Section) -> Optional[Train]:
+        trains = list(filter(lambda train: train.currentSection.id == section.id, self.trainList))  # type: ignore
+        if len(trains) != 0:
+            return trains[0]  # type: ignore
         else:
             return None
 
@@ -410,7 +411,7 @@ class State:
         mileage2: float,
         originalStartSection: Section = None,
     ) -> float:
-        distance = 0
+        distance = 0.0
         testSection = s1
 
         # 何も見つけられずに最初の地点に戻ってきてしまった場合、終了
@@ -421,18 +422,23 @@ class State:
             originalStartSection = s1
         while testSection.id != s2.id:
             distance += testSection.length
-            if testSection.targetJunction.outSectionCurve is None:
-                testSection = testSection.targetJunction.getOutSection()
+            next = testSection.targetJunction.getOutSection()
+            if testSection.targetJunction.outSectionCurve is None and next is not None:
+                testSection = next
             else:
+                straight = testSection.targetJunction.outSectionStraight
+                curve = testSection.targetJunction.outSectionCurve
+                if straight is None or curve is None:
+                    continue
                 distanceFrom2OutJucntionToS2ViaStraight = self.getDistance(
-                    testSection.targetJunction.outSectionStraight,
+                    straight,
                     0,
                     s2,
                     mileage2,
                     originalStartSection,
                 )
                 distanceFrom2OutJucntionToS2ViaCurve = self.getDistance(
-                    testSection.targetJunction.outSectionCurve,
+                    curve,
                     0,
                     s2,
                     mileage2,
