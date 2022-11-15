@@ -4,7 +4,6 @@ from dataclasses import dataclass
 from typing import Optional
 
 import serial
-from numpy import pi
 
 from Components import Junction, Train
 
