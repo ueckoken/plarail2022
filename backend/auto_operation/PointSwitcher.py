@@ -85,9 +85,7 @@ class PointSwitcher:
                 trains.append(train)
             else:
                 nextJunction = junction.inSectionStraight.sourceJunction
-                trainNext = self.__getNearestTrain(
-                    nextJunction, maxSearchNum - 1, originalJunction
-                )
+                trainNext = self.__getNearestTrain(nextJunction, maxSearchNum - 1, originalJunction)
                 if trainNext:
                     trains.append(trainNext)
 

@@ -109,9 +109,7 @@ class DiaPlanner:
                             "sakurajosui_b1",
                             "sakurajosui_b5",
                         )
-                        print(
-                            f"[DiaPlanner.update] train {waitingTrain.id} wait finish!"
-                        )
+                        print(f"[DiaPlanner.update] train {waitingTrain.id} wait finish!")
             # 退避を終えて出発した各停列車の退避フラグを再びTrueに戻す
             sakurajosuiDepartedTrain = self.__state.getTrainInSection(
                 self.__state.getSectionById("sakurajosui_b5")
@@ -132,10 +130,7 @@ class DiaPlanner:
             waitingTrain = self.__state.getTrainInSection(
                 self.__state.getSectionById("sakurajosui_b4")
             )  # 桜上水上り退避線にいる列車
-            if (
-                waitingTrain != None
-                and self.getDia(waitingTrain.id, "sakurajosui_up").wait == True
-            ):
+            if waitingTrain != None and self.getDia(waitingTrain.id, "sakurajosui_up").wait == True:
                 for train in self.__state.trainList:
                     # sectionが変化した瞬間だけ、mileageがprevmileageより小さくなることを利用し、桜上水を出発した上り列車がいるか判断。いれば、追い抜きに成功したので、退避していたほうの退避フラグをリセット
                     if (
@@ -150,9 +145,7 @@ class DiaPlanner:
                             "sakurajosui_b4",
                             "sakurajosui_b6",
                         )
-                        print(
-                            f"[DiaPlanner.update] train {waitingTrain.id} wait finish!"
-                        )
+                        print(f"[DiaPlanner.update] train {waitingTrain.id} wait finish!")
             # 退避を終えて出発した各停列車の退避フラグを再びTrueに戻す
             sakurajosuiDepartedTrain = self.__state.getTrainInSection(
                 self.__state.getSectionById("sakurajosui_b6")

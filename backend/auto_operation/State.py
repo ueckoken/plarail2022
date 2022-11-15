@@ -277,12 +277,8 @@ class State:
         self.getJunctionById("sakurajosui_j3").belongStation = self.getStationById(
             "sakurajosui_down"
         )
-        self.getJunctionById("sakurajosui_j2").belongStation = self.getStationById(
-            "sakurajosui_up"
-        )
-        self.getJunctionById("sakurajosui_j4").belongStation = self.getStationById(
-            "sakurajosui_up"
-        )
+        self.getJunctionById("sakurajosui_j2").belongStation = self.getStationById("sakurajosui_up")
+        self.getJunctionById("sakurajosui_j4").belongStation = self.getStationById("sakurajosui_up")
 
         # PIDParams(r: float, INPUT_MIN: int, INPUT_MAX: int, INPUT_START: int, kp: float, ki: float, kd: float)
         pidParam0 = Train.PIDParam(
