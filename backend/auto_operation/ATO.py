@@ -1,7 +1,7 @@
 import time
 
 from ATS import ATS
-from Components import Section, Train
+from Components import Train
 from DiaPlanner import DiaPlanner
 from SignalSystem import SignalSystem
 from State import State
