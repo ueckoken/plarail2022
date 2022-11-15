@@ -9,10 +9,12 @@ auto_operation <-> proxy (gRPC)
 """
 
 
-import datetime
-import inspect
-import os
+import queue
+import threading
+import time
 from concurrent import futures
+from dataclasses import dataclass
+from typing import Optional
 
 import grpc
 
@@ -25,71 +27,133 @@ import spec.statesync_pb2_grpc as statesync_pb2_grpc
 
 
 class Connection:
-    def __init__(self):
+    atsServicer: "AtsServicer"
+    controlServicer: "ControlServicer"
+    serverThread: Optional[threading.Thread]
+
+    def __init__(self) -> None:
         self.externalServer = "localhost:6543"
         self.sensorBuffer = []
+        self.atsServicer = AtsServicer()
+        self.controlServicer = ControlServicer()
+        self.serverThread = None
 
-    def updateStatus(self, StationId, State):
+    @staticmethod
+    def serveAndWait(atsServicer: "AtsServicer", controlServicer: "ControlServicer") -> None:
+        server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
+        ats_pb2_grpc.add_AtsServicer_to_server(atsServicer, server)
+        statesync_pb2_grpc.add_ControlServicer_to_server(controlServicer, server)
+        server.add_insecure_port("[::]:6543")
+        server.start()
+        server.wait_for_termination()
+
+    def startServerThread(self) -> threading.Thread:
+        thread = threading.Thread(
+            target=Connection.serveAndWait,
+            kwargs={
+                "atsServicer": self.atsServicer,
+                "controlServicer": self.controlServicer,
+            },
+            daemon=True,
+        )
+        thread.start()
+        return thread
+
+    def updateStatus(self, stationId: str, state: str) -> None:
         with grpc.insecure_channel(self.externalServer) as channel:
             stub = statesync_pb2_grpc.ControlStub(channel)
             response = stub.Command2Internal(
                 statesync_pb2.RequestSync(
-                    state=State, station=statesync_pb2.Stations(stationId=StationId)
+                    state=state, station=statesync_pb2.Stations(stationId=stationId)
                 )
             )
         print("Update Status: " + str(statesync_pb2.ResponseSync.Response.Name(response.response)))
 
-    def updateBlock(self, BlockId, State):
+    def updateBlock(self, blockId: str, state: str) -> None:
         with grpc.insecure_channel("localhost:6543") as channel:
             stub = block_pb2_grpc.BlockStateSyncStub(channel)
             response = stub.NotifyState(
-                block_pb2.NotifyStateRequest(state=State, block=block_pb2.Blocks(blockId=BlockId))
+                block_pb2.NotifyStateRequest(state=state, block=block_pb2.Blocks(blockId=blockId))
             )
         print(
             "Update Block: " + str(block_pb2.NotifyStateResponse.Response.Name(response.response))
         )
 
 
-# sensorIdからsensorNameを取得する
-def sensorId2sensorName(sensorId):
-    return ats_pb2.SendStatusRequest.SensorName.Name(sensorId)
-
-
 # Proxyと通信するためのサーバー(センサーの検知結果が飛んでくる)
-class Ats(ats_pb2_grpc.AtsServicer):
-    def SendStatus(self, request, context):
-        sensorId = request.sensor
-        print(
-            f"Time: {datetime.datetime.timestamp( datetime.datetime.now())}, Reveived Sensor:  {sensorId2sensorName(sensorId)}"
-        )
-        return ats_pb2.SendStatusResponse(
-            response=ats_pb2.SendStatusResponse.Response.Value("SUCCESS")
-        )
+class AtsServicer(ats_pb2_grpc.AtsServicer):
+    @dataclass
+    class SensorData:
+        sensorId: str
+
+    sensorQueue: queue.Queue[SensorData]
+
+    def __init__(self) -> None:
+        super().__init__()
+        self.sensorQueue = queue.Queue()
+
+    def SendStatus(self, request: ats_pb2.SendStatusRequest, context) -> ats_pb2.SendStatusResponse:
+        sensorId = ats_pb2.SendStatusRequest.SensorName.Name(request.sensor)
+        data = AtsServicer.SensorData(sensorId=sensorId)
+        print(f"Received: {data}")
+        self.sensorQueue.put(data)
+        return ats_pb2.SendStatusResponse(response=ats_pb2.SendStatusResponse.SUCCESS)
 
 
 # externalと通信するためのサーバー(新しい状態の更新を受けとる)
-class StateSync(statesync_pb2_grpc.ControlServicer):
-    def Command2Internal(self, request, context):
-        print(
-            "Received: StationId: "
-            + str(request.station).strip()
-            + "\t\tState:"
-            + str(request.state)
+class ControlServicer(statesync_pb2_grpc.ControlServicer):
+    @dataclass
+    class PointData:
+        stationId: str
+        state: str
+
+    pointQueue: queue.Queue[PointData]
+
+    def __init__(self) -> None:
+        super().__init__()
+        self.pointQueue = queue.Queue()
+
+    def Command2Internal(
+        self, request: statesync_pb2.Command2InternalRequest, context
+    ) -> statesync_pb2.Command2InternalResponse:
+        stationId = statesync_pb2.Stations.StationId.Name(request.station.stationId)
+        state = statesync_pb2.Command2InternalRequest.State.Name(request.state)
+        data = ControlServicer.PointData(stationId=stationId, state=state)
+        print(f"Received: {data}")
+        self.pointQueue.put(data)
+        return statesync_pb2.Command2InternalResponse(
+            response=statesync_pb2.Command2InternalResponse.SUCCESS
         )
-        return statesync_pb2.Command2InternalResponse(response=1)
 
 
-# gRPCサーバーを起動する
-def serve(con: Connection):
-    server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
-    ats_pb2_grpc.add_AtsServicer_to_server(Ats(), server)
-    server.add_insecure_port("[::]:6543")
-    server.start()
-    server.wait_for_termination()
+# 使い方の例
+def main() -> None:
+    connection = Connection()
+    connection.startServerThread()
+
+    while True:
+        # センサー情報を受信
+        while connection.atsServicer.sensorQueue.qsize():
+            _data = connection.atsServicer.sensorQueue.get()
+
+        # ポイント情報を受信
+        while connection.controlServicer.pointQueue.qsize():
+            _data = connection.controlServicer.pointQueue.get()
+
+        # ストップ情報を送信
+        try:
+            connection.updateStatus(stationId="shinjuku_s1", state="ON")
+        except:
+            pass
+
+        # 閉塞情報を送信
+        try:
+            connection.updateBlock(blockId="shinjuku_b1", state="OPEN")
+        except:
+            pass
+
+        time.sleep(1)
 
 
 if __name__ == "__main__":
-    con = Connection()
-    con.updateStatus(1, 2)
-    serve(con)
-    # con.updateBlock(1,2)
+    main()
