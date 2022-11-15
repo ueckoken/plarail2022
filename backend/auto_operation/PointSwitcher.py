@@ -1,7 +1,7 @@
-from Components import Junction, Station, Train
-from DiaPlanner import DiaPlanner
-from PointInterlock import PointInterlock
-from State import State
+from Components import *
+from DiaPlanner import *
+from PointInterlock import *
+from State import *
 
 
 # ダイヤ情報をもとにポイントの自動切換えを行う
@@ -23,7 +23,7 @@ class PointSwitcher:
             #     print(f"[PointSwitcher.update(j{junction.id})] t0: ({self.__state.getTrainById(0).currentSection.id}, {self.__state.getTrainById(0).mileage:.2f}), t1: ({self.__state.getTrainById(1).currentSection.id}, {self.__state.getTrainById(1).mileage:.2f}), j2: {self.__state.getJunctionById(2).getOutSection().id}, j6: {self.__state.getJunctionById(6).getInSection().id}")
 
             # in1->out2 という分岐器の場合、out側を到着列車が入線する番線に合わせる
-            if junction.inSectionCurve is None and junction.outSectionCurve is not None:
+            if junction.inSectionCurve == None and junction.outSectionCurve != None:
                 train = self.__getNearestTrain(junction)  # junctionに一番先に到着する列車を取得
                 if train:
                     # print(f"{junction.id}, {train.id}")
@@ -34,7 +34,7 @@ class PointSwitcher:
                         self.__pointInterlock.requestToggle(junction.id)
                         # print(f"[PointSwitcher.update] junction {junction.id} toggle requested to section {dia.arriveSectionId}")
             # in2->out1 という分岐器の場合、in側を出発列車の存在する番線に合わせる
-            elif junction.inSectionCurve is not None and junction.outSectionCurve is None:
+            elif junction.inSectionCurve != None and junction.outSectionCurve == None:
                 train = self.__getNearestTrain(junction)  # junctionを一番先に通る列車を取得
                 if train:
                     # print(f"{junction.id}, {train.id}")
@@ -69,10 +69,10 @@ class PointSwitcher:
         trains: list[Train] = []
 
         # 何も見つけられずに最初の地点に戻ってきてしまった場合、終了
-        if originalJunction is not None and junction.id == originalJunction.id:
+        if originalJunction != None and junction.id == originalJunction.id:
             return trains
 
-        if originalJunction is None:
+        if originalJunction == None:
             originalJunction = junction
 
         # maxSearchNumが0になった場合、終了
@@ -90,7 +90,7 @@ class PointSwitcher:
                     trains.append(trainNext)
 
             # inSectionがひとつだけの分岐であれば、ここで終了
-            if junction.inSectionCurve is None:
+            if junction.inSectionCurve == None:
                 break
             # inSectionが2つある場合、Curve側も調べる
             else:
@@ -118,7 +118,7 @@ class PointSwitcher:
             station = self.__getNearestStation(junction)  # junction直前の駅を取得
             trainsWantToGo = list(
                 filter(
-                    lambda t: self.__diaPlanner.getDia(t.id, station.id).wait is False,
+                    lambda t: self.__diaPlanner.getDia(t.id, station.id).wait == False,
                     trains,
                 )
             )  # 駅で退避するつもりのないtrainをfilter
@@ -137,6 +137,6 @@ class PointSwitcher:
     # 指定したjunctionの直前にある駅を取得
     def __getNearestStation(self, junction: Junction) -> Station:
         searchSection = junction.inSectionStraight
-        while searchSection.station is None:
+        while searchSection.station == None:
             searchSection = searchSection.sourceJunction.inSectionStraight
         return searchSection.station

@@ -1,14 +1,14 @@
 import atexit
+import os
 import threading
-import time
 
 import pydantic
-from flask import Flask, render_template
+from flask import Flask, Response, render_template
 from flask_cors import CORS
 from flask_socketio import SocketIO
 
-from Components import Junction
-from Operation import Operation
+import Connection
+from Operation import *
 
 
 class Conf(pydantic.BaseSettings):
@@ -43,6 +43,7 @@ CORS(app)  # ビジュアライザからのアクセスを許可する
 def operation_loop():
     while True:
         operation.update()
+        train_taiken = operation.state.getTrainById(1)  # ラズパイ体験車(id=1)を取得
         print(
             f"[main.operation_loop] t0.section: {operation.state.getTrainById(0).currentSection.id}, t0.mil: {operation.state.getTrainById(0).mileage:.2f}, t0.spd: {operation.state.getTrainById(0).targetSpeed:.2f}, t1.section: {operation.state.getTrainById(1).currentSection.id}, t1.mil: {operation.state.getTrainById(1).mileage:.2f}, t1.spd: {operation.state.getTrainById(1).targetSpeed:.2f}"
         )

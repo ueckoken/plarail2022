@@ -1,10 +1,9 @@
 import time
 
-from ATS import ATS
-from Components import Train
-from DiaPlanner import DiaPlanner
-from SignalSystem import SignalSystem
-from State import State
+from ATS import *
+from DiaPlanner import *
+from SignalSystem import *
+from State import *
 
 # ダイヤ情報に基づく自動運転を行うクラス
 
@@ -42,7 +41,7 @@ class ATO:
 
         for train in self.__state.trainList:
             # 【到着判定】停止位置をまたいだとき、駅に到着or通過したと判定し、arriveTimeを更新する
-            if train.currentSection.station is not None:
+            if train.currentSection.station != None:
                 stationPosition = train.currentSection.stationPosition
                 if train.prevMileage < stationPosition and stationPosition <= train.mileage:
                     self.__arriveTime[train.id] = now
@@ -71,7 +70,7 @@ class ATO:
         testSection = train.currentSection
         while True:
             # 現在のセクションに駅がある
-            if testSection.station is not None:
+            if testSection.station != None:
                 diaOfThisStation = self.__diaPlanner.getDia(train.id, testSection.station.id)  # ダイヤ
                 # 当該駅に列車がすでに到着/通過済みの場合
                 if (
@@ -86,7 +85,7 @@ class ATO:
                     # print(f"trainId={train.id}, stopDuration={stopDuration}, departSignal={departSignal.value}")
                     # 到着した駅が退避駅でない & 最低停車時間を過ぎた & 信号が青 なら次のセクションへ進む
                     if (
-                        not diaOfThisStation.wait
+                        diaOfThisStation.wait == False
                         and stopDuration >= diaOfThisStation.stopTime
                         and departSignal.value == "G"
                     ):
@@ -99,7 +98,7 @@ class ATO:
                 # まだ当該駅に到着/通過していない場合
                 else:
                     # 当該駅で退避または1秒以上停車するなら、当該駅までの距離を返す
-                    if diaOfThisStation.wait or diaOfThisStation.stopTime > 1:
+                    if diaOfThisStation.wait == True or diaOfThisStation.stopTime > 1:
                         return distance + testSection.stationPosition
                     # 当該駅が通過駅なら次のセクションへ進む
                     else:

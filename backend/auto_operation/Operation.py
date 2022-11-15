@@ -1,10 +1,10 @@
-from ATO import ATO
-from ATS import ATS
-from DiaPlanner import DiaPlanner
-from PointInterlock import PointInterlock
-from PointSwitcher import PointSwitcher
-from SignalSystem import SignalSystem
-from State import State
+from ATO import *
+from ATS import *
+from DiaPlanner import *
+from PointInterlock import *
+from PointSwitcher import *
+from SignalSystem import *
+from State import *
 
 
 class Operation:

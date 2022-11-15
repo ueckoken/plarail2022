@@ -1,7 +1,7 @@
 from typing import Literal
 
-from Components import Section
-from State import State
+from Components import *
+from State import *
 
 
 class Signal:
@@ -27,13 +27,13 @@ class SignalSystem:
         sourceSection = self.__state.getSectionById(sourceSectionId)
         junction = sourceSection.targetJunction
         # sourceからtargetへの経路が存在しない場合はNoneを返す
-        if junction.outSectionStraight is None or junction.outSectionStraight.id != targetSectionId:
-            if junction.outSectionCurve is None or junction.outSectionCurve.id != targetSectionId:
+        if junction.outSectionStraight == None or junction.outSectionStraight.id != targetSectionId:
+            if junction.outSectionCurve == None or junction.outSectionCurve.id != targetSectionId:
                 return None
         # 信号判定
         if junction.getInSection().id == sourceSectionId:  # 分岐器が開通している
             train = self.__state.getTrainInSection(junction.getOutSection())  # 前方セクションにいる列車を取得
-            if train is None:  # 前方セクションに在線なし
+            if train == None:  # 前方セクションに在線なし
                 return Signal(sourceSectionId, targetSectionId, "G")
         return Signal(sourceSectionId, targetSectionId, "R")
 
@@ -47,4 +47,4 @@ class SignalSystem:
                 self.__state.sectionList,
             )
         )
-        return [i for i in result if i is not None]
+        return [i for i in result if i != None]

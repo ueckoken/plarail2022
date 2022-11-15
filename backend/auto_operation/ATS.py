@@ -1,5 +1,6 @@
-from SignalSystem import SignalSystem
-from State import State
+from Components import *
+from SignalSystem import *
+from State import *
 
 
 class ATS:
@@ -52,13 +53,13 @@ class ATS:
             else:
                 speedLimit = 0
             if speedLimit < speedCommand:  # 非常停止できる速度を超えた速度が指示された場合にATS作動. 速度を強制的にspeedLimitに落とす
-                if not self.__activated[train.id]:
+                if self.__activated[train.id] == False:
                     print(f"[ATS.setSpeedCommand] ATS activated on train {train.id} !")
                 train.targetSpeed = speedLimit
                 self.__activated[train.id] = True
                 return
         else:
-            if self.__activated[train.id]:
+            if self.__activated[train.id] == True:
                 print(f"[ATS.setSpeedCommand] ATS deactivated on train {train.id}")
             self.__activated[train.id] = False  # 信号が青になったらATS解除
 

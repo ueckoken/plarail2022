@@ -1,5 +1,7 @@
-from Communication import Communication
-from Components import Junction, Section, Sensor, Station, Train
+from numpy import pi
+
+from Communication import *
+from Components import *
 
 
 class State:
@@ -367,7 +369,7 @@ class State:
 
         # ポイントへの指令送信
         for junction in self.junctionList:
-            if junction.servoId > -1 and junction.toggleRequested:
+            if junction.servoId > -1 and junction.toggleRequested == True:
                 self.communication.sendToggle(junction.servoId, junction.outServoState)
                 junction.toggleRequested = False
                 # inServoStateは、実際にはサーボモーターがついていないので送信しない
@@ -414,14 +416,14 @@ class State:
         testSection = s1
 
         # 何も見つけられずに最初の地点に戻ってきてしまった場合、終了
-        if originalStartSection is not None and s1.id == originalStartSection.id:
+        if originalStartSection != None and s1.id == originalStartSection.id:
             return s1.length
 
-        if originalStartSection is None:
+        if originalStartSection == None:
             originalStartSection = s1
         while testSection.id != s2.id:
             distance += testSection.length
-            if testSection.targetJunction.outSectionCurve is None:
+            if testSection.targetJunction.outSectionCurve == None:
                 testSection = testSection.targetJunction.getOutSection()
             else:
                 distanceFrom2OutJucntionToS2ViaStraight = self.getDistance(
