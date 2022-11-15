@@ -5,7 +5,12 @@ from State import *
 
 
 class Signal:
-    def __init__(self, sourceSectionId: int, targetSectionId: int, value: Literal["R", "G"]):
+    def __init__(
+        self,
+        sourceSectionId: Section.SectionId,
+        targetSectionId: Section.SectionId,
+        value: Literal["R", "G"],
+    ):
         self.sourceSectionId = sourceSectionId
         self.targetSectionId = targetSectionId
         self.value = value  # 信号機の色(赤と緑)
@@ -16,7 +21,9 @@ class SignalSystem:
         self.__state = state
 
     # sourceSection から targetSection へ進む信号を取得
-    def getSignal(self, sourceSectionId: int, targetSectionId: int) -> Signal:
+    def getSignal(
+        self, sourceSectionId: Section.SectionId, targetSectionId: Section.SectionId
+    ) -> Signal:
         sourceSection = self.__state.getSectionById(sourceSectionId)
         junction = sourceSection.targetJunction
         # sourceからtargetへの経路が存在しない場合はNoneを返す

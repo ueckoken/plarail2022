@@ -19,7 +19,7 @@ class Communication:
 
     def __init__(self, pidParamMap: dict[int, Train.PIDParam]):
         self.simulationMode = False
-        self.simulationSpeedMap: dict[int, int] = {}
+        self.simulationSpeedMap: dict[int, float] = {}
         self.pidParamMap = pidParamMap
         self.prevUpdate = 0.0
         self.arduino = None
@@ -35,14 +35,22 @@ class Communication:
             if isWindows:
                 self.simulationSpeedMap[0] = 0.0
                 self.simulationSpeedMap[1] = 0.0
+                self.simulationSpeedMap[2] = 0.0
+                self.simulationSpeedMap[3] = 0.0
                 self.deltaMap[0] = 0.0
                 self.deltaMap[1] = 0.0
+                self.deltaMap[2] = 0.0
+                self.deltaMap[3] = 0.0
                 self.arduino = serial.Serial("COM13", 9600)
             else:
                 self.simulationSpeedMap[0] = 0.0
                 self.simulationSpeedMap[1] = 0.0
+                self.simulationSpeedMap[2] = 0.0
+                self.simulationSpeedMap[3] = 0.0
                 self.deltaMap[0] = 0.0
                 self.deltaMap[1] = 0.0
+                self.deltaMap[2] = 0.0
+                self.deltaMap[3] = 0.0
                 # self.arduino = serial.Serial("/dev/ttyS0", 9600)
         else:
             if isWindows:
@@ -52,6 +60,8 @@ class Communication:
                 # self.simulationSpeedMap[1] = 0.0  #[1]だけ実機がないのでsimulaitonを更新
                 self.deltaMap[0] = 0.0
                 self.deltaMap[1] = 0.0
+                self.deltaMap[2] = 0.0
+                self.deltaMap[3] = 0.0
                 self.arduino = serial.Serial("COM13", 9600)
             else:
                 self.esp32Map[0] = serial.Serial("/dev/cu.ESP32-Dr", 115200)
@@ -60,6 +70,8 @@ class Communication:
                 # self.simulationSpeedMap[1] = 0.0  #[1]だけ実機がないのでsimulaitonを更新
                 self.deltaMap[0] = 0.0
                 self.deltaMap[1] = 0.0
+                self.deltaMap[2] = 0.0
+                self.deltaMap[3] = 0.0
                 self.arduino = serial.Serial("/dev/ttyS0", 9600)
         self.update()
 

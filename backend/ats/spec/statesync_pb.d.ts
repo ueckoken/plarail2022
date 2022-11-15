@@ -148,7 +148,6 @@ export namespace Stations {
 
   export interface StationIdMap {
     UNKNOWN: 0;
-    SHINJUKU_P1: 1;
     SHINJUKU_S1: 2;
     SHINJUKU_S2: 3;
     SAKURAJOSUI_P1: 11;
@@ -157,23 +156,18 @@ export namespace Stations {
     SAKURAJOSUI_S2: 14;
     SAKURAJOSUI_S3: 15;
     SAKURAJOSUI_S4: 16;
+    SAKURAJOSUI_S5: 17;
+    SAKURAJOSUI_S6: 18;
     CHOFU_P1: 21;
-    CHOFU_P2: 22;
-    CHOFU_P3: 23;
-    CHOFU_P4: 24;
-    CHOFU_P5: 25;
-    CHOFU_S1: 26;
-    CHOFU_S2: 27;
-    CHOFU_S3: 28;
-    CHOFU_S4: 29;
+    CHOFU_S0: 22;
+    CHOFU_S1: 23;
+    CHOFU_S2: 24;
+    CHOFU_S3: 25;
+    CHOFU_S4: 26;
     HASHIMOTO_S1: 31;
     HASHIMOTO_S2: 32;
     HACHIOJI_S1: 41;
     HACHIOJI_S2: 42;
-    WAKABADAI_P1: 51;
-    WAKABADAI_P2: 52;
-    WAKABADAI_S1: 53;
-    WAKABADAI_S2: 54;
   }
 
   export const StationId: StationIdMap;

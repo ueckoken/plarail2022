@@ -1,3 +1,5 @@
+from dataclasses import dataclass
+
 from State import *
 
 # ダイヤを管理、更新する
@@ -20,26 +22,18 @@ from State import *
 #   まず、退避はない前提で組む。八王子に行くか調布に行くかは、arriveSectionIdとdestSectionIdを指定して決める
 
 
+@dataclass
 class Dia:
-    def __init__(
-        self,
-        trainId: int,
-        stationId: int,
-        wait: bool,
-        stopTime: int,
-        arriveSectionId: int,
-        destSectionId: int,
-    ):
-        self.trainId = trainId
-        self.stationId = stationId
-        self.wait = wait
-        self.stopTime = stopTime
-        self.arriveSectionId = arriveSectionId
-        self.destSectionId = destSectionId
+    trainId: int
+    stationId: Station.StationId
+    wait: bool
+    stopTime: int
+    arriveSectionId: Section.SectionId
+    destSectionId: Section.SectionId
 
 
 class DiaPlanner:
-    def __init__(self, state: State):
+    def __init__(self, state: State) -> None:
         self.__state = state
         self.__autoUpdate = True  # 自動更新の有効/無効
         self.__diaList: list[Dia] = []  # ダイヤリスト
@@ -93,8 +87,90 @@ class DiaPlanner:
             #                 self.setDia(1, 1, False, 0, 2, 4)
             #             print("[DiaPlanner.update] wait flag switched!")
 
+            # 桜上水下り線で退避していた列車の退避終了処理
+            waitingTrain = self.__state.getTrainInSection(
+                self.__state.getSectionById("sakurajosui_b1")
+            )  # 桜上水下り退避線にいる列車
+            if (
+                waitingTrain != None
+                and self.getDia(waitingTrain.id, "sakurajosui_down").wait == True
+            ):
+                for train in self.__state.trainList:
+                    # sectionが変化した瞬間だけ、mileageがprevmileageより小さくなることを利用し、桜上水を出発した下り列車がいるか判断。いれば、追い抜きに成功したので、退避していたほうの退避フラグをリセット
+                    if (
+                        train.currentSection.id == "sakurajosui_b5"
+                        and train.mileage < train.prevMileage
+                    ):
+                        self.setDia(
+                            waitingTrain.id,
+                            "sakurajosui_down",
+                            False,
+                            5,
+                            "sakurajosui_b1",
+                            "sakurajosui_b5",
+                        )
+                        print(
+                            f"[DiaPlanner.update] train {waitingTrain.id} wait finish!"
+                        )
+            # 退避を終えて出発した各停列車の退避フラグを再びTrueに戻す
+            sakurajosuiDepartedTrain = self.__state.getTrainInSection(
+                self.__state.getSectionById("sakurajosui_b5")
+            )  # 桜上水下りを出発後の列車を取得
+            if sakurajosuiDepartedTrain != None and (
+                sakurajosuiDepartedTrain.id == 1 or sakurajosuiDepartedTrain.id == 3
+            ):  # 各停列車なら
+                self.setDia(
+                    sakurajosuiDepartedTrain.id,
+                    "sakurajosui_down",
+                    True,
+                    5,
+                    "sakurajosui_b1",
+                    "sakurajosui_b5",
+                )
+
+            # 桜上水上り線で退避していた列車の退避終了処理
+            waitingTrain = self.__state.getTrainInSection(
+                self.__state.getSectionById("sakurajosui_b4")
+            )  # 桜上水上り退避線にいる列車
+            if (
+                waitingTrain != None
+                and self.getDia(waitingTrain.id, "sakurajosui_up").wait == True
+            ):
+                for train in self.__state.trainList:
+                    # sectionが変化した瞬間だけ、mileageがprevmileageより小さくなることを利用し、桜上水を出発した上り列車がいるか判断。いれば、追い抜きに成功したので、退避していたほうの退避フラグをリセット
+                    if (
+                        train.currentSection.id == "sakurajosui_b6"
+                        and train.mileage < train.prevMileage
+                    ):
+                        self.setDia(
+                            waitingTrain.id,
+                            "sakurajosui_up",
+                            False,
+                            5,
+                            "sakurajosui_b4",
+                            "sakurajosui_b6",
+                        )
+                        print(
+                            f"[DiaPlanner.update] train {waitingTrain.id} wait finish!"
+                        )
+            # 退避を終えて出発した各停列車の退避フラグを再びTrueに戻す
+            sakurajosuiDepartedTrain = self.__state.getTrainInSection(
+                self.__state.getSectionById("sakurajosui_b6")
+            )  # 桜上水上りを出発後の列車を取得
+            if sakurajosuiDepartedTrain != None and (
+                sakurajosuiDepartedTrain.id == 1 or sakurajosuiDepartedTrain.id == 3
+            ):  # 各停列車なら
+                self.setDia(
+                    sakurajosuiDepartedTrain.id,
+                    "sakurajosui_up",
+                    True,
+                    5,
+                    "sakurajosui_b4",
+                    "sakurajosui_b6",
+                )
+
     # 指定した列車の、指定した駅に対するダイヤを取得
-    def getDia(self, trainId: int, stationId: int) -> Dia:
+    def getDia(self, trainId: int, stationId: Station.StationId) -> Dia:
         result = list(
             filter(
                 lambda x: (x.trainId == trainId and x.stationId == stationId),
@@ -107,14 +183,14 @@ class DiaPlanner:
     def setDia(
         self,
         trainId: int,
-        staionId: int,
+        stationId: Station.StationId,
         wait: bool,
         stopTime: int,
-        arriveSectionId: int,
-        destSectionId: int,
+        arriveSectionId: Section.SectionId,
+        destSectionId: Section.SectionId,
     ) -> None:
         for dia in self.__diaList:
-            if dia.trainId == trainId and dia.stationId == staionId:
+            if dia.trainId == trainId and dia.stationId == stationId:
                 dia.wait = wait
                 dia.stopTime = stopTime
                 dia.arriveSectionId = arriveSectionId
