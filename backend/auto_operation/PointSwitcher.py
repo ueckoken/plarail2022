@@ -72,62 +72,44 @@ class PointSwitcher:
         while True:
             train = self.__state.getTrainInSection(junction.inSectionStraight)
             if train:
-                # if junction.id == 6:
-                #     print(f"train {train.id} exists on section {junction.inSectionStraight.id}")
                 trains.append(train)
             else:
-                # if junction.id == 6:
-                #     print(f"train doesn't exist on section {junction.inSectionStraight.id}")
                 nextJunction = junction.inSectionStraight.sourceJunction
-                trains.append(self.__getNearestTrain(nextJunction, maxSearchNum - 1, originalJunction))
+                trainNext = self.__getNearestTrain(nextJunction, maxSearchNum - 1, originalJunction)
+                if trainNext:
+                    trains.append(trainNext)
 
             # inSectionがひとつだけの分岐であれば、ここで終了
             if junction.inSectionCurve == None:
-                # if junction.id == 6:
-                #     print("no curve")
                 break
             # inSectionが2つある場合、Curve側も調べる
             else:
                 train = self.__state.getTrainInSection(junction.inSectionCurve)
                 if train:
-                    # if junction.id == 6:
-                    #     print(f"train {train.id} exists on section {junction.inSectionCurve.id}")
                     trains.append(train)
                 else:
-                    # if junction.id == 6:
-                    #     print(f"train doesn't exist on section {junction.inSectionCurve.id}")
                     nextJunction = junction.inSectionCurve.sourceJunction
-                    trains.append(self.__getNearestTrain(nextJunction, maxSearchNum - 1, originalJunction))
+                    trainNext = self.__getNearestTrain(nextJunction, maxSearchNum - 1, originalJunction)
+                    if trainNext:
+                        trains.append(trainNext)
                 break
 
         trains = list(set(trains))  # 重複を削除
 
         # 候補となる列車が1つの場合はそれを返す
         if len(trains) == 0:
-            # if junction.id == 6:
-            #     print("no train")
             return None
         elif len(trains) == 1:
-            # if junction.id == 6:
-            #     print("one train")
             return trains[0]
         # 複数の候補がある場合、ダイヤと照らしあわせることで最も先にポイントを通過する列車を絞り込む
         else:
-            # if junction.id == 6:
-            #     print("multiple trains")
             station = self.__getNearestStation(junction)  # junction直前の駅を取得
             trainsWantToGo = list(filter(lambda t: self.__diaPlanner.getDia(t.id, station.id).wait == False, trains))  # 駅で退避するつもりのないtrainをfilter
             if len(trainsWantToGo) == 0:    # 全列車が退避したい場合、どれを先に出すか決めようがないので、とりあえず0番を返す
-                # if junction.id == 6:
-                #     print("multiple trains A")
                 return trains[0]
             elif len(trainsWantToGo) == 1:  # 退避するつもりのない(追い抜きたい)列車が1つのとき、それを先に行かせる
-                # if junction.id == 6:
-                #     print("multiple trains B")
                 return trainsWantToGo[0]
             else:                           # 退避するつもりのない列車が2つ以上のとき、最もjunctionに近いものを返す
-                # if junction.id == 6:
-                #     print("multiple trains C")
                 trainsWantToGo.sort(key=lambda t: self.__state.getDistance(t.currentSection, t.mileage, junction.getOutSection(), 0))
                 return trainsWantToGo[0]
 
