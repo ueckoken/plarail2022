@@ -87,7 +87,9 @@ class PointSwitcher:
                 trains.append(train)
             else:
                 nextJunction = junction.inSectionStraight.sourceJunction
-                trainNext = self.__getNearestTrain(nextJunction, maxSearchNum - 1, originalJunction)
+                trainNext = self.__getNearestTrain(
+                    nextJunction, maxSearchNum - 1, originalJunction
+                )
                 if trainNext:
                     trains.append(trainNext)
 
@@ -101,7 +103,9 @@ class PointSwitcher:
                     trains.append(train)
                 else:
                     nextJunction = junction.inSectionCurve.sourceJunction
-                    trainNext = self.__getNearestTrain(nextJunction, maxSearchNum - 1, originalJunction)
+                    trainNext = self.__getNearestTrain(
+                        nextJunction, maxSearchNum - 1, originalJunction
+                    )
                     if trainNext:
                         trains.append(trainNext)
                 break
@@ -116,13 +120,22 @@ class PointSwitcher:
         # 複数の候補がある場合、ダイヤと照らしあわせることで最も先にポイントを通過する列車を絞り込む
         else:
             station = self.__getNearestStation(junction)  # junction直前の駅を取得
-            trainsWantToGo = list(filter(lambda t: self.__diaPlanner.getDia(t.id, station.id).wait == False, trains))  # 駅で退避するつもりのないtrainをfilter
-            if len(trainsWantToGo) == 0:    # 全列車が退避したい場合、どれを先に出すか決めようがないので、とりあえず0番を返す
+            trainsWantToGo = list(
+                filter(
+                    lambda t: self.__diaPlanner.getDia(t.id, station.id).wait == False,
+                    trains,
+                )
+            )  # 駅で退避するつもりのないtrainをfilter
+            if len(trainsWantToGo) == 0:  # 全列車が退避したい場合、どれを先に出すか決めようがないので、とりあえず0番を返す
                 return trains[0]
             elif len(trainsWantToGo) == 1:  # 退避するつもりのない(追い抜きたい)列車が1つのとき、それを先に行かせる
                 return trainsWantToGo[0]
-            else:                           # 退避するつもりのない列車が2つ以上のとき、最もjunctionに近いものを返す
-                trainsWantToGo.sort(key=lambda t: self.__state.getDistance(t.currentSection, t.mileage, junction.getOutSection(), 0))
+            else:  # 退避するつもりのない列車が2つ以上のとき、最もjunctionに近いものを返す
+                trainsWantToGo.sort(
+                    key=lambda t: self.__state.getDistance(
+                        t.currentSection, t.mileage, junction.getOutSection(), 0
+                    )
+                )
                 return trainsWantToGo[0]
 
     # 指定したjunctionの直前にある駅を取得
