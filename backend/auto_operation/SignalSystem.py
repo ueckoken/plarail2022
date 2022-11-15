@@ -1,7 +1,7 @@
+from typing import Literal
+
 from Components import *
 from State import *
-
-from typing import Literal
 
 
 class Signal:

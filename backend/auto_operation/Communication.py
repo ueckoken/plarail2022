@@ -1,11 +1,12 @@
-from typing import Union
 import platform
-import serial
 import queue
 import time
+from typing import Union
+
+import serial
 from numpy import pi
-from Components import Junction
-from Components import Train
+
+from Components import Junction, Train
 
 # ESP32 や Arduino との通信をまとめる。
 # シミュレーションモードを使うと接続が無くてもある程度動作確認できる。

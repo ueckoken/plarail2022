@@ -1,12 +1,14 @@
 import atexit
-from Operation import *
-from flask import Flask, render_template, Response
-from flask_socketio import SocketIO
-from flask_cors import CORS
-import threading
-import Connection
 import os
+import threading
+
 import pydantic
+from flask import Flask, Response, render_template
+from flask_cors import CORS
+from flask_socketio import SocketIO
+
+import Connection
+from Operation import *
 
 
 class Conf(pydantic.BaseModel):

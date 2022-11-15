@@ -1,7 +1,9 @@
 # externalとproxyとの繋ぎ込みをするためのクラス
 
 from concurrent import futures
+
 import grpc
+
 import spec.ats_pb2 as ats_pb2
 import spec.ats_pb2_grpc as ats_pb2_grpc
 import spec.block_pb2 as block_pb2

@@ -1,7 +1,8 @@
 from Components import *
-from State import *
 from DiaPlanner import *
 from PointInterlock import *
+from State import *
+
 
 # ダイヤ情報をもとにポイントの自動切換えを行う
 class PointSwitcher:

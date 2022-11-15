@@ -1,8 +1,9 @@
-from State import *
+import time
+
+from ATS import *
 from DiaPlanner import *
 from SignalSystem import *
-from ATS import *
-import time
+from State import *
 
 # ダイヤ情報に基づく自動運転を行うクラス
 

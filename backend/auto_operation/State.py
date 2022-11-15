@@ -1,6 +1,7 @@
 from numpy import pi
-from Components import *
+
 from Communication import *
+from Components import *
 
 
 class State:

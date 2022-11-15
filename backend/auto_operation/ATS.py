@@ -1,6 +1,6 @@
 from Components import *
-from State import *
 from SignalSystem import *
+from State import *
 
 
 class ATS:

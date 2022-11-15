@@ -1,5 +1,6 @@
-from State import *
 from Components import *
+from State import *
+
 
 # 列車の通過中など、ポイントを切り替えてはいけないときに切り替わらないよう制御する
 class PointInterlock:

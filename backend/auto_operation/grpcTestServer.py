@@ -1,13 +1,16 @@
 # externalとproxyとの繋ぎ込みをするためのクラス
 
 from concurrent import futures
+
 import grpc
+
 import spec.ats_pb2 as ats_pb2
 import spec.ats_pb2_grpc as ats_pb2_grpc
 import spec.block_pb2 as block_pb2
 import spec.block_pb2_grpc as block_pb2_grpc
 import spec.statesync_pb2 as statesync_pb2
 import spec.statesync_pb2_grpc as statesync_pb2_grpc
+
 
 # Proxyと通信するためのサーバー
 class Ats(ats_pb2_grpc.AtsServicer):
