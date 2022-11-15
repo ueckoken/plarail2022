@@ -240,12 +240,8 @@ class State:
         self.communication = Communication({0: pidParam0, 1: pidParam1})
 
         # 初回の着発番線に合わせてここにtoggleを書く
-        self.communication.sendToggle(
-            self.getJunctionById(2).servoId, Junction.ServoState.Straight
-        )
-        self.communication.sendToggle(
-            self.getJunctionById(6).servoId, Junction.ServoState.Straight
-        )
+        self.communication.sendToggle(self.getJunctionById(2).servoId, Junction.ServoState.Straight)
+        self.communication.sendToggle(self.getJunctionById(6).servoId, Junction.ServoState.Straight)
 
     # 現実世界の状態を取得しStateに反映する. 定期的に実行すること
     def update(self):
@@ -289,11 +285,9 @@ class State:
         return list(filter(lambda item: item.id == id, self.sectionList))[0]
 
     def getSensorById(self, id: int) -> Sensor:
-        return list(
-            filter(
-                lambda item: item.id == int.from_bytes(id, "little"), self.sensorList
-            )
-        )[0]
+        return list(filter(lambda item: item.id == int.from_bytes(id, "little"), self.sensorList))[
+            0
+        ]
 
     def getStationById(self, id: int) -> Station:
         return list(filter(lambda item: item.id == id, self.stationList))[0]
@@ -306,9 +300,7 @@ class State:
 
     # 指定されたsectionにいる列車を返す。列車がいなければNoneを返す
     def getTrainInSection(self, section: Section) -> Train:
-        trains = list(
-            filter(lambda train: train.currentSection.id == section.id, self.trainList)
-        )
+        trains = list(filter(lambda train: train.currentSection.id == section.id, self.trainList))
         if trains != []:
             return trains[0]
         else:

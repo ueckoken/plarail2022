@@ -2,4 +2,4 @@
 black
 isort
 mypy
-
+pyproject-flake8

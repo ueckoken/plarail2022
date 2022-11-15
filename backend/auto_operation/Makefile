@@ -1,8 +1,10 @@
-test: typecheck
+test: staticcheck typecheck
 
 typecheck:
 	mypy main.py
+staticcheck:
+	pflake8 ./
 format:
-	isort --extend-skip-glob 'spec/**' .
-	black --extend-exclude \.spec .
+	isort .
+	black .
 
