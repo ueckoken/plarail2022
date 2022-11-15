@@ -407,14 +407,18 @@ class State:
     def getDistance(self, s1: Section, mileage1: float, s2: Section, mileage2: float) -> float:
         distance = 0
         testSection = s1
-        passedJunctionId: list[int] = []  # 一度通過したjucntionのidを記録しておく。同じjunctionを2回通った場合は到達不能と判定しnanを返す
+        passedJunctionId: list[
+            int
+        ] = []  # 一度通過したjucntionのidを記録しておく。同じjunctionを2回通った場合は到達不能と判定しnanを返す
 
         while testSection.id != s2.id:
-            if testSection.targetJunction.id in passedJunctionId:  # junctionを2回目に通過した場合、一周してしまうのでnanを返す
-                return float('nan')
+            if (
+                testSection.targetJunction.id in passedJunctionId
+            ):  # junctionを2回目に通過した場合、一周してしまうのでnanを返す
+                return float("nan")
             else:
                 passedJunctionId.append(testSection.targetJunction.id)  # 一度通過したjunctionのidを記録
                 distance += testSection.length
                 testSection = testSection.targetJunction.getOutSection()
-            
+
         return distance - mileage1 + mileage2

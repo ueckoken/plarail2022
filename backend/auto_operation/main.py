@@ -60,10 +60,15 @@ def send_signal_to_browser():
         train_taiken = operation.state.getTrainById(1)  # ラズパイ体験車(id=1)を取得
         signal = operation.signalSystem.getSignal(
             train_taiken.currentSection.id,
-            train_taiken.currentSection.targetJunction.getOutSection(
-            ).id)  # 体験車から見た信号機を取得
+            train_taiken.currentSection.targetJunction.getOutSection().id,
+        )  # 体験車から見た信号機を取得
         atoStopPoint = operation.ato.getATOStopPoint(train_taiken)
-        distance = operation.state.getDistance(train_taiken.currentSection, train_taiken.mileage, atoStopPoint.section, atoStopPoint.mileage)
+        distance = operation.state.getDistance(
+            train_taiken.currentSection,
+            train_taiken.mileage,
+            atoStopPoint.section,
+            atoStopPoint.mileage,
+        )
         blocks = {}  # 閉塞を送る。区間0と3に列車がいるなら、{'s0': True, 's3': True} のような文字列
         for train in operation.state.trainList:
             blocks["s" + str(train.currentSection.id)] = True
@@ -73,12 +78,10 @@ def send_signal_to_browser():
                 stops.append(train.stopPoint.section.id)
 
         # websocketで送信
-        socketio.emit('signal_taiken', {
-            'signal': signal.value,
-            'distance': int(distance),
-            'blocks': blocks,
-            'stops': stops
-        })
+        socketio.emit(
+            "signal_taiken",
+            {"signal": signal.value, "distance": int(distance), "blocks": blocks, "stops": stops},
+        )
 
 
 # ブラウザからwebsocketで速度指令を受け取って、体験車の速度を変更する関数

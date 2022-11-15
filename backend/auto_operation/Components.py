@@ -275,6 +275,7 @@ class Train:
             self.mileage = self.mileage - self.currentSection.length
             self.currentSection = self.currentSection.targetJunction.getOutSection()
 
+
 class StopPoint:
     def __init__(self, section: Section, mileage: float):
         self.section = section

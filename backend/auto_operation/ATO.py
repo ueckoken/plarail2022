@@ -47,20 +47,27 @@ class ATO:
             # ATO有効時、停止点を計算し、出してよいスピードを求める
             if self.__enabled[train.id]:
                 train.stopPoint = self.getATOStopPoint(train)
-                distance = self.__state.getDistance(train.currentSection, train.mileage, train.stopPoint.section, train.stopPoint.mileage)
+                distance = self.__state.getDistance(
+                    train.currentSection,
+                    train.mileage,
+                    train.stopPoint.section,
+                    train.stopPoint.mileage,
+                )
                 if distance > 100:
                     speedLimit = self.__MAXSPEED
                 elif distance > 0:
                     speedLimit = (0.9 * distance / 100 + 0.1) * self.__MAXSPEED
                 else:
                     speedLimit = 0.0
-                speedCommand = min(train.targetSpeed + self.__MAXSPEED*dt/5, speedLimit)  # 加速時は緩やかに加速する(5秒で最高速度に到達)
+                speedCommand = min(
+                    train.targetSpeed + self.__MAXSPEED * dt / 5, speedLimit
+                )  # 加速時は緩やかに加速する(5秒で最高速度に到達)
             else:
                 speedCommand = self.__MAXSPEED
-            
+
             # 速度指令値をATSにセット
             self.__ats.setSpeedCommand(train.id, speedCommand)
-    
+
     def getATOStopPoint(self, train: Train) -> StopPoint:
         testSection = train.currentSection
         while True:
@@ -79,12 +86,16 @@ class ATO:
                     )  # 出発信号機
                     # print(f"trainId={train.id}, stopDuration={stopDuration}, departSignal={departSignal.value}")
                     # 到着した駅が退避駅でない & 最低停車時間を過ぎた & 信号が青 なら次のセクションへ進む
-                    if diaOfThisStation.wait == False and stopDuration >= diaOfThisStation.stopTime and departSignal.value == 'G':
+                    if (
+                        diaOfThisStation.wait == False
+                        and stopDuration >= diaOfThisStation.stopTime
+                        and departSignal.value == "G"
+                    ):
                         testSection = testSection.targetJunction.getOutSection()
                     # それ以外のときは現在のセクションにある駅までの距離が求める距離となる
                     else:
                         return StopPoint(testSection, testSection.stationPosition)
-                
+
                 # まだ当該駅に到着/通過していない場合
                 else:
                     # 当該駅で退避または1秒以上停車するなら、当該駅までの距離を返す
@@ -97,7 +108,12 @@ class ATO:
             # 現在のセクションに駅がない
             else:
                 # 青信号なら次のセクションへ
-                if self.__signalSystem.getSignal(testSection.id, testSection.targetJunction.getOutSection().id).value == 'G':
+                if (
+                    self.__signalSystem.getSignal(
+                        testSection.id, testSection.targetJunction.getOutSection().id
+                    ).value
+                    == "G"
+                ):
                     testSection = testSection.targetJunction.getOutSection()
                 # 赤信号ならこのセクションの終わりを停止点として返す(停止余裕距離を引く)
                 else:
