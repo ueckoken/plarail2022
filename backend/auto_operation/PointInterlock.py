@@ -11,7 +11,13 @@ class PointInterlock:
     # ポイントを切り替える
     def requestToggle(self, junctionId: Junction.JunctionId):
         junction = self.__state.getJunctionById(junctionId)
-        trainOnJunction = self.__state.getTrainInSection(junction.getOutSection())
+        outSection = junction.getOutSection()
+        if outSection is None:
+            print(
+                f"[PointInterlock.requestToggle] out section of junction(id={junctionId}) is none"
+            )
+            return
+        trainOnJunction = self.__state.getTrainInSection(outSection)
         if trainOnJunction is None or trainOnJunction.mileage > self.__TRAINLENGTH:
             junction.toggle()
             print(f"[PointInterlock.requestToggle] junction {junction.id} toggled!")

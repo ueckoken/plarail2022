@@ -396,8 +396,9 @@ class State:
     # 指定されたsectionにいる列車を返す。列車がいなければNoneを返す
     def getTrainInSection(self, section: Section) -> Optional[Train]:
         trains = list(filter(lambda train: train.currentSection.id == section.id, self.trainList))  # type: ignore
-        if len(trains) != 0:
-            return trains[0]  # type: ignore
+        train = trains[0]
+        if isinstance(train, Train):
+            return train
         else:
             return None
 
