@@ -1,7 +1,7 @@
 import time
 
 from ATS import ATS
-from Components import Train
+from Components import Section, Train
 from DiaPlanner import DiaPlanner
 from SignalSystem import SignalSystem
 from State import State
@@ -42,8 +42,9 @@ class ATO:
 
         for train in self.__state.trainList:
             # 【到着判定】停止位置をまたいだとき、駅に到着or通過したと判定し、arriveTimeを更新する
-            if train.currentSection.station is not None:
-                stationPosition = train.currentSection.stationPosition
+            currentSection = train.currentSection
+            if currentSection is not None and currentSection.station is not None:
+                stationPosition = currentSection.stationPosition
                 if train.prevMileage < stationPosition and stationPosition <= train.mileage:
                     self.__arriveTime[train.id] = now
 
@@ -71,23 +72,27 @@ class ATO:
         testSection = train.currentSection
         while True:
             # 現在のセクションに駅がある
+            if testSection is None:
+                # FIXME; 型ガードのために適当な値を返している
+                return 0.0
             if testSection.station is not None:
                 diaOfThisStation = self.__diaPlanner.getDia(train.id, testSection.station.id)  # ダイヤ
                 # 当該駅に列車がすでに到着/通過済みの場合
-                if (
-                    train.currentSection.id == testSection.id
-                    and train.mileage >= testSection.stationPosition
-                ):
+                if train.mileage >= testSection.stationPosition:
                     stopDuration = time.time() - self.__arriveTime[train.id]  # 停車からの経過時間
+                    outSection = testSection.targetJunction.getOutSection()
+                    if outSection is None:
+                        continue
                     departSignal = self.__signalSystem.getSignal(
-                        train.currentSection.id,
-                        train.currentSection.targetJunction.getOutSection().id,
+                        testSection.id,
+                        outSection.id,
                     )  # 出発信号機
                     # print(f"trainId={train.id}, stopDuration={stopDuration}, departSignal={departSignal.value}")
                     # 到着した駅が退避駅でない & 最低停車時間を過ぎた & 信号が青 なら次のセクションへ進む
                     if (
                         not diaOfThisStation.wait
                         and stopDuration >= diaOfThisStation.stopTime
+                        and departSignal is not None
                         and departSignal.value == "G"
                     ):
                         distance += testSection.length
@@ -108,13 +113,12 @@ class ATO:
 
             # 現在のセクションに駅がない
             else:
+                outSection = testSection.targetJunction.getOutSection()
+                if outSection is None:
+                    continue
                 # 青信号なら次のセクションへ
-                if (
-                    self.__signalSystem.getSignal(
-                        testSection.id, testSection.targetJunction.getOutSection().id
-                    ).value
-                    == "G"
-                ):
+                signal = self.__signalSystem.getSignal(testSection.id, outSection.id)
+                if signal is not None and signal.value == "G":
                     distance += testSection.length
                     testSection = testSection.targetJunction.getOutSection()
                 # 赤信号ならこのセクションの終わりまでの距離(停止余裕距離を引く)
