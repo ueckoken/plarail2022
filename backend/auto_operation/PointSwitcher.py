@@ -6,9 +6,7 @@ from State import *
 
 # ダイヤ情報をもとにポイントの自動切換えを行う
 class PointSwitcher:
-    def __init__(
-        self, state: State, diaPlanner: DiaPlanner, pointInterLock: PointInterlock
-    ):
+    def __init__(self, state: State, diaPlanner: DiaPlanner, pointInterLock: PointInterlock):
         self.__state = state
         self.__diaPlanner = diaPlanner
         self.__pointInterlock = pointInterLock
@@ -87,9 +85,7 @@ class PointSwitcher:
                 trains.append(train)
             else:
                 nextJunction = junction.inSectionStraight.sourceJunction
-                trainNext = self.__getNearestTrain(
-                    nextJunction, maxSearchNum - 1, originalJunction
-                )
+                trainNext = self.__getNearestTrain(nextJunction, maxSearchNum - 1, originalJunction)
                 if trainNext:
                     trains.append(trainNext)
 

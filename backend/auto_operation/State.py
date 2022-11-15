@@ -277,12 +277,8 @@ class State:
         self.getJunctionById("sakurajosui_j3").belongStation = self.getStationById(
             "sakurajosui_down"
         )
-        self.getJunctionById("sakurajosui_j2").belongStation = self.getStationById(
-            "sakurajosui_up"
-        )
-        self.getJunctionById("sakurajosui_j4").belongStation = self.getStationById(
-            "sakurajosui_up"
-        )
+        self.getJunctionById("sakurajosui_j2").belongStation = self.getStationById("sakurajosui_up")
+        self.getJunctionById("sakurajosui_j4").belongStation = self.getStationById("sakurajosui_up")
 
         # PIDParams(r: float, INPUT_MIN: int, INPUT_MAX: int, INPUT_START: int, kp: float, ki: float, kd: float)
         pidParam0 = Train.PIDParam(
@@ -385,11 +381,9 @@ class State:
         return list(filter(lambda item: item.id == id, self.sectionList))[0]
 
     def getSensorById(self, id: int) -> Sensor:
-        return list(
-            filter(
-                lambda item: item.id == int.from_bytes(id, "little"), self.sensorList
-            )
-        )[0]
+        return list(filter(lambda item: item.id == int.from_bytes(id, "little"), self.sensorList))[
+            0
+        ]
 
     def getStationById(self, id: Station.StationId) -> Station:
         return list(filter(lambda item: item.id == id, self.stationList))[0]
@@ -402,9 +396,7 @@ class State:
 
     # 指定されたsectionにいる列車を返す。列車がいなければNoneを返す
     def getTrainInSection(self, section: Section) -> Train:
-        trains = list(
-            filter(lambda train: train.currentSection.id == section.id, self.trainList)
-        )
+        trains = list(filter(lambda train: train.currentSection.id == section.id, self.trainList))
         if trains != []:
             return trains[0]
         else:

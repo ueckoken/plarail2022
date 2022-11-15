@@ -43,10 +43,7 @@ class ATO:
             # 【到着判定】停止位置をまたいだとき、駅に到着or通過したと判定し、arriveTimeを更新する
             if train.currentSection.station != None:
                 stationPosition = train.currentSection.stationPosition
-                if (
-                    train.prevMileage < stationPosition
-                    and stationPosition <= train.mileage
-                ):
+                if train.prevMileage < stationPosition and stationPosition <= train.mileage:
                     self.__arriveTime[train.id] = now
 
             # ATO有効時、速度指令値を計算
@@ -74,17 +71,13 @@ class ATO:
         while True:
             # 現在のセクションに駅がある
             if testSection.station != None:
-                diaOfThisStation = self.__diaPlanner.getDia(
-                    train.id, testSection.station.id
-                )  # ダイヤ
+                diaOfThisStation = self.__diaPlanner.getDia(train.id, testSection.station.id)  # ダイヤ
                 # 当該駅に列車がすでに到着/通過済みの場合
                 if (
                     train.currentSection.id == testSection.id
                     and train.mileage >= testSection.stationPosition
                 ):
-                    stopDuration = (
-                        time.time() - self.__arriveTime[train.id]
-                    )  # 停車からの経過時間
+                    stopDuration = time.time() - self.__arriveTime[train.id]  # 停車からの経過時間
                     departSignal = self.__signalSystem.getSignal(
                         train.currentSection.id,
                         train.currentSection.targetJunction.getOutSection().id,

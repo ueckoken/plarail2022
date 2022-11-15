@@ -94,9 +94,7 @@ class Communication:
                 if esp32 != None:
                     while esp32.in_waiting > 0:
                         # ホールセンサ信号が来たら、車輪0.5回転分deltaを進める
-                        self.deltaMap[trainId] += (
-                            2 * pi * self.pidParamMap[trainId].r / 2
-                        )
+                        self.deltaMap[trainId] += 2 * pi * self.pidParamMap[trainId].r / 2
                         # 同時刻に複数の信号が来る不具合のため、1回のループですべて消費する
                         while esp32.in_waiting > 0:
                             esp32.read()
@@ -150,6 +148,4 @@ class Communication:
                 return
             self.arduino.write(servoId.to_bytes(1, "little"))
             self.arduino.write(servoStateCode.to_bytes(1, "little"))
-            print(
-                f"[Communication.sendToggle] servoId {servoId} toggle to {servoStateCode}"
-            )
+            print(f"[Communication.sendToggle] servoId {servoId} toggle to {servoStateCode}")

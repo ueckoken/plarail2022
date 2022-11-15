@@ -1,0 +1,17 @@
+[tool.black]
+line-length = 100
+extend-exclude = """
+spec
+"""
+
+[tool.flake8]
+max-line-length = 100
+extend-ignore = "E501"
+exclude = ".venv,spec"
+
+[tool.isort]
+extend_skip_glob = ["spec/**"]
+line_length = 100
+
+[tool.mypy]
+ignore_missing_imports = true

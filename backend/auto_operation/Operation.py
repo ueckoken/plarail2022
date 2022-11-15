@@ -17,12 +17,8 @@ class Operation:
         self.signalSystem = SignalSystem(self.state)
         self.ats = ATS(self.state, self.signalSystem, Operation.MAXSPEED)
         self.pointInterlock = PointInterlock(self.state, Operation.TRAINLENGTH)
-        self.pointSwitcher = PointSwitcher(
-            self.state, self.diaPlanner, self.pointInterlock
-        )
-        self.ato = ATO(
-            self.state, self.signalSystem, self.ats, self.diaPlanner, Operation.MAXSPEED
-        )
+        self.pointSwitcher = PointSwitcher(self.state, self.diaPlanner, self.pointInterlock)
+        self.ato = ATO(self.state, self.signalSystem, self.ats, self.diaPlanner, Operation.MAXSPEED)
 
         self.diaPlanner.setup()
 

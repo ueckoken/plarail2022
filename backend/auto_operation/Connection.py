@@ -37,22 +37,16 @@ class Connection:
                     state=State, station=statesync_pb2.Stations(stationId=StationId)
                 )
             )
-        print(
-            "Update Status: "
-            + str(statesync_pb2.ResponseSync.Response.Name(response.response))
-        )
+        print("Update Status: " + str(statesync_pb2.ResponseSync.Response.Name(response.response)))
 
     def updateBlock(self, BlockId, State):
         with grpc.insecure_channel("localhost:6543") as channel:
             stub = block_pb2_grpc.BlockStateSyncStub(channel)
             response = stub.NotifyState(
-                block_pb2.NotifyStateRequest(
-                    state=State, block=block_pb2.Blocks(blockId=BlockId)
-                )
+                block_pb2.NotifyStateRequest(state=State, block=block_pb2.Blocks(blockId=BlockId))
             )
         print(
-            "Update Block: "
-            + str(block_pb2.NotifyStateResponse.Response.Name(response.response))
+            "Update Block: " + str(block_pb2.NotifyStateResponse.Response.Name(response.response))
         )
 
 

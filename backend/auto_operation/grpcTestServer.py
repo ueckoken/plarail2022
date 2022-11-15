@@ -21,23 +21,14 @@ class Ats(ats_pb2_grpc.AtsServicer):
 
 class Block(block_pb2_grpc.BlockStateSyncServicer):
     def NotifyState(self, request, context):
-        print(
-            "Reveived: "
-            + "Block"
-            + str(request.block).strip()
-            + ", State:"
-            + str(request.state)
-        )
+        print("Reveived: " + "Block" + str(request.block).strip() + ", State:" + str(request.state))
         return ats_pb2.SendStatusResponse(response=1)
 
 
 class StateSync(statesync_pb2_grpc.ControlServicer):
     def Command2Internal(self, request, context):
         print(
-            "Received: StationId: "
-            + str(request.station).strip()
-            + ", State:"
-            + str(request.state)
+            "Received: StationId: " + str(request.station).strip() + ", State:" + str(request.state)
         )
         return statesync_pb2.ResponseSync(response=1)
 
