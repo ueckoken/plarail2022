@@ -1,4 +1,3 @@
-import platform
 import queue
 import time
 from typing import Union
@@ -29,50 +28,23 @@ class Communication:
 
     def setup(self, simulationMode):
         self.simulationMode = simulationMode
-        osName = platform.system()
-        isWindows = osName.startswith("Windows")
         if self.simulationMode:
-            if isWindows:
-                self.simulationSpeedMap[0] = 0.0
-                self.simulationSpeedMap[1] = 0.0
-                self.simulationSpeedMap[2] = 0.0
-                self.simulationSpeedMap[3] = 0.0
-                self.deltaMap[0] = 0.0
-                self.deltaMap[1] = 0.0
-                self.deltaMap[2] = 0.0
-                self.deltaMap[3] = 0.0
-                self.arduino = serial.Serial("COM13", 9600)
-            else:
-                self.simulationSpeedMap[0] = 0.0
-                self.simulationSpeedMap[1] = 0.0
-                self.simulationSpeedMap[2] = 0.0
-                self.simulationSpeedMap[3] = 0.0
-                self.deltaMap[0] = 0.0
-                self.deltaMap[1] = 0.0
-                self.deltaMap[2] = 0.0
-                self.deltaMap[3] = 0.0
-                # self.arduino = serial.Serial("/dev/ttyS0", 9600)
+            self.simulationSpeedMap[0] = 0.0
+            self.simulationSpeedMap[1] = 0.0
+            self.simulationSpeedMap[2] = 0.0
+            self.simulationSpeedMap[3] = 0.0
+            self.deltaMap[0] = 0.0
+            self.deltaMap[1] = 0.0
+            self.deltaMap[2] = 0.0
+            self.deltaMap[3] = 0.0
         else:
-            if isWindows:
-                self.esp32Map[0] = serial.Serial("COM6", 115200)
-                self.esp32Map[1] = serial.Serial("COM8", 115200)
-                # self.esp32Map[1] = None  #[1]だけ実機がないのでNoneにする
-                # self.simulationSpeedMap[1] = 0.0  #[1]だけ実機がないのでsimulaitonを更新
-                self.deltaMap[0] = 0.0
-                self.deltaMap[1] = 0.0
-                self.deltaMap[2] = 0.0
-                self.deltaMap[3] = 0.0
-                self.arduino = serial.Serial("COM13", 9600)
-            else:
-                self.esp32Map[0] = serial.Serial("/dev/cu.ESP32-Dr", 115200)
-                self.esp32Map[0] = serial.Serial("/dev/cu.ESP32-E6", 115200)
-                # self.esp32Map[1] = None  #[1]だけ実機がないのでNoneにする
-                # self.simulationSpeedMap[1] = 0.0  #[1]だけ実機がないのでsimulaitonを更新
-                self.deltaMap[0] = 0.0
-                self.deltaMap[1] = 0.0
-                self.deltaMap[2] = 0.0
-                self.deltaMap[3] = 0.0
-                self.arduino = serial.Serial("/dev/ttyS0", 9600)
+            self.esp32Map[0] = serial.Serial("/dev/cu.ESP32-Dr", 115200)
+            self.esp32Map[1] = serial.Serial("/dev/cu.ESP32-E6", 115200)
+            self.deltaMap[0] = 0.0
+            self.deltaMap[1] = 0.0
+            self.deltaMap[2] = 0.0
+            self.deltaMap[3] = 0.0
+            self.arduino = serial.Serial("/dev/ttyS0", 9600)
         self.update()
 
     def update(self):
