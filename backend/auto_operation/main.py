@@ -43,7 +43,6 @@ CORS(app)  # ビジュアライザからのアクセスを許可する
 def operation_loop():
     while True:
         operation.update()
-        train_taiken = operation.state.getTrainById(1)  # ラズパイ体験車(id=1)を取得
         print(
             f"[main.operation_loop] t0.section: {operation.state.getTrainById(0).currentSection.id}, t0.mil: {operation.state.getTrainById(0).mileage:.2f}, t0.spd: {operation.state.getTrainById(0).targetSpeed:.2f}, t1.section: {operation.state.getTrainById(1).currentSection.id}, t1.mil: {operation.state.getTrainById(1).mileage:.2f}, t1.spd: {operation.state.getTrainById(1).targetSpeed:.2f}"
         )
@@ -57,18 +56,6 @@ def operation_loop():
 def send_signal_to_browser():
     while True:
         socketio.sleep(0.1)
-        train_taiken = operation.state.getTrainById(1)  # ラズパイ体験車(id=1)を取得
-        signal = operation.signalSystem.getSignal(
-            train_taiken.currentSection.id,
-            train_taiken.currentSection.targetJunction.getOutSection().id,
-        )  # 体験車から見た信号機を取得
-        atoStopPoint = operation.ato.getATOStopPoint(train_taiken)
-        distance = operation.state.getDistance(
-            train_taiken.currentSection,
-            train_taiken.mileage,
-            atoStopPoint.section,
-            atoStopPoint.mileage,
-        )
         blocks = {}  # 閉塞を送る。区間0と3に列車がいるなら、{'s0': True, 's3': True} のような文字列
         for train in operation.state.trainList:
             blocks["s" + str(train.currentSection.id)] = True
@@ -80,7 +67,7 @@ def send_signal_to_browser():
         # websocketで送信
         socketio.emit(
             "signal_taiken",
-            {"signal": signal.value, "distance": int(distance), "blocks": blocks, "stops": stops},
+            {"signal": "R", "distance": 0, "blocks": blocks, "stops": stops},
         )
 
 
