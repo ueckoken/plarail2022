@@ -17,7 +17,7 @@ from State import *
 #     arriveSectionId: 3,
 #     destSectionId: 4 }
 #   -> 列車1は駅1で退避. 最低10秒停車. section3に到着しsection4へ出発
-#   
+#
 #   まず、退避はない前提で組む。八王子に行くか調布に行くかは、arriveSectionIdとdestSectionIdを指定して決める
 
 
@@ -104,11 +104,24 @@ class DiaPlanner:
 
     # 指定した列車の、指定した駅に対するダイヤを取得
     def getDia(self, trainId: int, stationId: Station.StationId) -> Dia:
-        result = list(filter(lambda x: (x.trainId == trainId and x.stationId == stationId), self.__diaList))
+        result = list(
+            filter(
+                lambda x: (x.trainId == trainId and x.stationId == stationId),
+                self.__diaList,
+            )
+        )
         return result[0]
 
     # 指定した列車の、指定した駅に対するダイヤを更新
-    def setDia(self, trainId: int, stationId: Station.StationId, wait: bool, stopTime: int, arriveSectionId: Section.SectionId, destSectionId: Section.SectionId) -> None:
+    def setDia(
+        self,
+        trainId: int,
+        stationId: Station.StationId,
+        wait: bool,
+        stopTime: int,
+        arriveSectionId: Section.SectionId,
+        destSectionId: Section.SectionId,
+    ) -> None:
         for dia in self.__diaList:
             if dia.trainId == trainId and dia.stationId == stationId:
                 dia.wait = wait

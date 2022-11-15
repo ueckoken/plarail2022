@@ -1,6 +1,7 @@
 from numpy import pi
-from Components import *
+
 from Communication import *
+from Components import *
 
 
 class State:
@@ -91,8 +92,12 @@ class State:
         self.getJunctionById("sakurajosui_j4").belongStation = self.getStationById("sakurajosui_up")
 
         # PIDParams(r: float, INPUT_MIN: int, INPUT_MAX: int, INPUT_START: int, kp: float, ki: float, kd: float)
-        pidParam0 = Train.PIDParam(1.25, 40, 55, 68, 0.70, 0, 0)  # Dr. (maxinput: 40 + 0.70*40cm/s = 68)
-        pidParam1 = Train.PIDParam(1.18, 55, 90, 70, 0.40, 0, 0)  # Raspi (maxinput: 50 + 0.50*40cm/s= 70)
+        pidParam0 = Train.PIDParam(
+            1.25, 40, 55, 68, 0.70, 0, 0
+        )  # Dr. (maxinput: 40 + 0.70*40cm/s = 68)
+        pidParam1 = Train.PIDParam(
+            1.18, 55, 90, 70, 0.40, 0, 0
+        )  # Raspi (maxinput: 50 + 0.50*40cm/s= 70)
 
         # Train(initialSection, initialPosition)
         self.trainList.append(Train(0, self.getSectionById("shinjuku_b2"), State.STRAIGHT_UNIT * 4, pidParam0))  # 列車0を新宿b2に配置
@@ -152,7 +157,11 @@ class State:
         return list(filter(lambda item: item.id == id, self.sectionList))[0]
 
     def getSensorById(self, id: int) -> Sensor:
-        return list(filter(lambda item: item.id == int.from_bytes(id,'little'), self.sensorList))[0]
+        return list(
+            filter(
+                lambda item: item.id == int.from_bytes(id, "little"), self.sensorList
+            )
+        )[0]
 
     def getStationById(self, id: Station.StationId) -> Station:
         return list(filter(lambda item: item.id == id, self.stationList))[0]
@@ -165,7 +174,9 @@ class State:
 
     # 指定されたsectionにいる列車を返す。列車がいなければNoneを返す
     def getTrainInSection(self, section: Section) -> Train:
-        trains = list(filter(lambda train: train.currentSection.id == section.id, self.trainList))
+        trains = list(
+            filter(lambda train: train.currentSection.id == section.id, self.trainList)
+        )
         if trains != []:
             return trains[0]
         else:
@@ -173,7 +184,14 @@ class State:
 
     # 線路上のある点からある点までの距離を返す
     # 2つの地点が同じsectionに存在する場合、s1>s2だと負の値を返す
-    def getDistance(self, s1: Section, mileage1: float, s2: Section, mileage2: float, originalStartSection: Section = None) -> float:
+    def getDistance(
+        self,
+        s1: Section,
+        mileage1: float,
+        s2: Section,
+        mileage2: float,
+        originalStartSection: Section = None,
+    ) -> float:
         distance = 0
         testSection = s1
 
@@ -188,9 +206,28 @@ class State:
             if testSection.targetJunction.outSectionCurve == None:
                 testSection = testSection.targetJunction.getOutSection()
             else:
-                distanceFrom2OutJucntionToS2ViaStraight = self.getDistance(testSection.targetJunction.outSectionStraight, 0, s2, mileage2, originalStartSection)
-                distanceFrom2OutJucntionToS2ViaCurve = self.getDistance(testSection.targetJunction.outSectionCurve, 0, s2, mileage2, originalStartSection)
-                return distance - mileage1 + min(distanceFrom2OutJucntionToS2ViaStraight, distanceFrom2OutJucntionToS2ViaCurve)
+                distanceFrom2OutJucntionToS2ViaStraight = self.getDistance(
+                    testSection.targetJunction.outSectionStraight,
+                    0,
+                    s2,
+                    mileage2,
+                    originalStartSection,
+                )
+                distanceFrom2OutJucntionToS2ViaCurve = self.getDistance(
+                    testSection.targetJunction.outSectionCurve,
+                    0,
+                    s2,
+                    mileage2,
+                    originalStartSection,
+                )
+                return (
+                    distance
+                    - mileage1
+                    + min(
+                        distanceFrom2OutJucntionToS2ViaStraight,
+                        distanceFrom2OutJucntionToS2ViaCurve,
+                    )
+                )
             if testSection.id == originalStartSection.id:
                 break  # 1周して戻ってきた場合は終了
         return distance - mileage1 + mileage2

@@ -46,7 +46,15 @@ class Section:
     sourceJunction: 'Junction'
     targetJunction: 'Junction'
 
-    def __init__(self, id: SectionId, sourceJunction: 'Junction', targetJunction: 'Junction', sourceServoState: 'Junction.ServoState', targetServoState: 'Junction.ServoState', length: float) -> None:
+    def __init__(
+        self,
+        id: SectionId,
+        sourceJunction: "Junction",
+        targetJunction: "Junction",
+        sourceServoState: "Junction.ServoState",
+        targetServoState: "Junction.ServoState",
+        length: float,
+    ):
         self.id = id
         self.length = length
         self.station = None
@@ -56,7 +64,7 @@ class Section:
         self.targetJunction = targetJunction
         self.targetJunction.addInSection(self, targetServoState)
 
-    def putStation(self, station: 'Station', stationPosition: float) -> None:
+    def putStation(self, station: "Station", stationPosition: float):
         self.station = station
         self.stationPosition = stationPosition
 
@@ -136,9 +144,13 @@ class Junction:
             self.toggleRequested = True
 
     def setServoState(self, servoState: ServoState) -> None:
-        if self.inSectionStraight and self.inSectionCurve:  # IN側に2本入ってくる分岐点の場合inServoStateをセット
+        if (
+            self.inSectionStraight and self.inSectionCurve
+        ):  # IN側に2本入ってくる分岐点の場合inServoStateをセット
             self.inServoState = servoState
-        if self.outSectionStraight and self.outSectionCurve:  # OUT側に2本入ってくる分岐点の場合outServoStateをセット
+        if (
+            self.outSectionStraight and self.outSectionCurve
+        ):  # OUT側に2本入ってくる分岐点の場合outServoStateをセット
             self.outServoState = servoState
 
     def getOutSection(self) -> Optional[Section]:
@@ -193,7 +205,13 @@ class Train:
     prevMileage: float
     pidParam: 'PIDParam'
 
-    def __init__(self, id: int, initialSection: Section, initialPosition: float, pidParam: PIDParam) -> None:
+    def __init__(
+        self,
+        id: int,
+        initialSection: Section,
+        initialPosition: float,
+        pidParam: PIDParam,
+    ) -> None:
         self.id = id
         self.targetSpeed = 0.0
         self.currentSection = initialSection
@@ -206,6 +224,6 @@ class Train:
         self.prevMileage = self.mileage
         self.mileage += delta
         assert self.currentSection is not None
-        if (self.mileage >= self.currentSection.length):  # junctionを通過したとき
+        if self.mileage >= self.currentSection.length:  # junctionを通過したとき
             self.mileage = self.mileage - self.currentSection.length
             self.currentSection = self.currentSection.targetJunction.getOutSection()
