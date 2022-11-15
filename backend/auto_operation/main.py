@@ -11,18 +11,14 @@ import Connection
 from Operation import *
 
 
-class Conf(pydantic.BaseModel):
+class Conf(pydantic.BaseSettings):
     esp_eye_endpoint: str
     secret_key: str
-    simulation_mode: bool | None = False
+    simulation_mode: bool = False
 
 
 try:
-    conf = Conf(
-        esp_eye_endpoint=os.getenv("ESP_EYE_ENDPOINT"),
-        secret_key=os.getenv("SECRET_KEY"),
-        simulation_mode=os.getenv("SIMURATION_MODE"),
-    )
+    conf = Conf()
 except pydantic.ValidationError as e:
     print(e.json)
     raise e
