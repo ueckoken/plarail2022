@@ -43,29 +43,61 @@ class DiaPlanner:
 
     # ダイヤ自動更新の初期値を記述
     def setup(self) -> None:
-        # 今回は、退避が存在しない。すべての駅で5秒停車させる
-        # 初期値として、列車0は橋本経由の経路とする
-        self.setDia(0, 0, False, 5, 0, 1)  # 列車0は駅0(新宿下り)に5秒停車、section0着->section1へ出発
-        self.setDia(0, 1, False, 5, 1, 2)  # 列車0は駅1(桜上水下り)に5秒停車、section1着->section2へ出発
-        self.setDia(0, 2, False, 5, 3, 4)  # 列車0は駅2(調布下り)に5秒停車、section3(橋本方面)着->section4へ出発
-        self.setDia(0, 3, False, 5, 4, 5)  # 列車0は駅3(橋本下り)に5秒停車、section4着->section5へ出発
-        self.setDia(0, 4, False, 5, 8, 9)  # 列車0は駅4(八王子下り)に5秒停車、section8着->section9へ出発
-        self.setDia(0, 5, False, 5, 9, 10)  # 列車0は駅5(八王子上り)に5秒停車、section9着->section10へ出発
-        self.setDia(0, 6, False, 5, 5, 6)  # 列車0は駅6(橋本上り)に5秒停車、section5着->section6へ出発
-        self.setDia(0, 7, False, 5, 6, 11)  # 列車0は駅7(調布上り)に5秒停車、section6(橋本方面)着->section11へ出発
-        self.setDia(0, 8, False, 5, 11, 12)  # 列車0は駅8(桜上水上り)に5秒停車、section11着->section12へ出発
-        self.setDia(0, 9, False, 5, 12, 0)  # 列車0は駅9(新宿上り)に5秒停車、section12着->section0へ出発
-        # 初期値として、列車1は八王子経由の経路とする
-        self.setDia(1, 0, False, 5, 0, 1)  # 列車1は駅0(新宿下り)に5秒停車、section0着->section1へ出発
-        self.setDia(1, 1, False, 5, 1, 2)  # 列車1は駅1(桜上水下り)に5秒停車、section1着->section2へ出発
-        self.setDia(1, 2, False, 5, 7, 8)  # 列車1は駅2(調布下り)に5秒停車、section7(八王子方面)着->section8へ出発
-        self.setDia(1, 3, False, 5, 4, 5)  # 列車1は駅3(橋本下り)に5秒停車、section4着->section5へ出発
-        self.setDia(1, 4, False, 5, 8, 9)  # 列車1は駅4(八王子下り)に5秒停車、section8着->section9へ出発
-        self.setDia(1, 5, False, 5, 9, 10)  # 列車1は駅5(八王子上り)に5秒停車、section9着->section10へ出発
-        self.setDia(1, 6, False, 5, 5, 6)  # 列車1は駅6(橋本上り)に5秒停車、section5着->section6へ出発
-        self.setDia(1, 7, False, 5, 10, 11)  # 列車1は駅7(調布上り)に5秒停車、section10(八王子方面)着->section11へ出発
-        self.setDia(1, 8, False, 5, 11, 12)  # 列車1は駅8(桜上水上り)に5秒停車、section11着->section12へ出発
-        self.setDia(1, 9, False, 5, 12, 0)  # 列車1は駅9(新宿上り)に5秒停車、section12着->section0へ出発
+        # 初期値として、列車0は八王子経由の特急とする
+        self.setDia(
+            0, "shinjuku_down", False, 5, "shinjuku_b2", "shinjuku_b1"
+        )  # 列車0は駅(新宿下り)に5秒停車、新宿b2着->新宿b1へ出発
+        self.setDia(
+            0, "sakurajosui_down", False, 0, "sakurajosui_b2", "sakurajosui_b5"
+        )  # 列車0は駅(桜上水下り)に5秒停車、桜上水b2着->桜上水b5へ出発
+        self.setDia(
+            0, "chofu_down", False, 5, "chofu_b2", "chofu_b4"
+        )  # 列車0は駅(調布下り)に5秒停車、調布b2着->調布b4へ出発
+        self.setDia(
+            0, "hachioji_down", False, 5, "chofu_b4", "hachioji_b1"
+        )  # 列車0は駅(八王子下り)に5秒停車、調布b4着->八王子b1へ出発
+        self.setDia(
+            0, "hachioji_up", False, 5, "hachioji_b1", "hachioji_b2"
+        )  # 列車0は駅(八王子上り)に5秒停車、八王子b1着->八王子b2へ出発
+        self.setDia(
+            0, "chofu_up", False, 5, "hachioji_b2", "chofu_b5"
+        )  # 列車0は駅(調布上り)に5秒停車、八王子b2着->調布b5へ出発
+        self.setDia(
+            0, "sakurajosui_up", False, 0, "sakurajosui_b3", "sakurajosui_b6"
+        )  # 列車0は駅(桜上水上り)に5秒停車、桜上水b3着->桜上水b6へ出発
+        self.setDia(
+            0, "shinjuku_up", False, 5, "sakurajosui_b6", "shinjuku_b2"
+        )  # 列車0は駅(新宿上り)に5秒停車、桜上水b6着->新宿b2へ出発
+
+        # 初期値として、列車1は八王子経由の普通とする
+        self.setDia(1, "shinjuku_down", False, 5, "shinjuku_b2", "shinjuku_b1")
+        self.setDia(1, "sakurajosui_down", True, 5, "sakurajosui_b1", "sakurajosui_b5")
+        self.setDia(1, "chofu_down", False, 5, "chofu_b2", "chofu_b4")
+        self.setDia(1, "hachioji_down", False, 5, "chofu_b4", "hachioji_b1")
+        self.setDia(1, "hachioji_up", False, 5, "hachioji_b1", "hachioji_b2")
+        self.setDia(1, "chofu_up", False, 5, "hachioji_b2", "chofu_b5")
+        self.setDia(1, "sakurajosui_up", True, 5, "sakurajosui_b4", "sakurajosui_b6")
+        self.setDia(1, "shinjuku_up", False, 5, "sakurajosui_b6", "shinjuku_b2")
+
+        # 初期値として、列車2は橋本経由の特急とする
+        self.setDia(2, "shinjuku_down", False, 5, "shinjuku_b2", "shinjuku_b1")
+        self.setDia(2, "sakurajosui_down", False, 0, "sakurajosui_b2", "sakurajosui_b5")
+        self.setDia(2, "chofu_down", False, 5, "chofu_b1", "chofu_b3")
+        self.setDia(2, "hashimoto_down", False, 5, "chofu_b3", "hashimoto_b1")
+        self.setDia(2, "hashimoto_up", False, 5, "hashimoto_b1", "hashimoto_b2")
+        self.setDia(2, "chofu_up", False, 5, "hashimoto_b2", "chofu_b5")
+        self.setDia(2, "sakurajosui_up", False, 0, "sakurajosui_b3", "sakurajosui_b6")
+        self.setDia(2, "shinjuku_up", False, 5, "sakurajosui_b6", "shinjuku_b2")
+
+        # 初期値として、列車3は橋本経由の普通とする
+        self.setDia(3, "shinjuku_down", False, 5, "shinjuku_b2", "shinjuku_b1")
+        self.setDia(3, "sakurajosui_down", True, 5, "sakurajosui_b1", "sakurajosui_b5")
+        self.setDia(3, "chofu_down", False, 5, "chofu_b1", "chofu_b3")
+        self.setDia(3, "hashimoto_down", False, 5, "chofu_b3", "hashimoto_b1")
+        self.setDia(3, "hashimoto_up", False, 5, "hashimoto_b1", "hashimoto_b2")
+        self.setDia(3, "chofu_up", False, 5, "hashimoto_b2", "chofu_b5")
+        self.setDia(3, "sakurajosui_up", True, 5, "sakurajosui_b4", "sakurajosui_b6")
+        self.setDia(3, "shinjuku_up", False, 5, "sakurajosui_b6", "shinjuku_b2")
 
     # ダイヤ自動更新のルールを記述. 毎update時によぶ
     def update(self) -> None:
