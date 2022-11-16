@@ -3,35 +3,35 @@ package servo
 import (
 	"errors"
 	"testing"
-	pb "ueckoken/plarail2022-external/spec"
+	pb "github.com/ueckoken/plarail2022/backend/external/spec"
 )
 
 func TestSend_trapResponseGrpcErr(t *testing.T) {
 	// status 0 UNKNOWN; 1 SUCCESS; 2 FAILED
 	testPatterns := []struct {
 		grpcErr        error
-		inResponseSync *pb.ResponseSync
+		inResponseSync *pb.NotifyPointStateResponse
 		expectErrMsg   string
 	}{
 		{
 			grpcErr:        errors.New("TEST ERROR"),
-			inResponseSync: &pb.ResponseSync{Response: pb.ResponseSync_Response(0)},
+			inResponseSync: &pb.NotifyPointStateResponse{Response: pb.ResponseCode(0)},
 			expectErrMsg:   "gRPC Err: `TEST ERROR`; gRPC Response status is `UNKNOWN`",
 		}, {
 			grpcErr:        errors.New("TEST ERROR"),
-			inResponseSync: &pb.ResponseSync{Response: pb.ResponseSync_Response(1)},
+			inResponseSync: &pb.NotifyPointStateResponse{Response: pb.ResponseCode(1)},
 			expectErrMsg:   "gRPC Err: `TEST ERROR`; gRPC Response status is `SUCCESS`",
 		}, {
 			grpcErr:        errors.New("TEST ERROR"),
-			inResponseSync: &pb.ResponseSync{Response: pb.ResponseSync_Response(2)},
+			inResponseSync: &pb.NotifyPointStateResponse{Response: pb.ResponseCode(2)},
 			expectErrMsg:   "gRPC Err: `TEST ERROR`; gRPC Response status is `FAILED`",
 		}, {
 			grpcErr:        nil,
-			inResponseSync: &pb.ResponseSync{Response: pb.ResponseSync_Response(0)},
+			inResponseSync: &pb.NotifyPointStateResponse{Response: pb.ResponseCode(0)},
 			expectErrMsg:   "gRPC Err: `%!w(<nil>)`; gRPC Response status is `UNKNOWN`",
 		}, {
 			grpcErr:        nil,
-			inResponseSync: &pb.ResponseSync{Response: pb.ResponseSync_Response(2)},
+			inResponseSync: &pb.NotifyPointStateResponse{Response: pb.ResponseCode(2)},
 			expectErrMsg:   "gRPC Err: `%!w(<nil>)`; gRPC Response status is `FAILED`",
 		},
 	}
@@ -51,7 +51,7 @@ func TestSend_trapResponseGrpcErr(t *testing.T) {
 
 	// Normal
 	var grpcErr error
-	rs := &pb.ResponseSync{Response: pb.ResponseSync_Response(1)}
+	rs := &pb.NotifyPointStateResponse{Response: pb.ResponseCode(1)}
 	err := trapResponseGrpcErr(rs, grpcErr)
 	if err != nil {
 		t.Errorf("Expect err is NOT occured, but occured. : %e", err)

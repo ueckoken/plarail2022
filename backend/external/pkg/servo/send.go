@@ -50,7 +50,7 @@ func (c2i *Command2Internal) sendRaw() (*pb.NotifyPointStateResponse, error) {
 		return nil, err
 	}
 	defer conn.Close()
-	c := pb.NewControlClient(conn)
+	c := pb.NewNotificationClient(conn)
 
 	// Contact the server and print out its response.
 	ctx, cancel := context.WithTimeout(ctx, c2i.env.InternalServer.TimeoutSec)
@@ -66,16 +66,15 @@ func (c2i *Command2Internal) Send() error {
 	return trapResponseGrpcErr(c2i.sendRaw())
 }
 
-func (c2i *Command2Internal) convert2pb() *pb.RequestSync {
+func (c2i *Command2Internal) convert2pb() *pb.NotifyPointStateRequest {
 	return &pb.NotifyPointStateRequest{
-		Station: &pb.Station{StationId: pb.StationId(c2i.station.StationID)},
-		State:   pb.RequestSync_State(c2i.station.State),
+		State:   &pb.PointAndState{Station: c2i.station.GetStation(), State: c2i.station.GetState()},
 	}
 }
 func (c2i *Command2Internal) String() string {
-	return fmt.Sprintf("%s -> %s", pb.Stations_StationId_name[c2i.station.StationID], pb.RequestSync_State_name[c2i.station.State])
+	return fmt.Sprintf("%s -> %s", c2i.station.GetStation(), c2i.station.GetState())
 }
-func trapResponseGrpcErr(rs *pb.ResponseSync, grpcErr error) error {
+func trapResponseGrpcErr(rs *pb.NotifyPointStateResponse, grpcErr error) error {
 	// From Error will return true in ok if err is occurred by gRPC or nil
 	sta, ok := status.FromError(grpcErr)
 	if (sta != nil && ok) || rs == nil { // gRPC error occur
