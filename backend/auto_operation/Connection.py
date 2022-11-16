@@ -85,7 +85,9 @@ class Connection:
             with grpc.insecure_channel(self.externalServerAddress) as channel:
                 stub = block_pb2_grpc.BlockStateSyncStub(channel)
                 response = stub.NotifyState(
-                    block_pb2.NotifyStateRequest(state=state, block=block_pb2.Blocks(blockId=blockId))
+                    block_pb2.NotifyStateRequest(
+                        state=state, block=block_pb2.Blocks(blockId=blockId)
+                    )
                 )
             print(f"Send Block: {block_pb2.NotifyStateResponse.Response.Name(response.response)}")
         except grpc._channel._InactiveRpcError as e:
