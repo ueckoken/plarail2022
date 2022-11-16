@@ -20,7 +20,6 @@ class Communication:
     simulationSpeedMap: dict[int, float]
     pidParamMap: dict[int, Train.PIDParam]
     prevUpdate: float
-    arduino: Optional[serial.Serial]
     deltaMap: dict[int, float]
     sensorSignalBuffer: queue.Queue[int]
 
@@ -29,7 +28,6 @@ class Communication:
         self.simulationSpeedMap = {}
         self.pidParamMap = pidParamMap
         self.prevUpdate = 0.0
-        self.arduino = None
         self.deltaMap = {}
         self.sensorSignalBuffer = queue.Queue()
 
@@ -49,7 +47,6 @@ class Communication:
             self.deltaMap[1] = 0.0
             self.deltaMap[2] = 0.0
             self.deltaMap[3] = 0.0
-            self.arduino = serial.Serial("/dev/ttyS0", 9600)
         self.update()
 
     def update(self) -> None:
@@ -61,14 +58,9 @@ class Communication:
             for trainId in self.deltaMap.keys():
                 self.deltaMap[trainId] += self.simulationSpeedMap[trainId] * dt
 
-            if self.arduino != None:
-                while self.arduino.in_waiting > 0:
-                    self.sensorSignalBuffer.put(self.arduino.read())
-
         else:
-            if self.arduino != None:
-                while self.arduino.in_waiting > 0:
-                    self.sensorSignalBuffer.put(self.arduino.read())
+            # 何もしない
+            pass
 
     def receiveTrainDelta(self, trainId: int) -> float:
         retval = self.deltaMap[trainId]
@@ -91,16 +83,5 @@ class Communication:
 
     # 指定したポイントに切替命令を送る
     def sendToggle(self, servoId: int, servoState: Junction.ServoState) -> None:
-        if self.arduino != None:
-            servoStateCode = 0
-            if servoState == Junction.ServoState.NoServo:
-                return
-            elif servoState == Junction.ServoState.Straight:
-                servoStateCode = 0
-            elif servoState == Junction.ServoState.Curve:
-                servoStateCode = 1
-            else:
-                return
-            self.arduino.write(servoId.to_bytes(1, "little"))
-            self.arduino.write(servoStateCode.to_bytes(1, "little"))
-            print(f"[Communication.sendToggle] servoId {servoId} toggle to {servoStateCode}")
+        # 何もしない
+        pass
