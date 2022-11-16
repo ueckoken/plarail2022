@@ -27,23 +27,27 @@ import spec.statesync_pb2_grpc as statesync_pb2_grpc
 
 
 class Connection:
+    serverAddress: str
+    externalServerAddress: str
     atsServicer: "AtsServicer"
     controlServicer: "ControlServicer"
     serverThread: Optional[threading.Thread]
 
-    def __init__(self) -> None:
-        self.externalServer = "localhost:6543"
-        self.sensorBuffer = []
+    def __init__(self, serverAddress: str, externalServerAddress: str) -> None:
+        self.serverAddress = serverAddress
+        self.externalServerAddress = externalServerAddress
         self.atsServicer = AtsServicer()
         self.controlServicer = ControlServicer()
         self.serverThread = None
 
     @staticmethod
-    def serveAndWait(atsServicer: "AtsServicer", controlServicer: "ControlServicer") -> None:
+    def serveAndWait(
+        serverAddress: str, atsServicer: "AtsServicer", controlServicer: "ControlServicer"
+    ) -> None:
         server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
         ats_pb2_grpc.add_AtsServicer_to_server(atsServicer, server)
         statesync_pb2_grpc.add_ControlServicer_to_server(controlServicer, server)
-        server.add_insecure_port("[::]:6543")
+        server.add_insecure_port(serverAddress)
         server.start()
         server.wait_for_termination()
 
@@ -51,6 +55,7 @@ class Connection:
         thread = threading.Thread(
             target=Connection.serveAndWait,
             kwargs={
+                "serverAddress": self.serverAddress,
                 "atsServicer": self.atsServicer,
                 "controlServicer": self.controlServicer,
             },
@@ -60,7 +65,7 @@ class Connection:
         return thread
 
     def sendStop(self, stationId: str, state: str) -> None:
-        with grpc.insecure_channel(self.externalServer) as channel:
+        with grpc.insecure_channel(self.externalServerAddress) as channel:
             stub = statesync_pb2_grpc.ControlStub(channel)
             response = stub.Command2Internal(
                 statesync_pb2.RequestSync(
@@ -70,7 +75,7 @@ class Connection:
         print(f"Send Stop: {statesync_pb2.ResponseSync.Response.Name(response.response)}")
 
     def sendBlock(self, blockId: str, state: str) -> None:
-        with grpc.insecure_channel("localhost:6543") as channel:
+        with grpc.insecure_channel(self.externalServerAddress) as channel:
             stub = block_pb2_grpc.BlockStateSyncStub(channel)
             response = stub.NotifyState(
                 block_pb2.NotifyStateRequest(state=state, block=block_pb2.Blocks(blockId=blockId))
@@ -126,7 +131,10 @@ class ControlServicer(statesync_pb2_grpc.ControlServicer):
 
 # 使い方の例
 def main() -> None:
-    connection = Connection()
+    connection = Connection(
+        serverAddress="[::]:6543",
+        externalServerAddress="localhost:6543",
+    )
     connection.startServerThread()
 
     while True:
