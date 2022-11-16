@@ -1,3 +1,4 @@
+from Components import StopPoint, Train
 from SignalSystem import SignalSystem
 from State import State
 
@@ -32,37 +33,63 @@ class ATS:
     # 指定した列車に対して速度を指令する. このとき、衝突しないような速度に変えて送信する
     def setSpeedCommand(self, trainId: int, speedCommand: float):
         train = self.__state.getTrainById(trainId)
-        signal = self.__signalSystem.getSignal(
-            train.currentSection.id,
-            train.currentSection.targetJunction.getOutSection().id,
-        )
-        if signal.value == "R":  # 赤信号の場合、信号までの距離から、非常停止できる最高速度を計算
+
+        # ATS有効時
+        if self.__enabled[trainId]:
+            # 赤信号までの距離を取得し、出してよいスピード(speedLimit)を求める
+            atsStopPoint = self.getATSStopPoint(train)
             distance = self.__state.getDistance(
-                train.currentSection,
-                train.mileage,
-                train.currentSection,
-                train.currentSection.length,
-            )
-            if distance > self.__BREAKING_DISTANCE + self.__MERGIN:
+                train.currentSection, train.mileage, atsStopPoint.section, atsStopPoint.mileage
+            )  # 絶対停止点までの距離を計算
+            if train.stopPoint is None:  # 停止点が代入されていない場合、ATSで計算した停止点を代入する
+                train.stopPoint = atsStopPoint
+
+            if distance > self.__BREAKING_DISTANCE:
                 speedLimit = self.__MAXSPEED + 1
-            elif distance > self.__MERGIN:
-                speedLimit = (
-                    (distance - self.__MERGIN) / self.__BREAKING_DISTANCE * (self.__MAXSPEED + 1)
-                )
+            elif distance > 0:
+                speedLimit = (distance) / self.__BREAKING_DISTANCE * (self.__MAXSPEED + 1)
             else:
                 speedLimit = 0
-            if speedLimit < speedCommand:  # 非常停止できる速度を超えた速度が指示された場合にATS作動. 速度を強制的にspeedLimitに落とす
-                if not self.__activated[train.id]:
-                    print(f"[ATS.setSpeedCommand] ATS activated on train {train.id} !")
-                train.targetSpeed = speedLimit
-                self.__activated[train.id] = True
-                return
-        else:
-            if self.__activated[train.id]:
-                print(f"[ATS.setSpeedCommand] ATS deactivated on train {train.id}")
-            self.__activated[train.id] = False  # 信号が青になったらATS解除
 
-        train.targetSpeed = speedCommand
+            if speedLimit < speedCommand:  # 非常停止できる速度を超えた速度が指示された場合、速度を強制的にspeedLimitに落とす
+                train.targetSpeed = speedLimit
+                if not self.__activated[train.id]:  # ATS作動フラグ(activated)を立てる
+                    print(f"[ATS.setSpeedCommand] ATS activated on train {train.id} !")
+                    self.__activated[train.id] = True
+            else:
+                train.targetSpeed = speedCommand
+                if self.__activated[train.id]:
+                    if (
+                        atsStopPoint.section.id != train.currentSection.id
+                    ):  # 目の前が赤信号ではなくなったら、ATS作動フラグを解除
+                        print(f"[ATS.setSpeedCommand] ATS deactivated on train {train.id}")
+                        self.__activated[train.id] = False
+
+        # ATS無効時、指示された速度をそのまま設定
+        else:
+            train.targetSpeed = speedCommand
+
+    def getATSStopPoint(self, train: Train) -> StopPoint:
+        """
+        赤信号によって生じる停止点を取得する。閉塞の手前や、開通していないポイントの手前が該当する
+
+        Parameters
+        ----------
+        train: 列車
+        """
+        testSection = train.currentSection
+        while True:
+            # 青信号なら次のセクションへ
+            if (
+                self.__signalSystem.getSignal(
+                    testSection.id, testSection.targetJunction.getOutSection().id
+                ).value
+                == "G"
+            ):
+                testSection = testSection.targetJunction.getOutSection()
+            # 赤信号ならこのセクションの終わりを停止点として返す(停止余裕距離を引く)
+            else:
+                return StopPoint(testSection, testSection.length - self.__MERGIN)
 
     # ATSの有効/無効を切替
     def setEnabled(self, trainId: int, enabled: bool):

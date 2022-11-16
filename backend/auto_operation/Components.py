@@ -2,56 +2,38 @@ from dataclasses import dataclass
 from enum import Enum
 from typing import Literal, Optional
 
-StopId = Literal[
-    "shinjuku_s1",
-    "shinjuku_s2",
-    "sakurajosui_s0",
-    "sakurajosui_s1",
-    "sakurajosui_s2",
-    "sakurajosui_s3",
-    "sakurajosui_s4",
-    "sakurajosui_s5",
-    "chofu_s0",
-    "chofu_s1",
-    "chofu_s2",
-    "chofu_s3",
-    "chofu_s4",
-    "hashimoto_s1",
-    "hashimoto_s2",
-    "hachioji_s1",
-    "hachioji_s2",
-]
+
+class Stop:
+    StopId = Literal[
+        "shinjuku_s1",
+        "shinjuku_s2",
+        "sakurajosui_s0",
+        "sakurajosui_s1",
+        "sakurajosui_s2",
+        "sakurajosui_s3",
+        "sakurajosui_s4",
+        "sakurajosui_s5",
+        "chofu_s0",
+        "chofu_s1",
+        "chofu_s2",
+        "chofu_s3",
+        "chofu_s4",
+        "hashimoto_s1",
+        "hashimoto_s2",
+        "hachioji_s1",
+        "hachioji_s2",
+    ]
 
 
-SensorId = Literal[
-    "shinjuku_d1",
-    "shinjuku_d2",
-    "sakurajosui_d1",
-    "sakurajosui_d2",
-    "sakurajosui_d3",
-    "sakurajosui_d4",
-    "sakurajosui_d5",
-    "sakurajosui_d6",
-    "chofu_d1",
-    "chofu_d2",
-    "chofu_d3",
-    "chofu_d4",
-    "chofu_d5",
-    "hashimoto_d1",
-    "hashimoto_d2",
-    "hachioji_d1",
-    "hachioji_d2",
-]
-
-
-PointId = Literal[
-    "sakurajosui_p1",
-    "sakurajosui_p2",
-    "sakurajosui_p3",
-    "sakurajosui_p4",
-    "chofu_p1",
-    "chofu_p2",
-]
+class Point:
+    PointId = Literal[
+        "sakurajosui_p1",
+        "sakurajosui_p2",
+        "sakurajosui_p3",
+        "sakurajosui_p4",
+        "chofu_p1",
+        "chofu_p2",
+    ]
 
 
 class Section:
@@ -209,7 +191,27 @@ class Junction:
 
 @dataclass
 class Sensor:
-    id: int
+    SensorId = Literal[
+        "shinjuku_d1",
+        "shinjuku_d2",
+        "sakurajosui_d1",
+        "sakurajosui_d2",
+        "sakurajosui_d3",
+        "sakurajosui_d4",
+        "sakurajosui_d5",
+        "sakurajosui_d6",
+        "chofu_d1",
+        "chofu_d2",
+        "chofu_d3",
+        "chofu_d4",
+        "chofu_d5",
+        "hashimoto_d1",
+        "hashimoto_d2",
+        "hachioji_d1",
+        "hachioji_d2",
+    ]
+
+    id: SensorId
     belongSection: "Section"
     position: float
 
@@ -264,6 +266,7 @@ class Train:
         self.mileage = initialPosition
         self.prevMileage = initialPosition
         self.pidParam = pidParam
+        self.stopPoint: Optional[StopPoint] = None  # 停止点
 
     # 引数：進んだ距離
     def move(self, delta: float) -> None:
@@ -273,3 +276,9 @@ class Train:
         if self.mileage >= self.currentSection.length:  # junctionを通過したとき
             self.mileage = self.mileage - self.currentSection.length
             self.currentSection = self.currentSection.targetJunction.getOutSection()
+
+
+@dataclass
+class StopPoint:
+    section: Section
+    mileage: float
