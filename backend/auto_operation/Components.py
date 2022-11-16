@@ -266,7 +266,7 @@ class Train:
         self.mileage = initialPosition
         self.prevMileage = initialPosition
         self.pidParam = pidParam
-        self.stopPoint: StopPoint | None = None  # 停止点
+        self.stopPoint: Optional[StopPoint] = None  # 停止点
 
     # 引数：進んだ距離
     def move(self, delta: float) -> None:
