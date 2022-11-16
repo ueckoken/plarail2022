@@ -34,7 +34,7 @@ const INITIAL_STOP_POINT_STATE: StopPointState = {
   hachioji_s1: false,
   hachioji_s2: false,
   hashimoto_s1: false,
-  hashimoto_s2: false
+  hashimoto_s2: false,
 }
 
 type BlockState = Record<BlocklId, boolean>
