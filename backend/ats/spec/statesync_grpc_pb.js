@@ -49,10 +49,11 @@ function deserialize_UpdatePointStateResponse(buffer_arg) {
 }
 
 
-var ControlService = exports.ControlService = {
+// StateManagerはexternalにて立ち上げます。ポイント情報などを管理します。
+var StateManagerService = exports.StateManagerService = {
   // UpdatePointStateはexternalへPointState更新要求を送る。
 updatePointState: {
-    path: '/Control/UpdatePointState',
+    path: '/StateManager/UpdatePointState',
     requestStream: false,
     responseStream: false,
     requestType: statesync_pb.UpdatePointStateRequest,
@@ -62,9 +63,14 @@ updatePointState: {
     responseSerialize: serialize_UpdatePointStateResponse,
     responseDeserialize: deserialize_UpdatePointStateResponse,
   },
+};
+
+exports.StateManagerClient = grpc.makeGenericClientConstructor(StateManagerService);
+// Notificationはauto_operationなどで立ち上げます。StateManagerからポイント情報などの変更を受けとります。
+var NotificationService = exports.NotificationService = {
   // NotifyPointStateはexternalからauto-operationやinternalへPointStateの更新情報を伝える。
 notifyPointState: {
-    path: '/Control/NotifyPointState',
+    path: '/Notification/NotifyPointState',
     requestStream: false,
     responseStream: false,
     requestType: statesync_pb.NotifyPointStateRequest,
@@ -76,4 +82,4 @@ notifyPointState: {
   },
 };
 
-exports.ControlClient = grpc.makeGenericClientConstructor(ControlService);
+exports.NotificationClient = grpc.makeGenericClientConstructor(NotificationService);

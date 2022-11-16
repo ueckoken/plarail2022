@@ -5,8 +5,9 @@ import grpc
 from . import statesync_pb2 as statesync__pb2
 
 
-class ControlStub(object):
-    """Missing associated documentation comment in .proto file."""
+class StateManagerStub(object):
+    """StateManagerはexternalにて立ち上げます。ポイント情報などを管理します。
+    """
 
     def __init__(self, channel):
         """Constructor.
@@ -15,19 +16,15 @@ class ControlStub(object):
             channel: A grpc.Channel.
         """
         self.UpdatePointState = channel.unary_unary(
-                '/Control/UpdatePointState',
+                '/StateManager/UpdatePointState',
                 request_serializer=statesync__pb2.UpdatePointStateRequest.SerializeToString,
                 response_deserializer=statesync__pb2.UpdatePointStateResponse.FromString,
                 )
-        self.NotifyPointState = channel.unary_unary(
-                '/Control/NotifyPointState',
-                request_serializer=statesync__pb2.NotifyPointStateRequest.SerializeToString,
-                response_deserializer=statesync__pb2.NotifyPointStateResponse.FromString,
-                )
 
 
-class ControlServicer(object):
-    """Missing associated documentation comment in .proto file."""
+class StateManagerServicer(object):
+    """StateManagerはexternalにて立ち上げます。ポイント情報などを管理します。
+    """
 
     def UpdatePointState(self, request, context):
         """UpdatePointStateはexternalへPointState更新要求を送る。
@@ -36,35 +33,24 @@ class ControlServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
-    def NotifyPointState(self, request, context):
-        """NotifyPointStateはexternalからauto-operationやinternalへPointStateの更新情報を伝える。
-        """
-        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
-        context.set_details('Method not implemented!')
-        raise NotImplementedError('Method not implemented!')
 
-
-def add_ControlServicer_to_server(servicer, server):
+def add_StateManagerServicer_to_server(servicer, server):
     rpc_method_handlers = {
             'UpdatePointState': grpc.unary_unary_rpc_method_handler(
                     servicer.UpdatePointState,
                     request_deserializer=statesync__pb2.UpdatePointStateRequest.FromString,
                     response_serializer=statesync__pb2.UpdatePointStateResponse.SerializeToString,
             ),
-            'NotifyPointState': grpc.unary_unary_rpc_method_handler(
-                    servicer.NotifyPointState,
-                    request_deserializer=statesync__pb2.NotifyPointStateRequest.FromString,
-                    response_serializer=statesync__pb2.NotifyPointStateResponse.SerializeToString,
-            ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
-            'Control', rpc_method_handlers)
+            'StateManager', rpc_method_handlers)
     server.add_generic_rpc_handlers((generic_handler,))
 
 
  # This class is part of an EXPERIMENTAL API.
-class Control(object):
-    """Missing associated documentation comment in .proto file."""
+class StateManager(object):
+    """StateManagerはexternalにて立ち上げます。ポイント情報などを管理します。
+    """
 
     @staticmethod
     def UpdatePointState(request,
@@ -77,11 +63,59 @@ class Control(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/Control/UpdatePointState',
+        return grpc.experimental.unary_unary(request, target, '/StateManager/UpdatePointState',
             statesync__pb2.UpdatePointStateRequest.SerializeToString,
             statesync__pb2.UpdatePointStateResponse.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+
+class NotificationStub(object):
+    """Notificationはauto_operationなどで立ち上げます。StateManagerからポイント情報などの変更を受けとります。
+    """
+
+    def __init__(self, channel):
+        """Constructor.
+
+        Args:
+            channel: A grpc.Channel.
+        """
+        self.NotifyPointState = channel.unary_unary(
+                '/Notification/NotifyPointState',
+                request_serializer=statesync__pb2.NotifyPointStateRequest.SerializeToString,
+                response_deserializer=statesync__pb2.NotifyPointStateResponse.FromString,
+                )
+
+
+class NotificationServicer(object):
+    """Notificationはauto_operationなどで立ち上げます。StateManagerからポイント情報などの変更を受けとります。
+    """
+
+    def NotifyPointState(self, request, context):
+        """NotifyPointStateはexternalからauto-operationやinternalへPointStateの更新情報を伝える。
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+
+def add_NotificationServicer_to_server(servicer, server):
+    rpc_method_handlers = {
+            'NotifyPointState': grpc.unary_unary_rpc_method_handler(
+                    servicer.NotifyPointState,
+                    request_deserializer=statesync__pb2.NotifyPointStateRequest.FromString,
+                    response_serializer=statesync__pb2.NotifyPointStateResponse.SerializeToString,
+            ),
+    }
+    generic_handler = grpc.method_handlers_generic_handler(
+            'Notification', rpc_method_handlers)
+    server.add_generic_rpc_handlers((generic_handler,))
+
+
+ # This class is part of an EXPERIMENTAL API.
+class Notification(object):
+    """Notificationはauto_operationなどで立ち上げます。StateManagerからポイント情報などの変更を受けとります。
+    """
 
     @staticmethod
     def NotifyPointState(request,
@@ -94,7 +128,7 @@ class Control(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/Control/NotifyPointState',
+        return grpc.experimental.unary_unary(request, target, '/Notification/NotifyPointState',
             statesync__pb2.NotifyPointStateRequest.SerializeToString,
             statesync__pb2.NotifyPointStateResponse.FromString,
             options, channel_credentials,
