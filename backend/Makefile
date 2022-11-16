@@ -5,6 +5,8 @@ up:
 pull:
 	git pull
 
+test:
+	docker compose -f compose.debug.yml up --build
 start: pull up
 
 pb: statesync speedControl ats block

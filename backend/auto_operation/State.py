@@ -1,7 +1,5 @@
-from numpy import pi
-
-from Communication import *
-from Components import *
+from Communication import Communication
+from Components import Junction, Section, Sensor, Station, Train
 
 
 class State:
@@ -370,7 +368,7 @@ class State:
 
         # ポイントへの指令送信
         for junction in self.junctionList:
-            if junction.servoId > -1 and junction.toggleRequested == True:
+            if junction.servoId > -1 and junction.toggleRequested:
                 self.communication.sendToggle(junction.servoId, junction.outServoState)
                 junction.toggleRequested = False
                 # inServoStateは、実際にはサーボモーターがついていないので送信しない

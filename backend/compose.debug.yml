@@ -20,3 +20,10 @@ services:
       dockerfile: ./Dockerfile
     ports:
       - "6060:6060"
+  json2grpc:
+    build:
+      context: ./json2grpc
+    environment:
+      INTERNALENDPOINT: "internal:54321"
+    ports:
+      - "8081:8080"
