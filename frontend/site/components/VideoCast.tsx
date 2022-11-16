@@ -25,7 +25,7 @@ const SKYWAY_DEBUG_LEVEL = 2
 const skyWayPeer: Peer = new Peer({
   key: SKYWAY_APIKEY,
   debug: SKYWAY_DEBUG_LEVEL,
-});
+})
 
 const VideoCast: FC<Prop> = ({ roomIds, styles }) => {
   const [isPeerAvailable, setIsPeerAvailable] = useState<boolean>(false)
@@ -47,13 +47,8 @@ const VideoCast: FC<Prop> = ({ roomIds, styles }) => {
   return (
     <React.Fragment>
       {roomIds.map((roomId, index) => {
-        if (
-          skyWayPeer === undefined ||
-          !isPeerAvailable
-        ) {
-          return (
-            <p key={roomId}>Peer not available</p>
-          )
+        if (skyWayPeer === undefined || !isPeerAvailable) {
+          return <p key={roomId}>Peer not available</p>
         }
         return (
           <RoomViewer
@@ -79,9 +74,9 @@ const RoomViewer: FC<RoomViewerProps> = ({ roomId, peer, style }) => {
   const [peerId, setPeerId] = useState<string | null>(null)
 
   useEffect(() => {
-    console.log("joinroom ",roomId)
+    console.log("joinroom ", roomId)
     const skywayRoom = peer.joinRoom(roomId, {
-      mode:"sfu"
+      mode: "sfu",
     })
     skywayRoom.on("open", () => {
       console.log("sfuroom onopen")
@@ -93,7 +88,7 @@ const RoomViewer: FC<RoomViewerProps> = ({ roomId, peer, style }) => {
       skywayRoom?.close()
       console.log("closed room", roomId)
     }
-  }, [roomId, peer,  setSkywayRoom, setPeerId])
+  }, [roomId, peer, setSkywayRoom, setPeerId])
   if (skywayRoom === null || peerId === null) {
     return <p>NO STREAM</p>
   }
@@ -106,10 +101,7 @@ type SkywayRoomViewerProps = {
   style: CSSProperties
 }
 
-const SkywayRoomViewer: FC<SkywayRoomViewerProps> = ({
-  room,
-  style,
-}) => {
+const SkywayRoomViewer: FC<SkywayRoomViewerProps> = ({ room, style }) => {
   const ref = useRef<HTMLVideoElement>(null)
   const [castingStream, setCastingStream] = useState<MediaStreamWithPeerId>()
   const onStream = useCallback(
