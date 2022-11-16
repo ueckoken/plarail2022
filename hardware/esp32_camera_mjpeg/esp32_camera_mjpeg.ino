@@ -25,10 +25,10 @@
 
 #include "camera_pins.h"
 
-// #define SSID1 "takumi-kentaro"
-// #define PWD1 "k0Ken-11235"
-#define SSID1 ""
-#define PWD1 ""
+#define SSID1 "takumi-kentaro"
+#define PWD1 "k0Ken-11235"
+// #define SSID1 ""
+// #define PWD1 ""
 
 OV2640 cam;
 
