@@ -1,7 +1,7 @@
 import typing
 
 from Communication import Communication
-from Components import Junction, Section, Sensor, Station, StopPoint, Train
+from Components import Junction, Section, Sensor, Station, Stop, Train
 
 
 class State:
@@ -15,8 +15,8 @@ class State:
         self.sensorList: list[Sensor] = []
         self.stationList: list[Station] = []
         self.trainList: list[Train] = []
-        # TODO: もっといい感じにStopPointのIDを導出する
-        self.sectionToStopPoint: dict[Section.SectionId, StopPoint.StopPointId] = {}
+        # TODO: もっといい感じにストップレールのIDを導出する
+        self.sectionIdToStopId: dict[Section.SectionId, Stop.StopId] = {}
 
         # Junction(id, servoId)
         self.junctionList.append(Junction("shinjuku_j1", -1))
@@ -373,9 +373,9 @@ class State:
             )
         )  # 列車3を桜上水b4に配置
 
-        # 区間と停止点
-        # TODO: もっといい感じにStopPointのIDを導出する
-        self.sectionToStopPoint.update(
+        # 区間とストップレールの対応
+        # TODO: もっといい感じにストップレールのIDを導出する
+        self.sectionIdToStopId.update(
             {
                 "shinjuku_b1": "sakurajosui_s0",
                 "shinjuku_b2": "shinjuku_s1",
@@ -397,7 +397,7 @@ class State:
             }
         )
         # 停止点に重複がないことを確認
-        assert len(self.sectionToStopPoint.values()) == len(set(self.sectionToStopPoint.values()))
+        assert len(self.sectionIdToStopId.values()) == len(set(self.sectionIdToStopId.values()))
 
         # start communication
         self.communication = Communication({0: pidParam0, 1: pidParam1})

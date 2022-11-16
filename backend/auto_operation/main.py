@@ -78,12 +78,12 @@ def send_signal_to_browser():
         # どこのストップレールを上げるべきか送る。区間0と区間3を上げるなら、[1, 3]のような配列
         stops: dict[Stop.StopId, bool] = {}
         for section in operation.state.sectionList:
-            stopId = operation.state.sectionToStopPoint[section.id]
+            stopId = operation.state.sectionIdToStopId[section.id]
             stops[stopId] = False
         for train in operation.state.trainList:
             if train.stopPoint:  # 列車には停止すべき点が存在しない場合もある(ATSを無効化した場合など)。停止点を持っている場合はsectionIDを送る
                 sectionId = train.stopPoint.section.id
-                stopId = operation.state.sectionToStopPoint[sectionId]
+                stopId = operation.state.sectionIdToStopId[sectionId]
                 stops[stopId] = True
 
         # 閉塞を送る
