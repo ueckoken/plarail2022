@@ -6,7 +6,7 @@ service BlockStateSync {
   rpc NotifyState(NotifyStateRequest) returns (NotifyStateResponse) {}
 }
 
-message NotifyStateRequest {
+message NotifyBlockStateRequest {
   enum State {
     UNKNOWN = 0;
     OPEN = 1;
@@ -16,7 +16,7 @@ message NotifyStateRequest {
   Blocks block = 3;
 }
 
-message NotifyStateResponse {
+message NotifyBlockStateResponse {
   enum Response {
     UNKNOWN = 0;
     SUCCESS = 1;
