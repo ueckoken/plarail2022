@@ -34,6 +34,13 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Cache Docker layers
+        uses: actions/cache@v3
+        with:
+          path: /tmp/.buildx-cache
+          key: ${{ runner.os }}-buildx-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-buildx-
       - name: Bake images
         uses: docker/bake-action@v2
         env:
@@ -42,5 +49,11 @@ jobs:
           files: ./docker-bake.hcl
           push: ${{ github.event_name == 'push' && startsWith( steps.extract_branch.outputs.branch , 'deployment' ) }}
           set: |
-            *.cache-from=type=gha
-            *.cache-to=type=gha,mode=max
+            *.cache-from=type=local,src=/tmp/.buildx-cache
+            *.cache-to=type=local,mode=min,dest=/tmp/.buildx-cache-new
+
+      # https://github.com/docker/build-push-action/issues/252#issuecomment-744400434
+      - name: Move Cache
+        run: |
+          rm -rf /tmp/.buildx-cache
+          mv /tmp/.buildx-cache-new /tmp/.buildx-cache
