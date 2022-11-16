@@ -3,54 +3,59 @@ from google.protobuf import descriptor as _descriptor
 from google.protobuf import message as _message
 from typing import ClassVar as _ClassVar, Mapping as _Mapping, Optional as _Optional, Union as _Union
 
+BLOCKSTATE_CLOSE: BlockStateEnum
+BLOCKSTATE_OPEN: BlockStateEnum
+BLOCKSTATE_UNKNOWN: BlockStateEnum
 DESCRIPTOR: _descriptor.FileDescriptor
+chofu_b1: BlockId
+chofu_b2: BlockId
+chofu_b3: BlockId
+chofu_b4: BlockId
+chofu_b5: BlockId
+hachioji_b1: BlockId
+hashimoto_b1: BlockId
+hashimoto_b2: BlockId
+hashioji_b2: BlockId
+sakurajosui_b1: BlockId
+sakurajosui_b2: BlockId
+sakurajosui_b3: BlockId
+sakurajosui_b4: BlockId
+sakurajosui_b5: BlockId
+sakurajosui_b6: BlockId
+shinjuku_b1: BlockId
+shinjuku_b2: BlockId
+unknown: BlockId
 
-class Blocks(_message.Message):
-    __slots__ = ["blockId"]
-    class BlockId(int, metaclass=_enum_type_wrapper.EnumTypeWrapper):
-        __slots__ = []
+class BlockAndState(_message.Message):
+    __slots__ = ["blockId", "state"]
     BLOCKID_FIELD_NUMBER: _ClassVar[int]
-    blockId: Blocks.BlockId
-    chofu_b1: Blocks.BlockId
-    chofu_b2: Blocks.BlockId
-    chofu_b3: Blocks.BlockId
-    chofu_b4: Blocks.BlockId
-    chofu_b5: Blocks.BlockId
-    hachioji_b1: Blocks.BlockId
-    hashimoto_b1: Blocks.BlockId
-    hashimoto_b2: Blocks.BlockId
-    hashioji_b2: Blocks.BlockId
-    sakurajosui_b1: Blocks.BlockId
-    sakurajosui_b2: Blocks.BlockId
-    sakurajosui_b3: Blocks.BlockId
-    sakurajosui_b4: Blocks.BlockId
-    sakurajosui_b5: Blocks.BlockId
-    sakurajosui_b6: Blocks.BlockId
-    shinjuku_b1: Blocks.BlockId
-    shinjuku_b2: Blocks.BlockId
-    unknown: Blocks.BlockId
-    def __init__(self, blockId: _Optional[_Union[Blocks.BlockId, str]] = ...) -> None: ...
+    STATE_FIELD_NUMBER: _ClassVar[int]
+    blockId: BlockId
+    state: BlockStateEnum
+    def __init__(self, blockId: _Optional[_Union[BlockId, str]] = ..., state: _Optional[_Union[BlockStateEnum, str]] = ...) -> None: ...
 
 class NotifyBlockStateRequest(_message.Message):
-    __slots__ = ["block", "state"]
-    class State(int, metaclass=_enum_type_wrapper.EnumTypeWrapper):
-        __slots__ = []
-    BLOCK_FIELD_NUMBER: _ClassVar[int]
-    CLOSE: NotifyBlockStateRequest.State
-    OPEN: NotifyBlockStateRequest.State
+    __slots__ = ["state"]
     STATE_FIELD_NUMBER: _ClassVar[int]
-    UNKNOWN: NotifyBlockStateRequest.State
-    block: Blocks
-    state: NotifyBlockStateRequest.State
-    def __init__(self, state: _Optional[_Union[NotifyBlockStateRequest.State, str]] = ..., block: _Optional[_Union[Blocks, _Mapping]] = ...) -> None: ...
+    state: BlockAndState
+    def __init__(self, state: _Optional[_Union[BlockAndState, _Mapping]] = ...) -> None: ...
 
 class NotifyBlockStateResponse(_message.Message):
-    __slots__ = ["response"]
-    class Response(int, metaclass=_enum_type_wrapper.EnumTypeWrapper):
-        __slots__ = []
-    FAILED: NotifyBlockStateResponse.Response
-    RESPONSE_FIELD_NUMBER: _ClassVar[int]
-    SUCCESS: NotifyBlockStateResponse.Response
-    UNKNOWN: NotifyBlockStateResponse.Response
-    response: NotifyBlockStateResponse.Response
-    def __init__(self, response: _Optional[_Union[NotifyBlockStateResponse.Response, str]] = ...) -> None: ...
+    __slots__ = []
+    def __init__(self) -> None: ...
+
+class UpdateBlockStateRequest(_message.Message):
+    __slots__ = ["state"]
+    STATE_FIELD_NUMBER: _ClassVar[int]
+    state: BlockAndState
+    def __init__(self, state: _Optional[_Union[BlockAndState, _Mapping]] = ...) -> None: ...
+
+class UpdateBlockStateResponse(_message.Message):
+    __slots__ = []
+    def __init__(self) -> None: ...
+
+class BlockStateEnum(int, metaclass=_enum_type_wrapper.EnumTypeWrapper):
+    __slots__ = []
+
+class BlockId(int, metaclass=_enum_type_wrapper.EnumTypeWrapper):
+    __slots__ = []

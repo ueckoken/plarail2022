@@ -106,88 +106,89 @@ var StateManager_ServiceDesc = grpc.ServiceDesc{
 	Metadata: "proto/statesync.proto",
 }
 
-// NotificationClient is the client API for Notification service.
+// PointStateNotificationClient is the client API for PointStateNotification service.
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
-type NotificationClient interface {
+type PointStateNotificationClient interface {
 	// NotifyPointStateはexternalからauto-operationやinternalへPointStateの更新情報を伝える。
 	NotifyPointState(ctx context.Context, in *NotifyPointStateRequest, opts ...grpc.CallOption) (*NotifyPointStateResponse, error)
 }
 
-type notificationClient struct {
+type pointStateNotificationClient struct {
 	cc grpc.ClientConnInterface
 }
 
-func NewNotificationClient(cc grpc.ClientConnInterface) NotificationClient {
-	return &notificationClient{cc}
+func NewPointStateNotificationClient(cc grpc.ClientConnInterface) PointStateNotificationClient {
+	return &pointStateNotificationClient{cc}
 }
 
-func (c *notificationClient) NotifyPointState(ctx context.Context, in *NotifyPointStateRequest, opts ...grpc.CallOption) (*NotifyPointStateResponse, error) {
+func (c *pointStateNotificationClient) NotifyPointState(ctx context.Context, in *NotifyPointStateRequest, opts ...grpc.CallOption) (*NotifyPointStateResponse, error) {
 	out := new(NotifyPointStateResponse)
-	err := c.cc.Invoke(ctx, "/Notification/NotifyPointState", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/PointStateNotification/NotifyPointState", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-// NotificationServer is the server API for Notification service.
-// All implementations must embed UnimplementedNotificationServer
+// PointStateNotificationServer is the server API for PointStateNotification service.
+// All implementations must embed UnimplementedPointStateNotificationServer
 // for forward compatibility
-type NotificationServer interface {
+type PointStateNotificationServer interface {
 	// NotifyPointStateはexternalからauto-operationやinternalへPointStateの更新情報を伝える。
 	NotifyPointState(context.Context, *NotifyPointStateRequest) (*NotifyPointStateResponse, error)
-	mustEmbedUnimplementedNotificationServer()
+	mustEmbedUnimplementedPointStateNotificationServer()
 }
 
-// UnimplementedNotificationServer must be embedded to have forward compatible implementations.
-type UnimplementedNotificationServer struct {
+// UnimplementedPointStateNotificationServer must be embedded to have forward compatible implementations.
+type UnimplementedPointStateNotificationServer struct {
 }
 
-func (UnimplementedNotificationServer) NotifyPointState(context.Context, *NotifyPointStateRequest) (*NotifyPointStateResponse, error) {
+func (UnimplementedPointStateNotificationServer) NotifyPointState(context.Context, *NotifyPointStateRequest) (*NotifyPointStateResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method NotifyPointState not implemented")
 }
-func (UnimplementedNotificationServer) mustEmbedUnimplementedNotificationServer() {}
+func (UnimplementedPointStateNotificationServer) mustEmbedUnimplementedPointStateNotificationServer() {
+}
 
-// UnsafeNotificationServer may be embedded to opt out of forward compatibility for this service.
-// Use of this interface is not recommended, as added methods to NotificationServer will
+// UnsafePointStateNotificationServer may be embedded to opt out of forward compatibility for this service.
+// Use of this interface is not recommended, as added methods to PointStateNotificationServer will
 // result in compilation errors.
-type UnsafeNotificationServer interface {
-	mustEmbedUnimplementedNotificationServer()
+type UnsafePointStateNotificationServer interface {
+	mustEmbedUnimplementedPointStateNotificationServer()
 }
 
-func RegisterNotificationServer(s grpc.ServiceRegistrar, srv NotificationServer) {
-	s.RegisterService(&Notification_ServiceDesc, srv)
+func RegisterPointStateNotificationServer(s grpc.ServiceRegistrar, srv PointStateNotificationServer) {
+	s.RegisterService(&PointStateNotification_ServiceDesc, srv)
 }
 
-func _Notification_NotifyPointState_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _PointStateNotification_NotifyPointState_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(NotifyPointStateRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(NotificationServer).NotifyPointState(ctx, in)
+		return srv.(PointStateNotificationServer).NotifyPointState(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/Notification/NotifyPointState",
+		FullMethod: "/PointStateNotification/NotifyPointState",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(NotificationServer).NotifyPointState(ctx, req.(*NotifyPointStateRequest))
+		return srv.(PointStateNotificationServer).NotifyPointState(ctx, req.(*NotifyPointStateRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-// Notification_ServiceDesc is the grpc.ServiceDesc for Notification service.
+// PointStateNotification_ServiceDesc is the grpc.ServiceDesc for PointStateNotification service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
-var Notification_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "Notification",
-	HandlerType: (*NotificationServer)(nil),
+var PointStateNotification_ServiceDesc = grpc.ServiceDesc{
+	ServiceName: "PointStateNotification",
+	HandlerType: (*PointStateNotificationServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
 			MethodName: "NotifyPointState",
-			Handler:    _Notification_NotifyPointState_Handler,
+			Handler:    _PointStateNotification_NotifyPointState_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

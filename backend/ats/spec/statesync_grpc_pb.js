@@ -67,10 +67,10 @@ updatePointState: {
 
 exports.StateManagerClient = grpc.makeGenericClientConstructor(StateManagerService);
 // Notificationはauto_operationなどで立ち上げます。StateManagerからポイント情報などの変更を受けとります。
-var NotificationService = exports.NotificationService = {
+var PointStateNotificationService = exports.PointStateNotificationService = {
   // NotifyPointStateはexternalからauto-operationやinternalへPointStateの更新情報を伝える。
 notifyPointState: {
-    path: '/Notification/NotifyPointState',
+    path: '/PointStateNotification/NotifyPointState',
     requestStream: false,
     responseStream: false,
     requestType: statesync_pb.NotifyPointStateRequest,
@@ -82,4 +82,4 @@ notifyPointState: {
   },
 };
 
-exports.NotificationClient = grpc.makeGenericClientConstructor(NotificationService);
+exports.PointStateNotificationClient = grpc.makeGenericClientConstructor(PointStateNotificationService);

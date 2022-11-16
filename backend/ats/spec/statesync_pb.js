@@ -18,8 +18,7 @@ var global = Function('return this')();
 goog.exportSymbol('proto.NotifyPointStateRequest', null, global);
 goog.exportSymbol('proto.NotifyPointStateResponse', null, global);
 goog.exportSymbol('proto.PointAndState', null, global);
-goog.exportSymbol('proto.ResponseCode', null, global);
-goog.exportSymbol('proto.State', null, global);
+goog.exportSymbol('proto.PointStateEnum', null, global);
 goog.exportSymbol('proto.Station', null, global);
 goog.exportSymbol('proto.StationId', null, global);
 goog.exportSymbol('proto.UpdatePointStateRequest', null, global);
@@ -356,7 +355,7 @@ proto.PointAndState.deserializeBinaryFromReader = function(msg, reader) {
       msg.setStation(value);
       break;
     case 2:
-      var value = /** @type {!proto.State} */ (reader.readEnum());
+      var value = /** @type {!proto.PointStateEnum} */ (reader.readEnum());
       msg.setState(value);
       break;
     default:
@@ -444,16 +443,16 @@ proto.PointAndState.prototype.hasStation = function() {
 
 
 /**
- * optional State state = 2;
- * @return {!proto.State}
+ * optional PointStateEnum state = 2;
+ * @return {!proto.PointStateEnum}
  */
 proto.PointAndState.prototype.getState = function() {
-  return /** @type {!proto.State} */ (jspb.Message.getFieldWithDefault(this, 2, 0));
+  return /** @type {!proto.PointStateEnum} */ (jspb.Message.getFieldWithDefault(this, 2, 0));
 };
 
 
 /**
- * @param {!proto.State} value
+ * @param {!proto.PointStateEnum} value
  * @return {!proto.PointAndState} returns this
  */
 proto.PointAndState.prototype.setState = function(value) {
@@ -644,7 +643,7 @@ proto.UpdatePointStateResponse.prototype.toObject = function(opt_includeInstance
  */
 proto.UpdatePointStateResponse.toObject = function(includeInstance, msg) {
   var f, obj = {
-    response: jspb.Message.getFieldWithDefault(msg, 1, 0)
+
   };
 
   if (includeInstance) {
@@ -681,10 +680,6 @@ proto.UpdatePointStateResponse.deserializeBinaryFromReader = function(msg, reade
     }
     var field = reader.getFieldNumber();
     switch (field) {
-    case 1:
-      var value = /** @type {!proto.ResponseCode} */ (reader.readEnum());
-      msg.setResponse(value);
-      break;
     default:
       reader.skipField();
       break;
@@ -714,31 +709,6 @@ proto.UpdatePointStateResponse.prototype.serializeBinary = function() {
  */
 proto.UpdatePointStateResponse.serializeBinaryToWriter = function(message, writer) {
   var f = undefined;
-  f = message.getResponse();
-  if (f !== 0.0) {
-    writer.writeEnum(
-      1,
-      f
-    );
-  }
-};
-
-
-/**
- * optional ResponseCode response = 1;
- * @return {!proto.ResponseCode}
- */
-proto.UpdatePointStateResponse.prototype.getResponse = function() {
-  return /** @type {!proto.ResponseCode} */ (jspb.Message.getFieldWithDefault(this, 1, 0));
-};
-
-
-/**
- * @param {!proto.ResponseCode} value
- * @return {!proto.UpdatePointStateResponse} returns this
- */
-proto.UpdatePointStateResponse.prototype.setResponse = function(value) {
-  return jspb.Message.setProto3EnumField(this, 1, value);
 };
 
 
@@ -925,7 +895,7 @@ proto.NotifyPointStateResponse.prototype.toObject = function(opt_includeInstance
  */
 proto.NotifyPointStateResponse.toObject = function(includeInstance, msg) {
   var f, obj = {
-    response: jspb.Message.getFieldWithDefault(msg, 1, 0)
+
   };
 
   if (includeInstance) {
@@ -962,10 +932,6 @@ proto.NotifyPointStateResponse.deserializeBinaryFromReader = function(msg, reade
     }
     var field = reader.getFieldNumber();
     switch (field) {
-    case 1:
-      var value = /** @type {!proto.ResponseCode} */ (reader.readEnum());
-      msg.setResponse(value);
-      break;
     default:
       reader.skipField();
       break;
@@ -995,31 +961,6 @@ proto.NotifyPointStateResponse.prototype.serializeBinary = function() {
  */
 proto.NotifyPointStateResponse.serializeBinaryToWriter = function(message, writer) {
   var f = undefined;
-  f = message.getResponse();
-  if (f !== 0.0) {
-    writer.writeEnum(
-      1,
-      f
-    );
-  }
-};
-
-
-/**
- * optional ResponseCode response = 1;
- * @return {!proto.ResponseCode}
- */
-proto.NotifyPointStateResponse.prototype.getResponse = function() {
-  return /** @type {!proto.ResponseCode} */ (jspb.Message.getFieldWithDefault(this, 1, 0));
-};
-
-
-/**
- * @param {!proto.ResponseCode} value
- * @return {!proto.NotifyPointStateResponse} returns this
- */
-proto.NotifyPointStateResponse.prototype.setResponse = function(value) {
-  return jspb.Message.setProto3EnumField(this, 1, value);
 };
 
 
@@ -1053,19 +994,10 @@ proto.StationId = {
 /**
  * @enum {number}
  */
-proto.State = {
-  UNKNOWN: 0,
-  ON: 1,
-  OFF: 2
-};
-
-/**
- * @enum {number}
- */
-proto.ResponseCode = {
-  RESPONSECODE_UNKNOWN: 0,
-  RESPONSECODE_SUCCESS: 1,
-  RESPONSECODE_FAILED: 2
+proto.PointStateEnum = {
+  POINTSTATE_UNKNOWN: 0,
+  POINTSTATE_ON: 1,
+  POINTSTATE_OFF: 2
 };
 
 goog.object.extend(exports, proto);

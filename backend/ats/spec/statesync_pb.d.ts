@@ -29,8 +29,8 @@ export class PointAndState extends jspb.Message {
   getStation(): Station | undefined;
   setStation(value?: Station): void;
 
-  getState(): StateMap[keyof StateMap];
-  setState(value: StateMap[keyof StateMap]): void;
+  getState(): PointStateEnumMap[keyof PointStateEnumMap];
+  setState(value: PointStateEnumMap[keyof PointStateEnumMap]): void;
 
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): PointAndState.AsObject;
@@ -45,7 +45,7 @@ export class PointAndState extends jspb.Message {
 export namespace PointAndState {
   export type AsObject = {
     station?: Station.AsObject,
-    state: StateMap[keyof StateMap],
+    state: PointStateEnumMap[keyof PointStateEnumMap],
   }
 }
 
@@ -72,9 +72,6 @@ export namespace UpdatePointStateRequest {
 }
 
 export class UpdatePointStateResponse extends jspb.Message {
-  getResponse(): ResponseCodeMap[keyof ResponseCodeMap];
-  setResponse(value: ResponseCodeMap[keyof ResponseCodeMap]): void;
-
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): UpdatePointStateResponse.AsObject;
   static toObject(includeInstance: boolean, msg: UpdatePointStateResponse): UpdatePointStateResponse.AsObject;
@@ -87,7 +84,6 @@ export class UpdatePointStateResponse extends jspb.Message {
 
 export namespace UpdatePointStateResponse {
   export type AsObject = {
-    response: ResponseCodeMap[keyof ResponseCodeMap],
   }
 }
 
@@ -114,9 +110,6 @@ export namespace NotifyPointStateRequest {
 }
 
 export class NotifyPointStateResponse extends jspb.Message {
-  getResponse(): ResponseCodeMap[keyof ResponseCodeMap];
-  setResponse(value: ResponseCodeMap[keyof ResponseCodeMap]): void;
-
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): NotifyPointStateResponse.AsObject;
   static toObject(includeInstance: boolean, msg: NotifyPointStateResponse): NotifyPointStateResponse.AsObject;
@@ -129,7 +122,6 @@ export class NotifyPointStateResponse extends jspb.Message {
 
 export namespace NotifyPointStateResponse {
   export type AsObject = {
-    response: ResponseCodeMap[keyof ResponseCodeMap],
   }
 }
 
@@ -159,19 +151,11 @@ export interface StationIdMap {
 
 export const StationId: StationIdMap;
 
-export interface StateMap {
-  UNKNOWN: 0;
-  ON: 1;
-  OFF: 2;
+export interface PointStateEnumMap {
+  POINTSTATE_UNKNOWN: 0;
+  POINTSTATE_ON: 1;
+  POINTSTATE_OFF: 2;
 }
 
-export const State: StateMap;
-
-export interface ResponseCodeMap {
-  RESPONSECODE_UNKNOWN: 0;
-  RESPONSECODE_SUCCESS: 1;
-  RESPONSECODE_FAILED: 2;
-}
-
-export const ResponseCode: ResponseCodeMap;
+export const PointStateEnum: PointStateEnumMap;
 
