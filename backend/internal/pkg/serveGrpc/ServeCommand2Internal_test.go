@@ -2,9 +2,9 @@ package serveGrpc
 
 import (
 	"fmt"
+	"github.com/ueckoken/plarail2022/backend/internal/pkg/station2espIp"
+	pb "github.com/ueckoken/plarail2022/backend/internal/spec"
 	"testing"
-	"ueckoken/plarail2022-internal/pkg/station2espIp"
-	pb "ueckoken/plarail2022-internal/spec"
 )
 
 type TestStations struct {
@@ -26,11 +26,11 @@ func (t *TestStations) Enumerate() []station2espIp.Station {
 
 func TestControlServer_unpackState(t *testing.T) {
 	type fields struct {
-		UnimplementedControlServer pb.UnimplementedControlServer
-		Stations                   station2espIp.Stations
+		UnimplementedNotificationServer pb.UnimplementedNotificationServer
+		Stations                        station2espIp.Stations
 	}
 	type args struct {
-		state pb.RequestSync_State
+		state pb.State
 	}
 	tests := []struct {
 		name   string
@@ -40,25 +40,25 @@ func TestControlServer_unpackState(t *testing.T) {
 	}{
 		{
 			name: "state is on",
-			args: args{state: pb.RequestSync_ON},
+			args: args{state: pb.State_ON},
 			want: "ON",
 		},
 		{
 			name: "state is off",
-			args: args{state: pb.RequestSync_OFF},
+			args: args{state: pb.State_OFF},
 			want: "OFF",
 		},
 		{
 			name: "state is unknown",
-			args: args{state: pb.RequestSync_UNKNOWN},
+			args: args{state: pb.State_UNKNOWN},
 			want: "UNKNOWN",
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			c := &ControlServer{
-				UnimplementedControlServer: tt.fields.UnimplementedControlServer,
-				Stations:                   tt.fields.Stations,
+				UnimplementedNotificationServer: tt.fields.UnimplementedNotificationServer,
+				Stations:                        tt.fields.Stations,
 			}
 			if got := c.unpackState(tt.args.state); got != tt.want {
 				t.Errorf("unpackState() = %v, want %v", got, tt.want)

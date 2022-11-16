@@ -2,10 +2,10 @@ package internal
 
 import (
 	"context"
-	"ueckoken/plarail2022-external/pkg/envStore"
-	"ueckoken/plarail2022-external/pkg/httphandler"
-	"ueckoken/plarail2022-external/pkg/synccontroller"
-	"ueckoken/plarail2022-external/spec"
+	"github.com/ueckoken/plarail2022/backend/external/pkg/envStore"
+	"github.com/ueckoken/plarail2022/backend/external/pkg/httphandler"
+	"github.com/ueckoken/plarail2022/backend/external/pkg/synccontroller"
+	"github.com/ueckoken/plarail2022/backend/external/spec"
 
 	"go.uber.org/zap"
 )
@@ -13,13 +13,13 @@ import (
 // Run runs external server.
 func Run(logger *zap.Logger) {
 	ctx := context.Background()
-	synccontrollerInput := make(chan synccontroller.KV[spec.Stations_StationId, spec.Command2InternalRequest_State])
-	synccontrollerOutput := make(chan synccontroller.KV[spec.Stations_StationId, spec.Command2InternalRequest_State])
-	grpcHandlerInput := make(chan synccontroller.KV[spec.Stations_StationId, spec.Command2InternalRequest_State])
-	main2grpcHandler := make(chan synccontroller.KV[spec.Stations_StationId, spec.Command2InternalRequest_State])
-	httpInputKV := make(chan synccontroller.KV[spec.Stations_StationId, spec.Command2InternalRequest_State])
-	httpInput := make(chan *spec.Command2InternalRequest)
-	httpOutput := make(chan *spec.Command2InternalRequest)
+	synccontrollerInput := make(chan synccontroller.KV[spec.StationId, spec.State])
+	synccontrollerOutput := make(chan synccontroller.KV[spec.StationId, spec.State])
+	grpcHandlerInput := make(chan synccontroller.KV[spec.StationId, spec.State])
+	main2grpcHandler := make(chan synccontroller.KV[spec.StationId, spec.State])
+	httpInputKV := make(chan synccontroller.KV[spec.StationId, spec.State])
+	httpInput := make(chan *spec.PointAndState)
+	httpOutput := make(chan *spec.PointAndState)
 
 	go func() {
 		for c := range synccontrollerOutput {
@@ -37,13 +37,13 @@ func Run(logger *zap.Logger) {
 	}()
 	go func() {
 		for c := range httpInputKV {
-			httpInput <- &spec.Command2InternalRequest{Station: &spec.Stations{StationId: c.Key}, State: c.Value}
+			httpInput <- &spec.PointAndState{Station: &spec.Station{StationId: c.Key}, State: c.Value}
 		}
 	}()
 
 	go func() {
 		for c := range httpOutput {
-			synccontrollerInput <- synccontroller.KV[spec.Stations_StationId, spec.Command2InternalRequest_State]{Key: c.GetStation().GetStationId(), Value: c.GetState()}
+			synccontrollerInput <- synccontroller.KV[spec.StationId, spec.State]{Key: c.GetStation().GetStationId(), Value: c.GetState()}
 		}
 	}()
 

@@ -3,10 +3,10 @@ package internal
 import (
 	"context"
 	"fmt"
+	"github.com/ueckoken/plarail2022/backend/external/pkg/envStore"
+	"github.com/ueckoken/plarail2022/backend/external/pkg/synccontroller"
+	"github.com/ueckoken/plarail2022/backend/external/spec"
 	"net"
-	"ueckoken/plarail2022-external/pkg/envStore"
-	"ueckoken/plarail2022-external/pkg/synccontroller"
-	"ueckoken/plarail2022-external/spec"
 
 	"go.uber.org/zap"
 	"google.golang.org/grpc"
@@ -17,24 +17,24 @@ import (
 type GrpcStateHandler struct {
 	logger *zap.Logger
 	env    *envStore.Env
-	spec.UnimplementedControlServer
-	stateOutput chan<- synccontroller.KV[spec.Stations_StationId, spec.Command2InternalRequest_State]
-	stateInput  <-chan synccontroller.KV[spec.Stations_StationId, spec.Command2InternalRequest_State]
+	spec.UnimplementedStateManagerServer
+	stateOutput chan<- synccontroller.KV[spec.StationId, spec.State]
+	stateInput  <-chan synccontroller.KV[spec.StationId, spec.State]
 }
 
-// NewGrpcHandler creates gRPC handler.
-func NewGrpcHandler(logger *zap.Logger, env *envStore.Env, stateOutput chan<- synccontroller.KV[spec.Stations_StationId, spec.Command2InternalRequest_State], stateInput <-chan synccontroller.KV[spec.Stations_StationId, spec.Command2InternalRequest_State]) *GrpcStateHandler {
+// NewGrpcHandler creates gRPC handler that handles requests from ATS.
+func NewGrpcHandler(logger *zap.Logger, env *envStore.Env, stateOutput chan<- synccontroller.KV[spec.StationId, spec.State], stateInput <-chan synccontroller.KV[spec.StationId, spec.State]) *GrpcStateHandler {
 	return &GrpcStateHandler{logger: logger, env: env, stateOutput: stateOutput, stateInput: stateInput}
 }
 
 // Command2Internal handles requests from ATS.
-func (g GrpcStateHandler) Command2Internal(_ context.Context, req *spec.RequestSync) (*spec.ResponseSync, error) {
-	s := synccontroller.KV[spec.Stations_StationId, spec.Command2InternalRequest_State]{
-		Key:   req.GetStation().GetStationId(),
-		Value: spec.Command2InternalRequest_State(req.GetState()),
+func (g GrpcStateHandler) UpdatePointState(_ context.Context, req *spec.UpdatePointStateRequest) (*spec.UpdatePointStateResponse, error) {
+	s := synccontroller.KV[spec.StationId, spec.State]{
+		Key:   req.GetState().GetStation().GetStationId(),
+		Value: req.GetState().GetState(),
 	}
 	g.stateOutput <- s
-	return &spec.ResponseSync{Response: spec.ResponseSync_SUCCESS}, nil
+	return &spec.UpdatePointStateResponse{Response: spec.ResponseCode_responsecode_SUCCESS}, nil
 }
 
 // / handleInput transmits changes received in channel to ATS.
@@ -47,16 +47,18 @@ func (g GrpcStateHandler) handleInput(ctx context.Context) {
 	}
 	defer con.Close()
 	for d := range g.stateInput {
-		client := spec.NewControlClient(con)
-		req := &spec.RequestSync{
-			Station: &spec.Stations{StationId: d.Key},
-			State:   spec.RequestSync_State(d.Value),
+		client := spec.NewNotificationClient(con)
+		req := &spec.NotifyPointStateRequest{
+			State: &spec.PointAndState{
+				Station: &spec.Station{StationId: d.Key},
+				State:   d.Value,
+			},
 		}
-		res, err := client.Command2Internal(ctx, req)
+		res, err := client.NotifyPointState(ctx, req)
 		if err != nil {
 			g.logger.Error("failed to send data to ATS", zap.Any("payload", req), zap.Error(err))
 		}
-		if res.GetResponse() != spec.ResponseSync_SUCCESS {
+		if res.GetResponse() != spec.ResponseCode_responsecode_SUCCESS {
 			g.logger.Error("ATS response seems to be unsuccessfull", zap.Any("payload", res.GetResponse()))
 		}
 	}
@@ -115,7 +117,7 @@ func GRPCListenAndServe(ctx context.Context, logger *zap.Logger, port uint, hand
 	go handler.handleInput(ctx)
 	go blockhandler.handleInput(ctx)
 	s := grpc.NewServer()
-	spec.RegisterControlServer(s, handler)
+	spec.RegisterStateManagerServer(s, handler)
 	spec.RegisterBlockStateSyncServer(s, blockhandler)
 	if err := s.Serve(lis); err != nil {
 		logger.Panic("failed to server", zap.Error(err))

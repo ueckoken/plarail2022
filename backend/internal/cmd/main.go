@@ -2,10 +2,10 @@ package main
 
 import (
 	"log"
-	"ueckoken/plarail2022-internal/internal"
-	"ueckoken/plarail2022-internal/pkg/esp32healthcheck"
-	"ueckoken/plarail2022-internal/pkg/serveGrpc"
-	"ueckoken/plarail2022-internal/pkg/station2espIp"
+	"github.com/ueckoken/plarail2022/backend/internal/internal"
+	"github.com/ueckoken/plarail2022/backend/internal/pkg/esp32healthcheck"
+	"github.com/ueckoken/plarail2022/backend/internal/pkg/serveGrpc"
+	"github.com/ueckoken/plarail2022/backend/internal/pkg/station2espIp"
 
 	"github.com/prometheus/client_golang/prometheus"
 )

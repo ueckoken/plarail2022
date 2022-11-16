@@ -1,9 +1,9 @@
 package internal
 
 import (
+	"github.com/ueckoken/plarail2022/backend/external/pkg/synccontroller"
+	"github.com/ueckoken/plarail2022/backend/external/spec"
 	"go.uber.org/zap"
-	"ueckoken/plarail2022-external/pkg/synccontroller"
-	"ueckoken/plarail2022-external/spec"
 )
 
 // startBlockSync starts sync controller for block state.

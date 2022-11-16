@@ -4,7 +4,7 @@ import (
 	_ "embed"
 	"fmt"
 
-	pb "ueckoken/plarail2022-internal/spec"
+	pb "github.com/ueckoken/plarail2022/backend/internal/spec"
 
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
@@ -54,14 +54,14 @@ func (d *StationDetail) IsAngleDefined() bool {
 	return d.SetAngle
 }
 
-func (d *StationDetail) GetAngle(state pb.RequestSync_State) (angle int, err error) {
+func (d *StationDetail) GetAngle(state pb.State) (angle int, err error) {
 	if !d.IsAngleDefined() {
 		return 0, fmt.Errorf("angles are not defined")
 	}
 	switch state {
-	case pb.RequestSync_ON:
+	case pb.State_ON:
 		angle = d.OnAngle
-	case pb.RequestSync_OFF:
+	case pb.State_OFF:
 		angle = d.OffAngle
 	default:
 		return 0, status.Errorf(codes.InvalidArgument, "state is not ON or OFF\n")
