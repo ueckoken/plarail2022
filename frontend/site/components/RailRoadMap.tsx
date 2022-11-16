@@ -4,13 +4,18 @@ import Platform from "./svgParts/Platform"
 import SwitchPoint from "./svgParts/SwitchPoint"
 import StopPoint from "./svgParts/StopPoint"
 import { Point, TrainData } from "../types/svgPartsTypes"
-import { BlocklId, BunkiRailId, StationId, StopRailId } from "../types/control-messages"
+import {
+  BlocklId,
+  BunkiRailId,
+  StationId,
+  StopRailId,
+} from "../types/control-messages"
 
 interface Prop {
   datas: {
     stop: Record<StopRailId, boolean>
     switchState: Record<BunkiRailId, boolean>
-    train1: TrainData,
+    train1: TrainData
     blockState: Record<BlocklId, boolean>
   }
   onStopPointOrSwitchPointClick?: (stationId: StationId) => any
@@ -124,7 +129,7 @@ const MAP_RANGES: MapRange[] = [
     },
     id: "sasazuka",
     name: "新宿付近",
-  }
+  },
 ]
 
 const RailroadMap: FC<Prop> = ({
@@ -144,19 +149,23 @@ const RailroadMap: FC<Prop> = ({
 
         <Platform name="京王八王子" position={{ x: 90, y: 70 }} />
         <Platform name="橋本" position={{ x: 90, y: 270 }} />
-        <Platform name="調布1" 
-          position={{ x: 375, y: 400 }} 
+        <Platform
+          name="調布1"
+          position={{ x: 375, y: 400 }}
           isHorizontal={false}
         />
-        <Platform name="調布2" 
+        <Platform
+          name="調布2"
           position={{ x: 270, y: 400 }}
           isHorizontal={false}
         />
-        <Platform name="桜上水2" 
+        <Platform
+          name="桜上水2"
           position={{ x: 875, y: 400 }}
           isHorizontal={false}
         />
-        <Platform name="桜上水1" 
+        <Platform
+          name="桜上水1"
           position={{ x: 975, y: 400 }}
           isHorizontal={false}
         />
@@ -179,7 +188,7 @@ const RailroadMap: FC<Prop> = ({
           positions={[
             { x: 120, y: 40 },
             { x: 300, y: 40 },
-            { x: 300, y: 500 }
+            { x: 300, y: 500 },
           ]}
           trains={[]}
           isClosed={blockState["hachioji_b2"]}
@@ -191,7 +200,7 @@ const RailroadMap: FC<Prop> = ({
             { x: 300, y: 470 },
             { x: 300, y: 550 },
             { x: 900, y: 550 },
-            { x: 900, y: 470 }
+            { x: 900, y: 470 },
           ]}
           trains={[]}
           isClosed={blockState["chofu_b5"]}
@@ -286,7 +295,7 @@ const RailroadMap: FC<Prop> = ({
           trains={[]}
           isClosed={blockState["sakurajosui_b5"]}
         />
-      
+
         <Rail
           // chofu_b1
           positions={[
@@ -336,7 +345,7 @@ const RailroadMap: FC<Prop> = ({
             { x: 50, y: 300 },
             { x: 20, y: 300 },
             { x: 20, y: 240 },
-            { x: 130, y: 240 }
+            { x: 130, y: 240 },
           ]}
           trains={[]}
           isClosed={blockState["hashimoto_b1"]}
@@ -348,7 +357,7 @@ const RailroadMap: FC<Prop> = ({
             { x: 130, y: 240 },
             { x: 240, y: 240 },
             { x: 240, y: 500 },
-            { x: 300, y: 500 }
+            { x: 300, y: 500 },
           ]}
           trains={[]}
           isClosed={blockState["hashimoto_b2"]}

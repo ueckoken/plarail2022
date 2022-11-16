@@ -3,7 +3,7 @@ import { Point, TrainData } from "../../types/svgPartsTypes"
 
 interface Props {
   positions: [Point, Point, ...Point[]]
-  trains: TrainData[],
+  trains: TrainData[]
   isClosed: boolean
 }
 

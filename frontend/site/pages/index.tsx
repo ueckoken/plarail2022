@@ -70,13 +70,13 @@ const INITIAL_BLOCK_STATE: BlockState = {
   hashimoto_b1: false,
   hashimoto_b2: false,
   hachioji_b1: false,
-  hachioji_b2: false
+  hachioji_b2: false,
 }
 
 type SwitchPointState = Record<BunkiRailId, boolean>
 const INITIAL_SWITCH_POINT_STATE: SwitchPointState = {
-  "chofu_p1": false,
-  "sakurajosui_p1": false
+  chofu_p1: false,
+  sakurajosui_p1: false,
 }
 
 const Home: NextPage = () => {
@@ -87,12 +87,10 @@ const Home: NextPage = () => {
   const [switchPointState, setSwitchPointState] = useState<SwitchPointState>(
     INITIAL_SWITCH_POINT_STATE
   )
-  useEffect(()=>{
+  useEffect(() => {
     setSwitchPointState(INITIAL_SWITCH_POINT_STATE)
   })
-  const [blockState, setBlockState] = useState<BlockState>(
-    INITIAL_BLOCK_STATE
-  )
+  const [blockState, setBlockState] = useState<BlockState>(INITIAL_BLOCK_STATE)
   const [selectedStationId, setSelectedStationId] =
     useState<StationId>("unknown")
   const [trainPosition1, setTrainPosition1] = useState<number>(0.4)
