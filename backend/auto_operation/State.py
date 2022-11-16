@@ -410,7 +410,10 @@ class State:
         while True:
             approachingTrain = self.getTrainInSection(testSection)
             # testSectionに列車が存在しない、または存在しても引数で指定された地点より進んだ位置にいる（＝遠ざかっている）場合、探索セクションをひとつ前へ
-            if approachingTrain == None or (approachingTrain.currentSection.id == section.id and approachingTrain.mileage > mileage):
+            if approachingTrain == None or (
+                approachingTrain.currentSection.id == section.id
+                and approachingTrain.mileage > mileage
+            ):
                 testedSectionId.append(testSection.id)  # 一度確認したセクションIDを記録しておく
                 testSection = testSection.sourceJunction.getInSection()  # ひとつ前のセクションに検索範囲を移す
                 if testSection.id in testedSectionId:  # すでに確認済みの場合、一周して戻ってしまったので、列車はいない。Noneを返す
