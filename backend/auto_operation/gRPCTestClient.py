@@ -1,6 +1,5 @@
 # externalとproxyとの繋ぎ込みをするためのクラス
 
-from concurrent import futures
 
 import grpc
 
