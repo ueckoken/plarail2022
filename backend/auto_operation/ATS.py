@@ -53,12 +53,12 @@ class ATS:
 
             if speedLimit < speedCommand:  # 非常停止できる速度を超えた速度が指示された場合、速度を強制的にspeedLimitに落とす
                 train.targetSpeed = speedLimit
-                if self.__activated[train.id] == False:  # ATS作動フラグ(activated)を立てる
+                if not self.__activated[train.id]:  # ATS作動フラグ(activated)を立てる
                     print(f"[ATS.setSpeedCommand] ATS activated on train {train.id} !")
                     self.__activated[train.id] = True
             else:
                 train.targetSpeed = speedCommand
-                if self.__activated[train.id] == True:
+                if self.__activated[train.id]:
                     if (
                         atsStopPoint.section.id != train.currentSection.id
                     ):  # 目の前が赤信号ではなくなったら、ATS作動フラグを解除
