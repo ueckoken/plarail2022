@@ -58,7 +58,7 @@ func TestControlServer_unpackState(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			c := &ControlServer{
 				UnimplementedPointStateNotificationServer: tt.fields.UnimplementedNotificationServer,
-				Stations:                        tt.fields.Stations,
+				Stations: tt.fields.Stations,
 			}
 			if got := c.unpackState(tt.args.state); got != tt.want {
 				t.Errorf("unpackState() = %v, want %v", got, tt.want)
