@@ -58,8 +58,8 @@ func Run(logger *zap.Logger) {
 	StartStationSync(logger.Named("station-sync"), synccontrollerInput, synccontrollerOutput)
 	grpcHandler := NewGrpcHandler(logger.Named("grpc-handler"), envVal, main2grpcHandler, grpcHandlerInput)
 
-	client2blocksync := make(chan synccontroller.KV[spec.Blocks_BlockId, spec.NotifyStateRequest_State])
-	blocksync2client := make(chan synccontroller.KV[spec.Blocks_BlockId, spec.NotifyStateRequest_State])
+	client2blocksync := make(chan synccontroller.KV[spec.Blocks_BlockId, spec.NotifyBlockStateRequest_State])
+	blocksync2client := make(chan synccontroller.KV[spec.Blocks_BlockId, spec.NotifyBlockStateRequest_State])
 	startBlockSync(logger.Named("blocksync"), client2blocksync, blocksync2client)
 	grpcBlockHandl := NewGrpcBlockHandler(logger.Named("grpc-block-handler"), envVal, client2blocksync, blocksync2client)
 
