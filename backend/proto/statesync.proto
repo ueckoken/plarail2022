@@ -48,9 +48,9 @@ message Station {
 }
 
 enum PointStateEnum {
-  UNKNOWN = 0;
-  ON = 1;
-  OFF = 2;
+  POINTSTATE_UNKNOWN = 0;
+  POINTSTATE_ON = 1;
+  POINTSTATE_OFF = 2;
 }
 
 message PointAndState {

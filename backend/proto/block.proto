@@ -16,9 +16,9 @@ service BlockStateNotification {
 }
 
 enum BlockStateEnum {
-  UNKNOWN = 0;
-  OPEN = 1;
-  CLOSE = 2;
+  BLOCKSTATE_UNKNOWN = 0;
+  BLOCKSTATE_OPEN = 1;
+  BLOCKSTATE_CLOSE = 2;
 }
 
 enum BlockId {
