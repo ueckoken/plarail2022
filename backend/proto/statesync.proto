@@ -2,76 +2,73 @@ syntax = "proto3";
 
 option go_package = "./spec";
 
-service Control {
-  rpc Command2Internal(RequestSync) returns (ResponseSync) {}
+// StateManagerはexternalにて立ち上げます。ポイント情報などを管理します。
+service StateManager{
+  // UpdatePointStateはexternalへPointState更新要求を送る。
+  rpc UpdatePointState(UpdatePointStateRequest) returns (UpdatePointStateResponse) {}
 }
 
-message Command2InternalRequest {
-  Stations station = 1;
-  enum State {
-    UNKNOWN = 0;
-    ON = 1;
-    OFF = 2;
-  }
-  State state = 2;
+// Notificationはauto_operationなどで立ち上げます。StateManagerからポイント情報などの変更を受けとります。
+service PointStateNotification {
+  // NotifyPointStateはexternalからauto-operationやinternalへPointStateの更新情報を伝える。
+  rpc NotifyPointState(NotifyPointStateRequest) returns (NotifyPointStateResponse) {}
 }
 
-message RequestSync {
-  Stations station = 1;
-  enum State {
-    UNKNOWN = 0;
-    ON = 1;
-    OFF = 2;
-  }
-  State state = 2;
+enum StationId {
+  stationid_unknown = 0;
+
+  shinjuku_s1 = 2;
+  shinjuku_s2 = 3;
+
+  sakurajosui_p1 = 11;
+  sakurajosui_p2 = 12;
+  sakurajosui_s0 = 13;
+  sakurajosui_s1 = 14;
+  sakurajosui_s2 = 15;
+  sakurajosui_s3 = 16;
+  sakurajosui_s4 = 17;
+  sakurajosui_s5 = 18;
+
+  chofu_p1 = 21;
+  chofu_s0 = 22;
+  chofu_s1 = 23;
+  chofu_s2 = 24;
+  chofu_s3 = 25;
+  chofu_s4 = 26;
+
+  hashimoto_s1 = 31;
+  hashimoto_s2 = 32;
+
+  hachioji_s1 = 41;
+  hachioji_s2 = 42;
 }
 
-message ResponseSync {
-  enum Response {
-    UNKNOWN = 0;
-    SUCCESS = 1;
-    FAILED = 2;
-  }
-  Response response = 1;
-}
-
-message Command2InternalResponse {
-  enum Response {
-    UNKNOWN = 0;
-    SUCCESS = 1;
-    FAILED = 2;
-  }
-  Response response = 1;
-}
-
-message Stations {
-  enum StationId {
-    unknown = 0;
-
-    shinjuku_s1 = 2;
-    shinjuku_s2 = 3;
-
-    sakurajosui_p1 = 11;
-    sakurajosui_p2 = 12;
-    sakurajosui_s0 = 13;
-    sakurajosui_s1 = 14;
-    sakurajosui_s2 = 15;
-    sakurajosui_s3 = 16;
-    sakurajosui_s4 = 17;
-    sakurajosui_s5 = 18;
-
-    chofu_p1 = 21;
-    chofu_s0 = 22;
-    chofu_s1 = 23;
-    chofu_s2 = 24;
-    chofu_s3 = 25;
-    chofu_s4 = 26;
-
-    hashimoto_s1 = 31;
-    hashimoto_s2 = 32;
-
-    hachioji_s1 = 41;
-    hachioji_s2 = 42;
-  }
+message Station {
   StationId stationId = 1;
 }
+
+enum PointStateEnum {
+  POINTSTATE_UNKNOWN = 0;
+  POINTSTATE_ON = 1;
+  POINTSTATE_OFF = 2;
+}
+
+message PointAndState {
+  Station station = 1;
+  PointStateEnum state = 2;
+}
+
+message UpdatePointStateRequest {
+  PointAndState state = 1;
+}
+
+message UpdatePointStateResponse {
+}
+
+message NotifyPointStateRequest{
+  PointAndState state = 1;
+}
+
+message NotifyPointStateResponse {
+}
+

@@ -18,86 +18,177 @@ import (
 // Requires gRPC-Go v1.32.0 or later.
 const _ = grpc.SupportPackageIsVersion7
 
-// ControlClient is the client API for Control service.
+// StateManagerClient is the client API for StateManager service.
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
-type ControlClient interface {
-	Command2Internal(ctx context.Context, in *RequestSync, opts ...grpc.CallOption) (*ResponseSync, error)
+type StateManagerClient interface {
+	// UpdatePointStateはexternalへPointState更新要求を送る。
+	UpdatePointState(ctx context.Context, in *UpdatePointStateRequest, opts ...grpc.CallOption) (*UpdatePointStateResponse, error)
 }
 
-type controlClient struct {
+type stateManagerClient struct {
 	cc grpc.ClientConnInterface
 }
 
-func NewControlClient(cc grpc.ClientConnInterface) ControlClient {
-	return &controlClient{cc}
+func NewStateManagerClient(cc grpc.ClientConnInterface) StateManagerClient {
+	return &stateManagerClient{cc}
 }
 
-func (c *controlClient) Command2Internal(ctx context.Context, in *RequestSync, opts ...grpc.CallOption) (*ResponseSync, error) {
-	out := new(ResponseSync)
-	err := c.cc.Invoke(ctx, "/Control/Command2Internal", in, out, opts...)
+func (c *stateManagerClient) UpdatePointState(ctx context.Context, in *UpdatePointStateRequest, opts ...grpc.CallOption) (*UpdatePointStateResponse, error) {
+	out := new(UpdatePointStateResponse)
+	err := c.cc.Invoke(ctx, "/StateManager/UpdatePointState", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-// ControlServer is the server API for Control service.
-// All implementations must embed UnimplementedControlServer
+// StateManagerServer is the server API for StateManager service.
+// All implementations must embed UnimplementedStateManagerServer
 // for forward compatibility
-type ControlServer interface {
-	Command2Internal(context.Context, *RequestSync) (*ResponseSync, error)
-	mustEmbedUnimplementedControlServer()
+type StateManagerServer interface {
+	// UpdatePointStateはexternalへPointState更新要求を送る。
+	UpdatePointState(context.Context, *UpdatePointStateRequest) (*UpdatePointStateResponse, error)
+	mustEmbedUnimplementedStateManagerServer()
 }
 
-// UnimplementedControlServer must be embedded to have forward compatible implementations.
-type UnimplementedControlServer struct {
+// UnimplementedStateManagerServer must be embedded to have forward compatible implementations.
+type UnimplementedStateManagerServer struct {
 }
 
-func (UnimplementedControlServer) Command2Internal(context.Context, *RequestSync) (*ResponseSync, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method Command2Internal not implemented")
+func (UnimplementedStateManagerServer) UpdatePointState(context.Context, *UpdatePointStateRequest) (*UpdatePointStateResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdatePointState not implemented")
 }
-func (UnimplementedControlServer) mustEmbedUnimplementedControlServer() {}
+func (UnimplementedStateManagerServer) mustEmbedUnimplementedStateManagerServer() {}
 
-// UnsafeControlServer may be embedded to opt out of forward compatibility for this service.
-// Use of this interface is not recommended, as added methods to ControlServer will
+// UnsafeStateManagerServer may be embedded to opt out of forward compatibility for this service.
+// Use of this interface is not recommended, as added methods to StateManagerServer will
 // result in compilation errors.
-type UnsafeControlServer interface {
-	mustEmbedUnimplementedControlServer()
+type UnsafeStateManagerServer interface {
+	mustEmbedUnimplementedStateManagerServer()
 }
 
-func RegisterControlServer(s grpc.ServiceRegistrar, srv ControlServer) {
-	s.RegisterService(&Control_ServiceDesc, srv)
+func RegisterStateManagerServer(s grpc.ServiceRegistrar, srv StateManagerServer) {
+	s.RegisterService(&StateManager_ServiceDesc, srv)
 }
 
-func _Control_Command2Internal_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(RequestSync)
+func _StateManager_UpdatePointState_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UpdatePointStateRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(ControlServer).Command2Internal(ctx, in)
+		return srv.(StateManagerServer).UpdatePointState(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/Control/Command2Internal",
+		FullMethod: "/StateManager/UpdatePointState",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ControlServer).Command2Internal(ctx, req.(*RequestSync))
+		return srv.(StateManagerServer).UpdatePointState(ctx, req.(*UpdatePointStateRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-// Control_ServiceDesc is the grpc.ServiceDesc for Control service.
+// StateManager_ServiceDesc is the grpc.ServiceDesc for StateManager service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
-var Control_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "Control",
-	HandlerType: (*ControlServer)(nil),
+var StateManager_ServiceDesc = grpc.ServiceDesc{
+	ServiceName: "StateManager",
+	HandlerType: (*StateManagerServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "Command2Internal",
-			Handler:    _Control_Command2Internal_Handler,
+			MethodName: "UpdatePointState",
+			Handler:    _StateManager_UpdatePointState_Handler,
+		},
+	},
+	Streams:  []grpc.StreamDesc{},
+	Metadata: "proto/statesync.proto",
+}
+
+// PointStateNotificationClient is the client API for PointStateNotification service.
+//
+// For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
+type PointStateNotificationClient interface {
+	// NotifyPointStateはexternalからauto-operationやinternalへPointStateの更新情報を伝える。
+	NotifyPointState(ctx context.Context, in *NotifyPointStateRequest, opts ...grpc.CallOption) (*NotifyPointStateResponse, error)
+}
+
+type pointStateNotificationClient struct {
+	cc grpc.ClientConnInterface
+}
+
+func NewPointStateNotificationClient(cc grpc.ClientConnInterface) PointStateNotificationClient {
+	return &pointStateNotificationClient{cc}
+}
+
+func (c *pointStateNotificationClient) NotifyPointState(ctx context.Context, in *NotifyPointStateRequest, opts ...grpc.CallOption) (*NotifyPointStateResponse, error) {
+	out := new(NotifyPointStateResponse)
+	err := c.cc.Invoke(ctx, "/PointStateNotification/NotifyPointState", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+// PointStateNotificationServer is the server API for PointStateNotification service.
+// All implementations must embed UnimplementedPointStateNotificationServer
+// for forward compatibility
+type PointStateNotificationServer interface {
+	// NotifyPointStateはexternalからauto-operationやinternalへPointStateの更新情報を伝える。
+	NotifyPointState(context.Context, *NotifyPointStateRequest) (*NotifyPointStateResponse, error)
+	mustEmbedUnimplementedPointStateNotificationServer()
+}
+
+// UnimplementedPointStateNotificationServer must be embedded to have forward compatible implementations.
+type UnimplementedPointStateNotificationServer struct {
+}
+
+func (UnimplementedPointStateNotificationServer) NotifyPointState(context.Context, *NotifyPointStateRequest) (*NotifyPointStateResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method NotifyPointState not implemented")
+}
+func (UnimplementedPointStateNotificationServer) mustEmbedUnimplementedPointStateNotificationServer() {
+}
+
+// UnsafePointStateNotificationServer may be embedded to opt out of forward compatibility for this service.
+// Use of this interface is not recommended, as added methods to PointStateNotificationServer will
+// result in compilation errors.
+type UnsafePointStateNotificationServer interface {
+	mustEmbedUnimplementedPointStateNotificationServer()
+}
+
+func RegisterPointStateNotificationServer(s grpc.ServiceRegistrar, srv PointStateNotificationServer) {
+	s.RegisterService(&PointStateNotification_ServiceDesc, srv)
+}
+
+func _PointStateNotification_NotifyPointState_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(NotifyPointStateRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(PointStateNotificationServer).NotifyPointState(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/PointStateNotification/NotifyPointState",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(PointStateNotificationServer).NotifyPointState(ctx, req.(*NotifyPointStateRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+// PointStateNotification_ServiceDesc is the grpc.ServiceDesc for PointStateNotification service.
+// It's only intended for direct use with grpc.RegisterService,
+// and not to be introspected or modified (even as a copy)
+var PointStateNotification_ServiceDesc = grpc.ServiceDesc{
+	ServiceName: "PointStateNotification",
+	HandlerType: (*PointStateNotificationServer)(nil),
+	Methods: []grpc.MethodDesc{
+		{
+			MethodName: "NotifyPointState",
+			Handler:    _PointStateNotification_NotifyPointState_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
