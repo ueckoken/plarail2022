@@ -68,22 +68,28 @@ class Connection:
         return self.serverThread
 
     def sendStop(self, stationId: str, state: str) -> None:
-        with grpc.insecure_channel(self.externalServerAddress) as channel:
-            stub = statesync_pb2_grpc.ControlStub(channel)
-            response = stub.Command2Internal(
-                statesync_pb2.RequestSync(
-                    state=state, station=statesync_pb2.Stations(stationId=stationId)
+        try:
+            with grpc.insecure_channel(self.externalServerAddress) as channel:
+                stub = statesync_pb2_grpc.ControlStub(channel)
+                response = stub.Command2Internal(
+                    statesync_pb2.RequestSync(
+                        state=state, station=statesync_pb2.Stations(stationId=stationId)
+                    )
                 )
-            )
-        print(f"Send Stop: {statesync_pb2.ResponseSync.Response.Name(response.response)}")
+            print(f"Send Stop: {statesync_pb2.ResponseSync.Response.Name(response.response)}")
+        except grpc._channel._InactiveRpcError as e:
+            print(e)
 
     def sendBlock(self, blockId: str, state: str) -> None:
-        with grpc.insecure_channel(self.externalServerAddress) as channel:
-            stub = block_pb2_grpc.BlockStateSyncStub(channel)
-            response = stub.NotifyState(
-                block_pb2.NotifyStateRequest(state=state, block=block_pb2.Blocks(blockId=blockId))
-            )
-        print(f"Send Block: {block_pb2.NotifyStateResponse.Response.Name(response.response)}")
+        try:
+            with grpc.insecure_channel(self.externalServerAddress) as channel:
+                stub = block_pb2_grpc.BlockStateSyncStub(channel)
+                response = stub.NotifyState(
+                    block_pb2.NotifyStateRequest(state=state, block=block_pb2.Blocks(blockId=blockId))
+                )
+            print(f"Send Block: {block_pb2.NotifyStateResponse.Response.Name(response.response)}")
+        except grpc._channel._InactiveRpcError as e:
+            print(e)
 
 
 # Proxyと通信するためのサーバー(センサーの検知結果が飛んでくる)
@@ -150,18 +156,10 @@ def main() -> None:
             connection.controlServicer.pointQueue.get()
 
         # ストップ情報を送信
-        try:
-            connection.sendStop(stationId="shinjuku_s1", state="ON")
-        except grpc._channel._InactiveRpcError as e:
-            print(e)
-            pass
+        connection.sendStop(stationId="shinjuku_s1", state="ON")
 
         # 閉塞情報を送信
-        try:
-            connection.sendBlock(blockId="shinjuku_b1", state="OPEN")
-        except grpc._channel._InactiveRpcError as e:
-            print(e)
-            pass
+        connection.sendBlock(blockId="shinjuku_b1", state="OPEN")
 
         time.sleep(1)
 
