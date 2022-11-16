@@ -118,7 +118,7 @@ class PointSwitcher:
             station = self.__getNearestStation(junction)  # junction直前の駅を取得
             trainsWantToGo = list(
                 filter(
-                    lambda t: self.__diaPlanner.getDia(t.id, station.id).wait is False,
+                    lambda t: not self.__diaPlanner.getDia(t.id, station.id).wait,
                     trains,
                 )
             )  # 駅で退避するつもりのないtrainをfilter
