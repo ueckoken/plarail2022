@@ -2,8 +2,6 @@ syntax = "proto3";
 
 option go_package = "./spec";
 
-import "statesync.proto";
-
 // BlockStateManagerはblock状態を管理します。externalで動作します。
 service BlockStateManager {
   // UpdateBlockStateはサーバのBlockStateを変更します。
@@ -57,7 +55,6 @@ message UpdateBlockStateRequest {
 }
 
 message UpdateBlockStateResponse {
-  ResponseCode response = 1;
 }
 
 message NotifyBlockStateRequest {
@@ -65,5 +62,4 @@ message NotifyBlockStateRequest {
 }
 
 message NotifyBlockStateResponse {
-  ResponseCode response = 1;
 }
