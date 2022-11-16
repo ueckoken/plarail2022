@@ -6,3 +6,4 @@ resources:
   - ./webrtc-sender
   - ./logviewer
 #  - ./positioning
+  - ./frontend-camera-sender
