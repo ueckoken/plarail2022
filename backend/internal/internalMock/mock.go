@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"log"
 	"net"
-	"ueckoken/plarail2022-internal/internal"
-	"ueckoken/plarail2022-internal/pkg/serveGrpc"
+	"github.com/ueckoken/plarail2022/backend/internal/internal"
+	"github.com/ueckoken/plarail2022/backend/internal/pkg/serveGrpc"
 
 	grpcPrometheus "github.com/grpc-ecosystem/go-grpc-prometheus"
 	"google.golang.org/grpc"
