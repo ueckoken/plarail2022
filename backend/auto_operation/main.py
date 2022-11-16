@@ -7,7 +7,7 @@ from flask import Flask, render_template
 from flask_cors import CORS
 from flask_socketio import SocketIO
 
-from Components import Junction
+from Components import Junction, Section, Stop
 from Connection import Connection
 from Operation import Operation
 
@@ -63,15 +63,36 @@ def operation_loop():
 
 # ブラウザにwebsocketで0.1secおきに信号を送る関数
 def send_signal_to_browser():
+    connection = operation.state.communication.connection
+
+    if connection is None:
+        return
+
     while True:
         socketio.sleep(0.1)
-        blocks = {}  # 閉塞を送る。区間0と3に列車がいるなら、{'s0': True, 's3': True} のような文字列
+        # 閉塞を送る。区間0と3に列車がいるなら、{'s0': True, 's3': True} のような文字列
+        blocks: dict[Section.SectionId, bool] = {}
+        for section in operation.state.sectionList:
+            blocks[section.id] = False
         for train in operation.state.trainList:
-            blocks["s" + str(train.currentSection.id)] = True
-        stops = []  # どこのストップレールを上げるべきか送る。区間0と区間3を上げるなら、[1, 3]のような配列
+            blocks[train.currentSection.id] = True
+        # どこのストップレールを上げるべきか送る。区間0と区間3を上げるなら、[1, 3]のような配列
+        stops: dict[Stop.StopId, bool] = {}
+        for section in operation.state.sectionList:
+            stopId = operation.state.sectionToStopPoint[section.id]
+            stops[stopId] = False
         for train in operation.state.trainList:
             if train.stopPoint:  # 列車には停止すべき点が存在しない場合もある(ATSを無効化した場合など)。停止点を持っている場合はsectionIDを送る
-                stops.append(train.stopPoint.section.id)
+                sectionId = train.stopPoint.section.id
+                stopId = operation.state.sectionToStopPoint[sectionId]
+                stops[stopId] = True
+
+        # 閉塞を送る
+        for blockId, state in blocks.items():
+            connection.sendBlock(blockId=blockId, state="CLOSE" if state else "OPEN")
+        # ストップレールを送る
+        for stopId, state in stops.items():
+            connection.sendStop(stationId=stopId, state="UP" if state else "DOWN")
 
         # websocketで送信
         socketio.emit(

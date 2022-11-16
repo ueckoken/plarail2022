@@ -1,7 +1,7 @@
 import typing
 
 from Communication import Communication
-from Components import Junction, Section, Sensor, Station, Train
+from Components import Junction, Section, Sensor, Station, StopPoint, Train
 
 
 class State:
@@ -15,6 +15,8 @@ class State:
         self.sensorList: list[Sensor] = []
         self.stationList: list[Station] = []
         self.trainList: list[Train] = []
+        # TODO: もっといい感じにStopPointのIDを導出する
+        self.sectionToStopPoint: dict[Section.SectionId, StopPoint.StopPointId] = {}
 
         # Junction(id, servoId)
         self.junctionList.append(Junction("shinjuku_j1", -1))
@@ -370,6 +372,32 @@ class State:
                 pidParam1,
             )
         )  # 列車3を桜上水b4に配置
+
+        # 区間と停止点
+        # TODO: もっといい感じにStopPointのIDを導出する
+        self.sectionToStopPoint.update(
+            {
+                "shinjuku_b1": "sakurajosui_s0",
+                "shinjuku_b2": "shinjuku_s1",
+                "sakurajosui_b1": "sakurajosui_s1",
+                "sakurajosui_b2": "sakurajosui_s2",
+                "sakurajosui_b3": "sakurajosui_s3",
+                "sakurajosui_b4": "sakurajosui_s4",
+                "sakurajosui_b5": "chofu_s0",
+                "sakurajosui_b6": "shinjuku_s2",
+                "chofu_b1": "chofu_s1",
+                "chofu_b2": "chofu_s2",
+                "chofu_b3": "hashimoto_s1",
+                "chofu_b4": "hachioji_s2",
+                "chofu_b5": "sakurajosui_s5",
+                "hashimoto_b1": "hashimoto_s2",
+                "hashimoto_b2": "chofu_s3",
+                "hachioji_b1": "chofu_s4",
+                "hachioji_b2": "hachioji_s1",
+            }
+        )
+        # 停止点に重複がないことを確認
+        assert len(self.sectionToStopPoint.values()) == len(set(self.sectionToStopPoint.values()))
 
         # start communication
         self.communication = Communication({0: pidParam0, 1: pidParam1})

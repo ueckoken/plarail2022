@@ -2,35 +2,38 @@ from dataclasses import dataclass
 from enum import Enum
 from typing import Literal, Optional
 
-StopId = Literal[
-    "shinjuku_s1",
-    "shinjuku_s2",
-    "sakurajosui_s0",
-    "sakurajosui_s1",
-    "sakurajosui_s2",
-    "sakurajosui_s3",
-    "sakurajosui_s4",
-    "sakurajosui_s5",
-    "chofu_s0",
-    "chofu_s1",
-    "chofu_s2",
-    "chofu_s3",
-    "chofu_s4",
-    "hashimoto_s1",
-    "hashimoto_s2",
-    "hachioji_s1",
-    "hachioji_s2",
-]
+
+class Stop:
+    StopId = Literal[
+        "shinjuku_s1",
+        "shinjuku_s2",
+        "sakurajosui_s0",
+        "sakurajosui_s1",
+        "sakurajosui_s2",
+        "sakurajosui_s3",
+        "sakurajosui_s4",
+        "sakurajosui_s5",
+        "chofu_s0",
+        "chofu_s1",
+        "chofu_s2",
+        "chofu_s3",
+        "chofu_s4",
+        "hashimoto_s1",
+        "hashimoto_s2",
+        "hachioji_s1",
+        "hachioji_s2",
+    ]
 
 
-PointId = Literal[
-    "sakurajosui_p1",
-    "sakurajosui_p2",
-    "sakurajosui_p3",
-    "sakurajosui_p4",
-    "chofu_p1",
-    "chofu_p2",
-]
+class Point:
+    PointId = Literal[
+        "sakurajosui_p1",
+        "sakurajosui_p2",
+        "sakurajosui_p3",
+        "sakurajosui_p4",
+        "chofu_p1",
+        "chofu_p2",
+    ]
 
 
 class Section:
