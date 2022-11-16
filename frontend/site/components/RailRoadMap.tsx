@@ -45,7 +45,7 @@ const STOP_PONINTS: StopPointPosition[] = [
   { position: { x: 350, y: 400 }, id: "chofu_s1" },
   { position: { x: 400, y: 400 }, id: "chofu_s2" },
   { position: { x: 300, y: 400 }, id: "chofu_s4" },
-  { position: { x: 240, y: 400 }, id: "chofu_s4" },
+  { position: { x: 240, y: 400 }, id: "chofu_s3" },
   { position: { x: 90, y: 40 }, id: "hachioji_s2" },
   { position: { x: 90, y: 100 }, id: "hachioji_s1" },
   { position: { x: 90, y: 300 }, id: "hashimoto_s1" },
