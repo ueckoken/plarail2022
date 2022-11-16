@@ -73,18 +73,22 @@ class ATO:
         while True:
             # 現在のセクションに駅がある
             if testSection is None:
-                # FIXME; 型ガードのために適当な値を返している
-                return 0.0
+                print("[ATO] testSection is None")
+                return 0.0  # 型ガード。currentsectionが取れないので停止
             if testSection.station is not None:
                 diaOfThisStation = self.__diaPlanner.getDia(train.id, testSection.station.id)  # ダイヤ
                 # 当該駅に列車がすでに到着/通過済みの場合
-                if train.mileage >= testSection.stationPosition:
+                currentSection = train.currentSection
+                if currentSection is None:
+                    print("[ATO] train.currentSection is None")
+                    continue
+                if currentSection.id == testSection.id and train.mileage >= testSection.stationPosition:
                     stopDuration = time.time() - self.__arriveTime[train.id]  # 停車からの経過時間
                     outSection = testSection.targetJunction.getOutSection()
                     if outSection is None:
                         continue
                     departSignal = self.__signalSystem.getSignal(
-                        testSection.id,
+                        currentSection.id,
                         outSection.id,
                     )  # 出発信号機
                     # print(f"trainId={train.id}, stopDuration={stopDuration}, departSignal={departSignal.value}")

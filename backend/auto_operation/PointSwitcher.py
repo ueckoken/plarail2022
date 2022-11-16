@@ -91,6 +91,7 @@ class PointSwitcher:
         while True:
             straight = junction.inSectionStraight
             if straight is None:
+                print(f"junction {junction.id} .inSectionStraight is None")
                 continue
             train = self.__state.getTrainInSection(straight)
             if train:

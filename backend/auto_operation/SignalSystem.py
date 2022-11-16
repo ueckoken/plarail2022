@@ -31,11 +31,11 @@ class SignalSystem:
             if junction.outSectionCurve is None or junction.outSectionCurve.id != targetSectionId:
                 return None
         # 信号判定
-        in_section = junction.getInSection()
-        out_section = junction.getOutSection()
-        if in_section is not None and in_section.id == sourceSectionId and out_section is not None:
+        inSection = junction.getInSection()
+        outSection = junction.getOutSection()
+        if inSection is not None and inSection.id == sourceSectionId and outSection is not None:
             # 分岐器が開通している
-            train = self.__state.getTrainInSection(out_section)  # 前方セクションにいる列車を取得
+            train = self.__state.getTrainInSection(outSection)  # 前方セクションにいる列車を取得
             if train is None:  # 前方セクションに在線なし
                 return Signal(sourceSectionId, targetSectionId, "G")
         return Signal(sourceSectionId, targetSectionId, "R")
