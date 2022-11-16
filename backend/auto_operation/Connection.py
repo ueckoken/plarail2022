@@ -152,13 +152,15 @@ def main() -> None:
         # ストップ情報を送信
         try:
             connection.sendStop(stationId="shinjuku_s1", state="ON")
-        except:
+        except grpc._channel._InactiveRpcError as e:
+            print(e)
             pass
 
         # 閉塞情報を送信
         try:
             connection.sendBlock(blockId="shinjuku_b1", state="OPEN")
-        except:
+        except grpc._channel._InactiveRpcError as e:
+            print(e)
             pass
 
         time.sleep(1)
