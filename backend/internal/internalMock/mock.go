@@ -2,10 +2,10 @@ package main
 
 import (
 	"fmt"
-	"log"
-	"net"
 	"github.com/ueckoken/plarail2022/backend/internal/internal"
 	"github.com/ueckoken/plarail2022/backend/internal/pkg/serveGrpc"
+	"log"
+	"net"
 
 	grpcPrometheus "github.com/grpc-ecosystem/go-grpc-prometheus"
 	"google.golang.org/grpc"

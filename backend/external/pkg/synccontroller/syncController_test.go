@@ -1,9 +1,9 @@
 package synccontroller
 
 import (
+	"github.com/ueckoken/plarail2022/backend/external/spec"
 	"strings"
 	"testing"
-	"github.com/ueckoken/plarail2022/backend/external/spec"
 )
 
 func (skvs *stationKVS[T, U]) contain(dat KV[T, U]) bool {

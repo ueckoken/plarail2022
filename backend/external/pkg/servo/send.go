@@ -68,7 +68,7 @@ func (c2i *Command2Internal) Send() error {
 
 func (c2i *Command2Internal) convert2pb() *pb.NotifyPointStateRequest {
 	return &pb.NotifyPointStateRequest{
-		State:   &pb.PointAndState{Station: c2i.station.GetStation(), State: c2i.station.GetState()},
+		State: &pb.PointAndState{Station: c2i.station.GetStation(), State: c2i.station.GetState()},
 	}
 }
 func (c2i *Command2Internal) String() string {
