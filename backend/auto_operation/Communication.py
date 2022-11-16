@@ -59,7 +59,8 @@ class Communication:
                 self.deltaMap[trainId] += self.simulationSpeedMap[trainId] * dt
 
         else:
-            # 何もしない
+            # 何もしない。
+            # もともとは車輪の回転情報を受け取っていたが削除された。
             pass
 
     def receiveTrainDelta(self, trainId: int) -> float:
@@ -78,10 +79,12 @@ class Communication:
         if self.simulationMode:
             self.simulationSpeedMap[trainId] = speed
         else:
-            # 何もしない
+            # 何もしない。
+            # もともとは車両に速度指令を送ることができたが削除された。
             pass
 
     # 指定したポイントに切替命令を送る
     def sendToggle(self, servoId: int, servoState: Junction.ServoState) -> None:
-        # 何もしない
+        # 何もしない。
+        # もともとはポイントに切替命令を送ることができたが削除された。
         pass
