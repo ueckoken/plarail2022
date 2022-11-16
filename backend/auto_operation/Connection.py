@@ -143,11 +143,11 @@ def main() -> None:
     while True:
         # センサー情報を受信
         while connection.atsServicer.sensorQueue.qsize():
-            _data = connection.atsServicer.sensorQueue.get()
+            connection.atsServicer.sensorQueue.get()
 
         # ポイント情報を受信
         while connection.controlServicer.pointQueue.qsize():
-            _data = connection.controlServicer.pointQueue.get()
+            connection.controlServicer.pointQueue.get()
 
         # ストップ情報を送信
         try:
