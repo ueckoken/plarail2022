@@ -1,4 +1,4 @@
-module ueckoken/plarail2022-external
+module github.com/ueckoken/plarail2022/backend/external
 
 go 1.19
 

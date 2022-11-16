@@ -2,54 +2,64 @@ syntax = "proto3";
 
 option go_package = "./spec";
 
-service BlockStateSync {
-  rpc NotifyState(NotifyStateRequest) returns (NotifyStateResponse) {}
+// BlockStateManagerはblock状態を管理します。externalで動作します。
+service BlockStateManager {
+  // UpdateBlockStateはサーバのBlockStateを変更します。
+  rpc UpdateBlockState(UpdateBlockStateRequest) returns (UpdateBlockStateResponse) {}
 }
 
-message NotifyStateRequest {
-  enum State {
-    UNKNOWN = 0;
-    OPEN = 1;
-    CLOSE = 2;
-  }
-  State state = 2;
-  Blocks block = 3;
+// BlockStateNotificationはblock状態の通知を受けます。auto_operationで動作します。
+service BlockStateNotification {
+  rpc NotifyBlockState(NotifyBlockStateRequest) returns (NotifyBlockStateResponse) {}
 }
 
-message NotifyStateResponse {
-  enum Response {
-    UNKNOWN = 0;
-    SUCCESS = 1;
-    FAILED = 2;
-  }
-  Response response = 1;
+enum BlockStateEnum {
+  BLOCKSTATE_UNKNOWN = 0;
+  BLOCKSTATE_OPEN = 1;
+  BLOCKSTATE_CLOSE = 2;
 }
 
-message Blocks {
-  enum BlockId {
-    unknown = 0;
+enum BlockId {
+  unknown = 0;
 
-    shinjuku_b1 = 1;
-    shinjuku_b2 = 2;
-    
-    sakurajosui_b1 = 11;
-    sakurajosui_b2 = 12;
-    sakurajosui_b3 = 13;
-    sakurajosui_b4 = 14;
-    sakurajosui_b5 = 15;
-    sakurajosui_b6 = 16;
+  shinjuku_b1 = 1;
+  shinjuku_b2 = 2;
 
-    chofu_b1 = 21;
-    chofu_b2 = 22;
-    chofu_b3 = 23;
-    chofu_b4 = 24;
-    chofu_b5 = 25;
+  sakurajosui_b1 = 11;
+  sakurajosui_b2 = 12;
+  sakurajosui_b3 = 13;
+  sakurajosui_b4 = 14;
+  sakurajosui_b5 = 15;
+  sakurajosui_b6 = 16;
 
-    hashimoto_b1 = 31;
-    hashimoto_b2 = 32;
+  chofu_b1 = 21;
+  chofu_b2 = 22;
+  chofu_b3 = 23;
+  chofu_b4 = 24;
+  chofu_b5 = 25;
 
-    hachioji_b1 = 41;
-    hashioji_b2 = 42;
-  }
+  hashimoto_b1 = 31;
+  hashimoto_b2 = 32;
+
+  hachioji_b1 = 41;
+  hashioji_b2 = 42;
+}
+
+message BlockAndState {
   BlockId blockId = 3;
+  BlockStateEnum state = 2;
+}
+
+message UpdateBlockStateRequest {
+  BlockAndState state = 1;
+}
+
+message UpdateBlockStateResponse {
+}
+
+message NotifyBlockStateRequest {
+  BlockAndState state = 1;
+}
+
+message NotifyBlockStateResponse {
 }
