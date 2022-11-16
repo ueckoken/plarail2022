@@ -22,7 +22,7 @@ const _ = grpc.SupportPackageIsVersion7
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type BlockStateSyncClient interface {
-	NotifyState(ctx context.Context, in *NotifyStateRequest, opts ...grpc.CallOption) (*NotifyStateResponse, error)
+	NotifyState(ctx context.Context, in *NotifyBlockStateRequest, opts ...grpc.CallOption) (*NotifyBlockStateResponse, error)
 }
 
 type blockStateSyncClient struct {
@@ -33,8 +33,8 @@ func NewBlockStateSyncClient(cc grpc.ClientConnInterface) BlockStateSyncClient {
 	return &blockStateSyncClient{cc}
 }
 
-func (c *blockStateSyncClient) NotifyState(ctx context.Context, in *NotifyStateRequest, opts ...grpc.CallOption) (*NotifyStateResponse, error) {
-	out := new(NotifyStateResponse)
+func (c *blockStateSyncClient) NotifyState(ctx context.Context, in *NotifyBlockStateRequest, opts ...grpc.CallOption) (*NotifyBlockStateResponse, error) {
+	out := new(NotifyBlockStateResponse)
 	err := c.cc.Invoke(ctx, "/BlockStateSync/NotifyState", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -46,7 +46,7 @@ func (c *blockStateSyncClient) NotifyState(ctx context.Context, in *NotifyStateR
 // All implementations must embed UnimplementedBlockStateSyncServer
 // for forward compatibility
 type BlockStateSyncServer interface {
-	NotifyState(context.Context, *NotifyStateRequest) (*NotifyStateResponse, error)
+	NotifyState(context.Context, *NotifyBlockStateRequest) (*NotifyBlockStateResponse, error)
 	mustEmbedUnimplementedBlockStateSyncServer()
 }
 
@@ -54,7 +54,7 @@ type BlockStateSyncServer interface {
 type UnimplementedBlockStateSyncServer struct {
 }
 
-func (UnimplementedBlockStateSyncServer) NotifyState(context.Context, *NotifyStateRequest) (*NotifyStateResponse, error) {
+func (UnimplementedBlockStateSyncServer) NotifyState(context.Context, *NotifyBlockStateRequest) (*NotifyBlockStateResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method NotifyState not implemented")
 }
 func (UnimplementedBlockStateSyncServer) mustEmbedUnimplementedBlockStateSyncServer() {}
@@ -71,7 +71,7 @@ func RegisterBlockStateSyncServer(s grpc.ServiceRegistrar, srv BlockStateSyncSer
 }
 
 func _BlockStateSync_NotifyState_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(NotifyStateRequest)
+	in := new(NotifyBlockStateRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -83,7 +83,7 @@ func _BlockStateSync_NotifyState_Handler(srv interface{}, ctx context.Context, d
 		FullMethod: "/BlockStateSync/NotifyState",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(BlockStateSyncServer).NotifyState(ctx, req.(*NotifyStateRequest))
+		return srv.(BlockStateSyncServer).NotifyState(ctx, req.(*NotifyBlockStateRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }

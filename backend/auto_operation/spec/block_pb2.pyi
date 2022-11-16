@@ -31,26 +31,26 @@ class Blocks(_message.Message):
     unknown: Blocks.BlockId
     def __init__(self, blockId: _Optional[_Union[Blocks.BlockId, str]] = ...) -> None: ...
 
-class NotifyStateRequest(_message.Message):
+class NotifyBlockStateRequest(_message.Message):
     __slots__ = ["block", "state"]
     class State(int, metaclass=_enum_type_wrapper.EnumTypeWrapper):
         __slots__ = []
     BLOCK_FIELD_NUMBER: _ClassVar[int]
-    CLOSE: NotifyStateRequest.State
-    OPEN: NotifyStateRequest.State
+    CLOSE: NotifyBlockStateRequest.State
+    OPEN: NotifyBlockStateRequest.State
     STATE_FIELD_NUMBER: _ClassVar[int]
-    UNKNOWN: NotifyStateRequest.State
+    UNKNOWN: NotifyBlockStateRequest.State
     block: Blocks
-    state: NotifyStateRequest.State
-    def __init__(self, state: _Optional[_Union[NotifyStateRequest.State, str]] = ..., block: _Optional[_Union[Blocks, _Mapping]] = ...) -> None: ...
+    state: NotifyBlockStateRequest.State
+    def __init__(self, state: _Optional[_Union[NotifyBlockStateRequest.State, str]] = ..., block: _Optional[_Union[Blocks, _Mapping]] = ...) -> None: ...
 
-class NotifyStateResponse(_message.Message):
+class NotifyBlockStateResponse(_message.Message):
     __slots__ = ["response"]
     class Response(int, metaclass=_enum_type_wrapper.EnumTypeWrapper):
         __slots__ = []
-    FAILED: NotifyStateResponse.Response
+    FAILED: NotifyBlockStateResponse.Response
     RESPONSE_FIELD_NUMBER: _ClassVar[int]
-    SUCCESS: NotifyStateResponse.Response
-    UNKNOWN: NotifyStateResponse.Response
-    response: NotifyStateResponse.Response
-    def __init__(self, response: _Optional[_Union[NotifyStateResponse.Response, str]] = ...) -> None: ...
+    SUCCESS: NotifyBlockStateResponse.Response
+    UNKNOWN: NotifyBlockStateResponse.Response
+    response: NotifyBlockStateResponse.Response
+    def __init__(self, response: _Optional[_Union[NotifyBlockStateResponse.Response, str]] = ...) -> None: ...

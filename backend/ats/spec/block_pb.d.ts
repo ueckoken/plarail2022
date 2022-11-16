@@ -3,9 +3,9 @@
 
 import * as jspb from "google-protobuf";
 
-export class NotifyStateRequest extends jspb.Message {
-  getState(): NotifyStateRequest.StateMap[keyof NotifyStateRequest.StateMap];
-  setState(value: NotifyStateRequest.StateMap[keyof NotifyStateRequest.StateMap]): void;
+export class NotifyBlockStateRequest extends jspb.Message {
+  getState(): NotifyBlockStateRequest.StateMap[keyof NotifyBlockStateRequest.StateMap];
+  setState(value: NotifyBlockStateRequest.StateMap[keyof NotifyBlockStateRequest.StateMap]): void;
 
   hasBlock(): boolean;
   clearBlock(): void;
@@ -13,18 +13,18 @@ export class NotifyStateRequest extends jspb.Message {
   setBlock(value?: Blocks): void;
 
   serializeBinary(): Uint8Array;
-  toObject(includeInstance?: boolean): NotifyStateRequest.AsObject;
-  static toObject(includeInstance: boolean, msg: NotifyStateRequest): NotifyStateRequest.AsObject;
+  toObject(includeInstance?: boolean): NotifyBlockStateRequest.AsObject;
+  static toObject(includeInstance: boolean, msg: NotifyBlockStateRequest): NotifyBlockStateRequest.AsObject;
   static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
   static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
-  static serializeBinaryToWriter(message: NotifyStateRequest, writer: jspb.BinaryWriter): void;
-  static deserializeBinary(bytes: Uint8Array): NotifyStateRequest;
-  static deserializeBinaryFromReader(message: NotifyStateRequest, reader: jspb.BinaryReader): NotifyStateRequest;
+  static serializeBinaryToWriter(message: NotifyBlockStateRequest, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): NotifyBlockStateRequest;
+  static deserializeBinaryFromReader(message: NotifyBlockStateRequest, reader: jspb.BinaryReader): NotifyBlockStateRequest;
 }
 
-export namespace NotifyStateRequest {
+export namespace NotifyBlockStateRequest {
   export type AsObject = {
-    state: NotifyStateRequest.StateMap[keyof NotifyStateRequest.StateMap],
+    state: NotifyBlockStateRequest.StateMap[keyof NotifyBlockStateRequest.StateMap],
     block?: Blocks.AsObject,
   }
 
@@ -37,23 +37,23 @@ export namespace NotifyStateRequest {
   export const State: StateMap;
 }
 
-export class NotifyStateResponse extends jspb.Message {
-  getResponse(): NotifyStateResponse.ResponseMap[keyof NotifyStateResponse.ResponseMap];
-  setResponse(value: NotifyStateResponse.ResponseMap[keyof NotifyStateResponse.ResponseMap]): void;
+export class NotifyBlockStateResponse extends jspb.Message {
+  getResponse(): NotifyBlockStateResponse.ResponseMap[keyof NotifyBlockStateResponse.ResponseMap];
+  setResponse(value: NotifyBlockStateResponse.ResponseMap[keyof NotifyBlockStateResponse.ResponseMap]): void;
 
   serializeBinary(): Uint8Array;
-  toObject(includeInstance?: boolean): NotifyStateResponse.AsObject;
-  static toObject(includeInstance: boolean, msg: NotifyStateResponse): NotifyStateResponse.AsObject;
+  toObject(includeInstance?: boolean): NotifyBlockStateResponse.AsObject;
+  static toObject(includeInstance: boolean, msg: NotifyBlockStateResponse): NotifyBlockStateResponse.AsObject;
   static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
   static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
-  static serializeBinaryToWriter(message: NotifyStateResponse, writer: jspb.BinaryWriter): void;
-  static deserializeBinary(bytes: Uint8Array): NotifyStateResponse;
-  static deserializeBinaryFromReader(message: NotifyStateResponse, reader: jspb.BinaryReader): NotifyStateResponse;
+  static serializeBinaryToWriter(message: NotifyBlockStateResponse, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): NotifyBlockStateResponse;
+  static deserializeBinaryFromReader(message: NotifyBlockStateResponse, reader: jspb.BinaryReader): NotifyBlockStateResponse;
 }
 
-export namespace NotifyStateResponse {
+export namespace NotifyBlockStateResponse {
   export type AsObject = {
-    response: NotifyStateResponse.ResponseMap[keyof NotifyStateResponse.ResponseMap],
+    response: NotifyBlockStateResponse.ResponseMap[keyof NotifyBlockStateResponse.ResponseMap],
   }
 
   export interface ResponseMap {

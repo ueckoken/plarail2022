@@ -16,8 +16,8 @@ class BlockStateSyncStub(object):
         """
         self.NotifyState = channel.unary_unary(
                 '/BlockStateSync/NotifyState',
-                request_serializer=block__pb2.NotifyStateRequest.SerializeToString,
-                response_deserializer=block__pb2.NotifyStateResponse.FromString,
+                request_serializer=block__pb2.NotifyBlockStateRequest.SerializeToString,
+                response_deserializer=block__pb2.NotifyBlockStateResponse.FromString,
                 )
 
 
@@ -35,8 +35,8 @@ def add_BlockStateSyncServicer_to_server(servicer, server):
     rpc_method_handlers = {
             'NotifyState': grpc.unary_unary_rpc_method_handler(
                     servicer.NotifyState,
-                    request_deserializer=block__pb2.NotifyStateRequest.FromString,
-                    response_serializer=block__pb2.NotifyStateResponse.SerializeToString,
+                    request_deserializer=block__pb2.NotifyBlockStateRequest.FromString,
+                    response_serializer=block__pb2.NotifyBlockStateResponse.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
@@ -60,7 +60,7 @@ class BlockStateSync(object):
             timeout=None,
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/BlockStateSync/NotifyState',
-            block__pb2.NotifyStateRequest.SerializeToString,
-            block__pb2.NotifyStateResponse.FromString,
+            block__pb2.NotifyBlockStateRequest.SerializeToString,
+            block__pb2.NotifyBlockStateResponse.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
