@@ -7,7 +7,6 @@ import React, {
   CSSProperties,
 } from "react"
 import Peer, { SfuRoom, MeshRoom } from "skyway-js"
-import { SendMessage, WebRTCMessage } from "../types/webrtc-message"
 interface PeerIdProp {
   peerId: string
 }
@@ -19,46 +18,28 @@ interface Prop {
 const SW_WSURL = "wss://webrtc.chofufes2022.ueckoken.club/"
 const SKYWAY_APIKEY =
   process.env.SKYWAY_APIKEY === undefined
-    ? "c07e8954-ce1b-4783-a45e-e8421ece83ce"
+    ? "2eb379e0-0374-4e3c-9674-d7415b0b7f27"
     : process.env.SKYWAY_APIKEY
 const SKYWAY_DEBUG_LEVEL = 2
 
+const skyWayPeer: Peer = new Peer({
+  key: SKYWAY_APIKEY,
+  debug: SKYWAY_DEBUG_LEVEL,
+});
+
 const VideoCast: FC<Prop> = ({ roomIds, styles }) => {
-  const webSocket = useRef<WebSocket>()
-  const [isWebSocketAvailable, setIsWebSocketAvailable] =
-    useState<boolean>(false)
-  const skywayPeer = useRef<Peer>()
   const [isPeerAvailable, setIsPeerAvailable] = useState<boolean>(false)
-
   useEffect(() => {
-    webSocket.current = new WebSocket(SW_WSURL)
-    skywayPeer.current = new Peer({
-      key: SKYWAY_APIKEY,
-      debug: SKYWAY_DEBUG_LEVEL,
-    })
-    webSocket.current.addEventListener("open", (event) => {
-      if (webSocket.current) {
-        setIsWebSocketAvailable(true)
-      }
-    })
-    webSocket.current.addEventListener("close", (event) => {
-      if (webSocket.current) {
-        setIsWebSocketAvailable(false)
-      }
-    })
-
-    skywayPeer.current.on("open", () => {
-      console.log("opened skyway peer")
+    skyWayPeer?.on("open", (id) => {
+      console.log(`opened skyway peer id:${id}`)
       setIsPeerAvailable(true)
     })
-    skywayPeer.current.on("close", () => {
+    skyWayPeer?.on("close", () => {
       console.log("closed skyway peer")
       setIsPeerAvailable(false)
     })
     return () => {
-      webSocket.current?.close()
-      skywayPeer.current?.destroy()
-      setIsWebSocketAvailable(false)
+      skyWayPeer?.destroy()
       setIsPeerAvailable(false)
     }
   }, [])
@@ -67,18 +48,17 @@ const VideoCast: FC<Prop> = ({ roomIds, styles }) => {
     <React.Fragment>
       {roomIds.map((roomId, index) => {
         if (
-          webSocket.current === undefined ||
-          skywayPeer.current === undefined ||
-          !isWebSocketAvailable ||
+          skyWayPeer === undefined ||
           !isPeerAvailable
         ) {
-          return null
+          return (
+            <p key={roomId}>Peer not available</p>
+          )
         }
         return (
           <RoomViewer
             roomId={roomId}
-            ws={webSocket.current}
-            peer={skywayPeer.current}
+            peer={skyWayPeer}
             key={roomId}
             style={styles[index]}
           />
@@ -90,55 +70,30 @@ const VideoCast: FC<Prop> = ({ roomIds, styles }) => {
 
 type RoomViewerProps = {
   roomId: string
-  ws: WebSocket
   peer: Peer
   style: CSSProperties
 }
 
-const RoomViewer: FC<RoomViewerProps> = ({ roomId, ws, peer, style }) => {
+const RoomViewer: FC<RoomViewerProps> = ({ roomId, peer, style }) => {
   const [skywayRoom, setSkywayRoom] = useState<SfuRoom | MeshRoom | null>(null)
   const [peerId, setPeerId] = useState<string | null>(null)
 
   useEffect(() => {
-    const onMessage = (event: WebSocketEventMap["message"]) => {
-      const message: SendMessage = JSON.parse(event.data)
-      if (message.room_id !== roomId) {
-        return
-      }
-      console.log("ruu message", message)
-      const peerId = message.peer_id
-      const skywayRoomId = message.skyway_room_id
-
-      console.log("joinroom")
-      const skywayRoom = peer.joinRoom(skywayRoomId, {
-        mode: "sfu",
-      })
-      skywayRoom.on("open", (e: any) => {
-        console.log("sfuroom onopen", e)
-      })
-      setSkywayRoom(skywayRoom)
-      setPeerId(peerId)
-    }
-    ws.addEventListener("message", onMessage)
-
-    const connectMessage: WebRTCMessage = {
-      msg_type: "connect_receiver",
-      room_id: roomId,
-    }
-    ws.send(JSON.stringify(connectMessage))
-    console.log("ruu connect_receiver", roomId)
+    console.log("joinroom ",roomId)
+    const skywayRoom = peer.joinRoom(roomId, {
+      mode:"sfu"
+    })
+    skywayRoom.on("open", () => {
+      console.log("sfuroom onopen")
+    })
+    setSkywayRoom(skywayRoom)
+    setPeerId(peer.id)
 
     return () => {
-      ws.removeEventListener("message", onMessage)
-      const exitMessage = {
-        msg_type: "exit_room",
-        room_id: roomId,
-      }
-      ws.send(JSON.stringify(exitMessage))
       skywayRoom?.close()
-      console.log("ruu close send", roomId)
+      console.log("closed room", roomId)
     }
-  }, [roomId, ws, peer, skywayRoom, setSkywayRoom, setPeerId])
+  }, [roomId, peer,  setSkywayRoom, setPeerId])
   if (skywayRoom === null || peerId === null) {
     return <p>NO STREAM</p>
   }
@@ -153,21 +108,16 @@ type SkywayRoomViewerProps = {
 
 const SkywayRoomViewer: FC<SkywayRoomViewerProps> = ({
   room,
-  peerId,
   style,
 }) => {
   const ref = useRef<HTMLVideoElement>(null)
   const [castingStream, setCastingStream] = useState<MediaStreamWithPeerId>()
   const onStream = useCallback(
     (stream: MediaStreamWithPeerId) => {
-      const streamPeerId = stream.peerId
-      console.log("ruu on stream", stream)
-      if (streamPeerId !== peerId) {
-        return
-      }
+      console.log("on stream", stream)
       setCastingStream(stream)
     },
-    [peerId, setCastingStream]
+    [setCastingStream]
   )
   useEffect(() => {
     room.on("stream", onStream)
@@ -182,6 +132,7 @@ const SkywayRoomViewer: FC<SkywayRoomViewerProps> = ({
     }
     if (video.srcObject !== castingStream) {
       video.srcObject = castingStream
+      video.playsInline = true
       try {
         video.play()
       } catch (err) {
@@ -190,7 +141,7 @@ const SkywayRoomViewer: FC<SkywayRoomViewerProps> = ({
       video.volume = 0
     }
   }, [castingStream])
-  return <video style={style} ref={ref} autoPlay playsInline></video>
+  return <video style={style} ref={ref} autoPlay muted></video>
 }
 
 export default VideoCast
