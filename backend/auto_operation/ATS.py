@@ -41,7 +41,7 @@ class ATS:
             distance = self.__state.getDistance(
                 train.currentSection, train.mileage, atsStopPoint.section, atsStopPoint.mileage
             )  # 絶対停止点までの距離を計算
-            if train.stopPoint == None:  # 停止点が代入されていない場合、ATSで計算した停止点を代入する
+            if train.stopPoint is None:  # 停止点が代入されていない場合、ATSで計算した停止点を代入する
                 train.stopPoint = atsStopPoint
 
             if distance > self.__BREAKING_DISTANCE:

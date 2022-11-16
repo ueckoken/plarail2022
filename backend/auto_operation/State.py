@@ -353,7 +353,7 @@ class State:
             sensor = self.getSensorById(id)
             # センサに近づいてくる列車で一番近いものを取得
             approachingTrain = self.getApproachingTrain(sensor.belongSection, sensor.position)
-            if approachingTrain != None:
+            if approachingTrain is not None:
                 approachingTrain.currentSection = sensor.belongSection
                 approachingTrain.mileage = sensor.position + 1.0  # センサより僅かに先に進める（センサを通過したことを示すため）
                 print(f"[State.update] sensor {sensor.id}: train{train.id} position updated")
@@ -408,7 +408,7 @@ class State:
         while True:
             approachingTrain = self.getTrainInSection(testSection)
             # testSectionに列車が存在しない、または存在しても引数で指定された地点より進んだ位置にいる（＝遠ざかっている）場合、探索セクションをひとつ前へ
-            if approachingTrain == None or (
+            if approachingTrain is None or (
                 approachingTrain.currentSection.id == section.id
                 and approachingTrain.mileage > mileage
             ):
