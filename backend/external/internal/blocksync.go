@@ -7,7 +7,7 @@ import (
 )
 
 // startBlockSync starts sync controller for block state.
-func startBlockSync(logger *zap.Logger, syncInput chan synccontroller.KV[spec.Blocks_BlockId, spec.NotifyBlockStateRequest_State], syncOutput chan<- synccontroller.KV[spec.Blocks_BlockId, spec.NotifyBlockStateRequest_State]) {
+func startBlockSync(logger *zap.Logger, syncInput chan synccontroller.KV[spec.BlockId, spec.BlockStateEnum], syncOutput chan<- synccontroller.KV[spec.BlockId, spec.BlockStateEnum]) {
 	s := synccontroller.NewSyncController(logger, syncInput, syncOutput)
 
 	go s.Run()

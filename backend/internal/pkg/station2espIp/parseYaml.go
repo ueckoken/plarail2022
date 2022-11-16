@@ -54,14 +54,14 @@ func (d *StationDetail) IsAngleDefined() bool {
 	return d.SetAngle
 }
 
-func (d *StationDetail) GetAngle(state pb.State) (angle int, err error) {
+func (d *StationDetail) GetAngle(state pb.PointStateEnum) (angle int, err error) {
 	if !d.IsAngleDefined() {
 		return 0, fmt.Errorf("angles are not defined")
 	}
 	switch state {
-	case pb.State_ON:
+	case pb.PointStateEnum_POINTSTATE_ON:
 		angle = d.OnAngle
-	case pb.State_OFF:
+	case pb.PointStateEnum_POINTSTATE_OFF:
 		angle = d.OffAngle
 	default:
 		return 0, status.Errorf(codes.InvalidArgument, "state is not ON or OFF\n")

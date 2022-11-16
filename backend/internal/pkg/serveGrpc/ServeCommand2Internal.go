@@ -13,7 +13,7 @@ import (
 )
 
 type ControlServer struct {
-	pb.UnimplementedNotificationServer
+	pb.UnimplementedPointStateNotificationServer
 	Stations station2espIp.Stations
 	client   *http.Client
 }
@@ -36,7 +36,7 @@ func (c *ControlServer) NotifyPointState(_ context.Context, req *pb.NotifyPointS
 	if err != nil {
 		return nil, status.Errorf(codes.Unavailable, "sender err %s; not connected to Node", err.Error())
 	}
-	return &pb.NotifyPointStateResponse{Response: pb.ResponseCode_responsecode_SUCCESS}, nil
+	return &pb.NotifyPointStateResponse{}, nil
 }
 
 func (c *ControlServer) unpackStations(req *pb.PointAndState) (*station2espIp.StationDetail, error) {
@@ -51,6 +51,6 @@ func (c *ControlServer) unpackStations(req *pb.PointAndState) (*station2espIp.St
 	return sta, nil
 }
 
-func (*ControlServer) unpackState(state pb.State) string {
+func (*ControlServer) unpackState(state pb.PointStateEnum) string {
 	return state.String()
 }

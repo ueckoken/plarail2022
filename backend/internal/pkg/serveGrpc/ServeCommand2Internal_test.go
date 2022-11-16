@@ -26,11 +26,11 @@ func (t *TestStations) Enumerate() []station2espIp.Station {
 
 func TestControlServer_unpackState(t *testing.T) {
 	type fields struct {
-		UnimplementedNotificationServer pb.UnimplementedNotificationServer
+		UnimplementedNotificationServer pb.UnimplementedPointStateNotificationServer
 		Stations                        station2espIp.Stations
 	}
 	type args struct {
-		state pb.State
+		state pb.PointStateEnum
 	}
 	tests := []struct {
 		name   string
@@ -40,24 +40,24 @@ func TestControlServer_unpackState(t *testing.T) {
 	}{
 		{
 			name: "state is on",
-			args: args{state: pb.State_ON},
+			args: args{state: pb.PointStateEnum_POINTSTATE_ON},
 			want: "ON",
 		},
 		{
 			name: "state is off",
-			args: args{state: pb.State_OFF},
+			args: args{state: pb.PointStateEnum_POINTSTATE_OFF},
 			want: "OFF",
 		},
 		{
 			name: "state is unknown",
-			args: args{state: pb.State_UNKNOWN},
+			args: args{state: pb.PointStateEnum_POINTSTATE_UNKNOWN},
 			want: "UNKNOWN",
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			c := &ControlServer{
-				UnimplementedNotificationServer: tt.fields.UnimplementedNotificationServer,
+				UnimplementedPointStateNotificationServer: tt.fields.UnimplementedNotificationServer,
 				Stations:                        tt.fields.Stations,
 			}
 			if got := c.unpackState(tt.args.state); got != tt.want {

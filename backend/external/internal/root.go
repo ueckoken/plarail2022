@@ -13,11 +13,11 @@ import (
 // Run runs external server.
 func Run(logger *zap.Logger) {
 	ctx := context.Background()
-	synccontrollerInput := make(chan synccontroller.KV[spec.StationId, spec.State])
-	synccontrollerOutput := make(chan synccontroller.KV[spec.StationId, spec.State])
-	grpcHandlerInput := make(chan synccontroller.KV[spec.StationId, spec.State])
-	main2grpcHandler := make(chan synccontroller.KV[spec.StationId, spec.State])
-	httpInputKV := make(chan synccontroller.KV[spec.StationId, spec.State])
+	synccontrollerInput := make(chan synccontroller.KV[spec.StationId, spec.PointStateEnum])
+	synccontrollerOutput := make(chan synccontroller.KV[spec.StationId, spec.PointStateEnum])
+	grpcHandlerInput := make(chan synccontroller.KV[spec.StationId, spec.PointStateEnum])
+	main2grpcHandler := make(chan synccontroller.KV[spec.StationId, spec.PointStateEnum])
+	httpInputKV := make(chan synccontroller.KV[spec.StationId, spec.PointStateEnum])
 	httpInput := make(chan *spec.PointAndState)
 	httpOutput := make(chan *spec.PointAndState)
 
@@ -43,7 +43,7 @@ func Run(logger *zap.Logger) {
 
 	go func() {
 		for c := range httpOutput {
-			synccontrollerInput <- synccontroller.KV[spec.StationId, spec.State]{Key: c.GetStation().GetStationId(), Value: c.GetState()}
+			synccontrollerInput <- synccontroller.KV[spec.StationId, spec.PointStateEnum]{Key: c.GetStation().GetStationId(), Value: c.GetState()}
 		}
 	}()
 
@@ -58,8 +58,8 @@ func Run(logger *zap.Logger) {
 	StartStationSync(logger.Named("station-sync"), synccontrollerInput, synccontrollerOutput)
 	grpcHandler := NewGrpcHandler(logger.Named("grpc-handler"), envVal, main2grpcHandler, grpcHandlerInput)
 
-	client2blocksync := make(chan synccontroller.KV[spec.Blocks_BlockId, spec.NotifyBlockStateRequest_State])
-	blocksync2client := make(chan synccontroller.KV[spec.Blocks_BlockId, spec.NotifyBlockStateRequest_State])
+	client2blocksync := make(chan synccontroller.KV[spec.BlockId, spec.BlockStateEnum])
+	blocksync2client := make(chan synccontroller.KV[spec.BlockId, spec.BlockStateEnum])
 	startBlockSync(logger.Named("blocksync"), client2blocksync, blocksync2client)
 	grpcBlockHandl := NewGrpcBlockHandler(logger.Named("grpc-block-handler"), envVal, client2blocksync, blocksync2client)
 

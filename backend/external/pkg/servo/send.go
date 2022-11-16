@@ -50,7 +50,7 @@ func (c2i *Command2Internal) sendRaw() (*pb.NotifyPointStateResponse, error) {
 		return nil, err
 	}
 	defer conn.Close()
-	c := pb.NewNotificationClient(conn)
+	c := pb.NewPointStateNotificationClient(conn)
 
 	// Contact the server and print out its response.
 	ctx, cancel := context.WithTimeout(ctx, c2i.env.InternalServer.TimeoutSec)
@@ -80,18 +80,5 @@ func trapResponseGrpcErr(rs *pb.NotifyPointStateResponse, grpcErr error) error {
 	if (sta != nil && ok) || rs == nil { // gRPC error occur
 		return fmt.Errorf("gRPC Err: `%w`", grpcErr)
 	}
-	// check Response Status
-	switch rs.Response.String() {
-	case UNKNOWN:
-		return fmt.Errorf("gRPC Err: `%w`; gRPC Response status is `%s`", grpcErr, UNKNOWN)
-	case SUCCESS:
-		if grpcErr != nil {
-			return fmt.Errorf("gRPC Err: `%w`; gRPC Response status is `%s`", grpcErr, SUCCESS)
-		}
-		return nil
-	case FAILED:
-		return fmt.Errorf("gRPC Err: `%w`; gRPC Response status is `%s`", grpcErr, FAILED)
-	default:
-		return fmt.Errorf("gRPC Err: `%w`; Unknown error is occured", grpcErr)
-	}
+	return nil
 }

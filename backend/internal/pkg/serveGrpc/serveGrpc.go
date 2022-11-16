@@ -31,7 +31,7 @@ func (g *GrpcServer) StartServer() {
 		Stations: g.Stations,
 		client:   &http.Client{Timeout: g.Environment.NodeConnection.Timeout},
 	}
-	pb.RegisterNotificationServer(s, &c)
+	pb.RegisterPointStateNotificationServer(s, &c)
 
 	// After all your registrations, make sure all the Prometheus metrics are initialized.
 	grpcPrometheus.Register(s)
