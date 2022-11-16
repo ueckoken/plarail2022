@@ -1,7 +1,6 @@
 import platform
 import queue
 import time
-from typing import Union
 
 import serial
 from numpy import pi
@@ -84,14 +83,14 @@ class Communication:
             for trainId in self.deltaMap.keys():
                 self.deltaMap[trainId] += self.simulationSpeedMap[trainId] * dt
 
-            if self.arduino != None:
+            if self.arduino is not None:
                 while self.arduino.in_waiting > 0:
                     self.sensorSignalBuffer.put(self.arduino.read())
 
         else:
             for trainId in self.esp32Map.keys():
                 esp32 = self.esp32Map[trainId]
-                if esp32 != None:
+                if esp32 is not None:
                     while esp32.in_waiting > 0:
                         # ホールセンサ信号が来たら、車輪0.5回転分deltaを進める
                         self.deltaMap[trainId] += 2 * pi * self.pidParamMap[trainId].r / 2
@@ -101,7 +100,7 @@ class Communication:
                 else:  # 実機がない場合はsimulationを更新
                     self.deltaMap[trainId] += self.simulationSpeedMap[trainId] * dt
 
-            if self.arduino != None:
+            if self.arduino is not None:
                 while self.arduino.in_waiting > 0:
                     self.sensorSignalBuffer.put(self.arduino.read())
 
@@ -122,21 +121,21 @@ class Communication:
             self.simulationSpeedMap[trainId] = speed
         else:
             esp32 = self.esp32Map[trainId]
-            if esp32 != None:
+            if esp32 is not None:
                 if speed > 0.1:
                     INPUT_MIN = self.pidParamMap[trainId].INPUT_MIN
                     KP = self.pidParamMap[trainId].kp
                     input = int(INPUT_MIN + speed * KP)  # kp制御のみ
                 else:
                     input = 0
-                if esp32 != None:
+                if esp32 is not None:
                     esp32.write(input.to_bytes(1, "little"))
             else:  # ESP32の実機がないときはsimulationを更新
                 self.simulationSpeedMap[trainId] = speed
 
     # 指定したポイントに切替命令を送る
     def sendToggle(self, servoId: int, servoState: Junction.ServoState):
-        if self.arduino != None:
+        if self.arduino is not None:
             servoStateCode = 0
             if servoState == Junction.ServoState.NoServo:
                 return
