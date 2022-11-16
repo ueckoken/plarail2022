@@ -10,7 +10,7 @@ service Control {
 }
 
 enum StationId {
-  unknown = 0;
+  stationid_unknown = 0;
 
   shinjuku_s1 = 2;
   shinjuku_s2 = 3;
@@ -49,9 +49,9 @@ enum PointState {
 }
 
 enum ResponseCode {
-  UNKNOWN = 0;
-  SUCCESS = 1;
-  FAILED = 2;
+  responsecode_UNKNOWN = 0;
+  responsecode_SUCCESS = 1;
+  responsecode_FAILED = 2;
 }
 
 message UpdatePointStateRequest {
