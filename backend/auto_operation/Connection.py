@@ -149,7 +149,7 @@ class PointStateNotificationServicer(statesync_pb2_grpc.PointStateNotificationSe
 
 
 # 使い方の例
-def main() -> None:
+def test_connection() -> None:
     connection = Connection(
         serverAddress="[::]:6543",
         externalServerAddress="localhost:6543",
@@ -175,4 +175,4 @@ def main() -> None:
 
 
 if __name__ == "__main__":
-    main()
+    test_connection()
