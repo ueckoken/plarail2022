@@ -22,7 +22,10 @@ const _ = grpc.SupportPackageIsVersion7
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type ControlClient interface {
-	Command2Internal(ctx context.Context, in *RequestSync, opts ...grpc.CallOption) (*ResponseSync, error)
+	// UpdatePointStateはexternalへPointState更新要求を送る。
+	UpdatePointState(ctx context.Context, in *UpdatePointStateRequest, opts ...grpc.CallOption) (*UpdatePointStateResponse, error)
+	// NotifyPointStateはexternalからauto-operationやinternalへPointStateの更新情報を伝える。
+	NotifyPointState(ctx context.Context, in *NotifyPointStateRequest, opts ...grpc.CallOption) (*NotifyPointStateResponse, error)
 }
 
 type controlClient struct {
@@ -33,9 +36,18 @@ func NewControlClient(cc grpc.ClientConnInterface) ControlClient {
 	return &controlClient{cc}
 }
 
-func (c *controlClient) Command2Internal(ctx context.Context, in *RequestSync, opts ...grpc.CallOption) (*ResponseSync, error) {
-	out := new(ResponseSync)
-	err := c.cc.Invoke(ctx, "/Control/Command2Internal", in, out, opts...)
+func (c *controlClient) UpdatePointState(ctx context.Context, in *UpdatePointStateRequest, opts ...grpc.CallOption) (*UpdatePointStateResponse, error) {
+	out := new(UpdatePointStateResponse)
+	err := c.cc.Invoke(ctx, "/Control/UpdatePointState", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *controlClient) NotifyPointState(ctx context.Context, in *NotifyPointStateRequest, opts ...grpc.CallOption) (*NotifyPointStateResponse, error) {
+	out := new(NotifyPointStateResponse)
+	err := c.cc.Invoke(ctx, "/Control/NotifyPointState", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -46,7 +58,10 @@ func (c *controlClient) Command2Internal(ctx context.Context, in *RequestSync, o
 // All implementations must embed UnimplementedControlServer
 // for forward compatibility
 type ControlServer interface {
-	Command2Internal(context.Context, *RequestSync) (*ResponseSync, error)
+	// UpdatePointStateはexternalへPointState更新要求を送る。
+	UpdatePointState(context.Context, *UpdatePointStateRequest) (*UpdatePointStateResponse, error)
+	// NotifyPointStateはexternalからauto-operationやinternalへPointStateの更新情報を伝える。
+	NotifyPointState(context.Context, *NotifyPointStateRequest) (*NotifyPointStateResponse, error)
 	mustEmbedUnimplementedControlServer()
 }
 
@@ -54,8 +69,11 @@ type ControlServer interface {
 type UnimplementedControlServer struct {
 }
 
-func (UnimplementedControlServer) Command2Internal(context.Context, *RequestSync) (*ResponseSync, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method Command2Internal not implemented")
+func (UnimplementedControlServer) UpdatePointState(context.Context, *UpdatePointStateRequest) (*UpdatePointStateResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdatePointState not implemented")
+}
+func (UnimplementedControlServer) NotifyPointState(context.Context, *NotifyPointStateRequest) (*NotifyPointStateResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method NotifyPointState not implemented")
 }
 func (UnimplementedControlServer) mustEmbedUnimplementedControlServer() {}
 
@@ -70,20 +88,38 @@ func RegisterControlServer(s grpc.ServiceRegistrar, srv ControlServer) {
 	s.RegisterService(&Control_ServiceDesc, srv)
 }
 
-func _Control_Command2Internal_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(RequestSync)
+func _Control_UpdatePointState_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UpdatePointStateRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(ControlServer).Command2Internal(ctx, in)
+		return srv.(ControlServer).UpdatePointState(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/Control/Command2Internal",
+		FullMethod: "/Control/UpdatePointState",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ControlServer).Command2Internal(ctx, req.(*RequestSync))
+		return srv.(ControlServer).UpdatePointState(ctx, req.(*UpdatePointStateRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Control_NotifyPointState_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(NotifyPointStateRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ControlServer).NotifyPointState(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/Control/NotifyPointState",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ControlServer).NotifyPointState(ctx, req.(*NotifyPointStateRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -96,8 +132,12 @@ var Control_ServiceDesc = grpc.ServiceDesc{
 	HandlerType: (*ControlServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "Command2Internal",
-			Handler:    _Control_Command2Internal_Handler,
+			MethodName: "UpdatePointState",
+			Handler:    _Control_UpdatePointState_Handler,
+		},
+		{
+			MethodName: "NotifyPointState",
+			Handler:    _Control_NotifyPointState_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
