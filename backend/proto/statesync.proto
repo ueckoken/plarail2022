@@ -9,7 +9,7 @@ service StateManager{
 }
 
 // Notificationはauto_operationなどで立ち上げます。StateManagerからポイント情報などの変更を受けとります。
-service Notification {
+service PointStateNotification {
   // NotifyPointStateはexternalからauto-operationやinternalへPointStateの更新情報を伝える。
   rpc NotifyPointState(NotifyPointStateRequest) returns (NotifyPointStateResponse) {}
 }
@@ -47,7 +47,7 @@ message Station {
   StationId stationId = 1;
 }
 
-enum State {
+enum PointStateEnum {
   UNKNOWN = 0;
   ON = 1;
   OFF = 2;
@@ -55,7 +55,7 @@ enum State {
 
 message PointAndState {
   Station station = 1;
-  State state = 2;
+  PointStateEnum state = 2;
 }
 
 enum ResponseCode {
