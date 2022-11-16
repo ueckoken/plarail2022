@@ -27,14 +27,14 @@ import spec.statesync_pb2_grpc as statesync_pb2_grpc
 
 
 class Connection:
-    serverAddress: str
+    autoOperationServerAddress: str
     externalServerAddress: str
     atsServicer: "AtsServicer"
     pointStateNotificationServicer: "PointStateNotificationServicer"
     serverThread: Optional[threading.Thread]
 
-    def __init__(self, serverAddress: str, externalServerAddress: str) -> None:
-        self.serverAddress = serverAddress
+    def __init__(self, autoOperationServerAddress: str, externalServerAddress: str) -> None:
+        self.autoOperationServerAddress = autoOperationServerAddress
         self.externalServerAddress = externalServerAddress
         self.atsServicer = AtsServicer()
         self.pointStateNotificationServicer = PointStateNotificationServicer()
@@ -42,7 +42,7 @@ class Connection:
 
     @staticmethod
     def serveAndWait(
-        serverAddress: str,
+        autoOperationServerAddress: str,
         atsServicer: "AtsServicer",
         pointStateNotificationServicer: "PointStateNotificationServicer",
     ) -> None:
@@ -51,7 +51,7 @@ class Connection:
         statesync_pb2_grpc.add_PointStateNotificationServicer_to_server(
             pointStateNotificationServicer, server
         )
-        server.add_insecure_port(serverAddress)
+        server.add_insecure_port(autoOperationServerAddress)
         server.start()
         server.wait_for_termination()
 
@@ -62,7 +62,7 @@ class Connection:
         self.serverThread = threading.Thread(
             target=Connection.serveAndWait,
             kwargs={
-                "serverAddress": self.serverAddress,
+                "autoOperationServerAddress": self.autoOperationServerAddress,
                 "atsServicer": self.atsServicer,
                 "pointStateNotificationServicer": self.pointStateNotificationServicer,
             },
@@ -151,7 +151,7 @@ class PointStateNotificationServicer(statesync_pb2_grpc.PointStateNotificationSe
 # 使い方の例
 def test_connection() -> None:
     connection = Connection(
-        serverAddress="[::]:6543",
+        autoOperationServerAddress="[::]:6543",
         externalServerAddress="localhost:6543",
     )
     connection.startServerThread()

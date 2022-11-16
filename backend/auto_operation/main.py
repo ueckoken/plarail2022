@@ -14,7 +14,7 @@ from Operation import Operation
 class Conf(pydantic.BaseSettings):
     esp_eye_endpoint: str
     secret_key: str
-    server_address: str
+    auto_operation_server_address: str
     external_server_address: str
     simulation_mode: bool = False
 
@@ -30,7 +30,7 @@ operation = Operation()
 operation.state.communication.setup(
     simulationMode=conf.simulation_mode,
     connection=Connection(
-        serverAddress=conf.server_address,
+        autoOperationServerAddress=conf.auto_operation_server_address,
         externalServerAddress=conf.external_server_address,
     ),
 )
