@@ -3,7 +3,7 @@ package synccontroller
 import (
 	"strings"
 	"testing"
-	"ueckoken/plarail2022-external/spec"
+	"github.com/ueckoken/plarail2022/backend/external/spec"
 )
 
 func (skvs *stationKVS[T, U]) contain(dat KV[T, U]) bool {
@@ -20,9 +20,9 @@ func (skvs *stationKVS[T, U]) contain(dat KV[T, U]) bool {
 type ValidatorMock struct{}
 
 func TestSyncController_update(t *testing.T) {
-	station1 := KV[spec.Stations_StationId, spec.Command2InternalRequest_State]{Key: spec.Stations_StationId(1), Value: spec.Command2InternalRequest_State(1)}
-	station2 := KV[spec.Stations_StationId, spec.Command2InternalRequest_State]{Key: spec.Stations_StationId(2), Value: spec.Command2InternalRequest_State(1)}
-	kvs := newStationKVS[spec.Stations_StationId, spec.Command2InternalRequest_State]()
+	station1 := KV[spec.StationId, spec.State]{Key: spec.StationId(1), Value: spec.State(1)}
+	station2 := KV[spec.StationId, spec.State]{Key: spec.StationId(2), Value: spec.State(1)}
+	kvs := newStationKVS[spec.StationId, spec.State]()
 	err := kvs.update(station1)
 	if err != nil {
 		t.Errorf("validate failed. `%v`", err)
@@ -50,7 +50,7 @@ func TestSyncController_update(t *testing.T) {
 	}
 
 	// update exist station data
-	station1 = KV[spec.Stations_StationId, spec.Command2InternalRequest_State]{Key: spec.Stations_StationId(1), Value: spec.Command2InternalRequest_State(0)}
+	station1 = KV[spec.StationId, spec.State]{Key: spec.StationId(1), Value: spec.State(0)}
 	err = kvs.update(station1)
 	if err != nil {
 		t.Errorf("validate failed. `%v`", err)
@@ -63,9 +63,9 @@ func TestSyncController_update(t *testing.T) {
 	}
 }
 func TestSyncController_get(t *testing.T) {
-	station1 := KV[spec.Stations_StationId, spec.Command2InternalRequest_State]{Key: spec.Stations_StationId(1), Value: spec.Command2InternalRequest_State(1)}
-	station2 := KV[spec.Stations_StationId, spec.Command2InternalRequest_State]{Key: spec.Stations_StationId(2), Value: spec.Command2InternalRequest_State(1)}
-	kvs := newStationKVS[spec.Stations_StationId, spec.Command2InternalRequest_State]()
+	station1 := KV[spec.StationId, spec.State]{Key: spec.StationId(1), Value: spec.State(1)}
+	station2 := KV[spec.StationId, spec.State]{Key: spec.StationId(2), Value: spec.State(1)}
+	kvs := newStationKVS[spec.StationId, spec.State]()
 	// member is not exist
 	_, err := kvs.get(0)
 	if err == nil {
@@ -74,12 +74,12 @@ func TestSyncController_get(t *testing.T) {
 		t.Errorf("err.Error() expect 'Not found' but return %e", err)
 	}
 
-	kvs = newStationKVS[spec.Stations_StationId, spec.Command2InternalRequest_State]()
+	kvs = newStationKVS[spec.StationId, spec.State]()
 	err = kvs.update(station1)
 	if err != nil {
 		t.Errorf("return err is not nil: %e", err)
 	}
-	station, err := kvs.get(spec.Stations_StationId(1))
+	station, err := kvs.get(spec.StationId(1))
 	if err != nil {
 		t.Errorf("return err is not nil: %e", err)
 	}
