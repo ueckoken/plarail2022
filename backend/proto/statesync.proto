@@ -42,10 +42,15 @@ message Station {
   StationId stationId = 1;
 }
 
-enum PointState {
+enum State {
   UNKNOWN = 0;
   ON = 1;
   OFF = 2;
+}
+
+message PointAndState {
+  Station station = 1;
+  State state = 2;
 }
 
 enum ResponseCode {
@@ -55,8 +60,7 @@ enum ResponseCode {
 }
 
 message UpdatePointStateRequest {
-  Station station = 1;
-  PointState state = 2;
+  PointAndState state = 1;
 }
 
 message UpdatePointStateResponse {
@@ -64,8 +68,7 @@ message UpdatePointStateResponse {
 }
 
 message NotifyPointStateRequest{
-  Station station = 1;
-  PointState state = 2;
+  PointAndState state = 1;
 }
 
 message NotifyPointStateResponse {
