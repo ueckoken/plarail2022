@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-option go_package = "github.com/ueckoken/plarail2022/backend/spec";
+option go_package = "./spec";
 
 // StateManagerはexternalにて立ち上げます。ポイント情報などを管理します。
 service StateManager{
