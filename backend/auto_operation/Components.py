@@ -23,27 +23,6 @@ StopId = Literal[
 ]
 
 
-SensorId = Literal[
-    "shinjuku_d1",
-    "shinjuku_d2",
-    "sakurajosui_d1",
-    "sakurajosui_d2",
-    "sakurajosui_d3",
-    "sakurajosui_d4",
-    "sakurajosui_d5",
-    "sakurajosui_d6",
-    "chofu_d1",
-    "chofu_d2",
-    "chofu_d3",
-    "chofu_d4",
-    "chofu_d5",
-    "hashimoto_d1",
-    "hashimoto_d2",
-    "hachioji_d1",
-    "hachioji_d2",
-]
-
-
 PointId = Literal[
     "sakurajosui_p1",
     "sakurajosui_p2",
@@ -209,7 +188,27 @@ class Junction:
 
 @dataclass
 class Sensor:
-    id: int
+    SensorId = Literal[
+        "shinjuku_d1",
+        "shinjuku_d2",
+        "sakurajosui_d1",
+        "sakurajosui_d2",
+        "sakurajosui_d3",
+        "sakurajosui_d4",
+        "sakurajosui_d5",
+        "sakurajosui_d6",
+        "chofu_d1",
+        "chofu_d2",
+        "chofu_d3",
+        "chofu_d4",
+        "chofu_d5",
+        "hashimoto_d1",
+        "hashimoto_d2",
+        "hachioji_d1",
+        "hachioji_d2",
+    ]
+
+    id: SensorId
     belongSection: "Section"
     position: float
 

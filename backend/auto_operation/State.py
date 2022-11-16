@@ -1,3 +1,5 @@
+import typing
+
 from Communication import Communication
 from Components import Junction, Section, Sensor, Station, Train
 
@@ -349,7 +351,10 @@ class State:
 
         # センサによる補正
         while self.communication.availableSensorSignal() > 0:
-            id = self.communication.receiveSensorSignal()
+            sensorData = self.communication.receiveSensorSignal()
+            if sensorData is None:
+                continue
+            id = typing.cast(Sensor.SensorId, sensorData.sensorId)  # TODO: IDを検証する
             sensor = self.getSensorById(id)
             # センサに近づいてくる列車で一番近いものを取得
             approachingTrain = self.getApproachingTrain(sensor.belongSection, sensor.position)
@@ -379,10 +384,8 @@ class State:
     def getSectionById(self, id: Section.SectionId) -> Section:
         return list(filter(lambda item: item.id == id, self.sectionList))[0]
 
-    def getSensorById(self, id: int) -> Sensor:
-        return list(filter(lambda item: item.id == int.from_bytes(id, "little"), self.sensorList))[
-            0
-        ]
+    def getSensorById(self, id: Sensor.SensorId) -> Sensor:
+        return list(filter(lambda item: item.id == id, self.sensorList))[0]
 
     def getStationById(self, id: Station.StationId) -> Station:
         return list(filter(lambda item: item.id == id, self.stationList))[0]

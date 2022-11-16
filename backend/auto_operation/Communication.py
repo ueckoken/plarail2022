@@ -1,10 +1,9 @@
-import queue
 import time
 from dataclasses import dataclass
 from typing import Optional
 
 from Components import Junction, Train
-from Connection import Connection
+from Connection import AtsServicer, Connection
 
 # ESP32 や Arduino との通信をまとめる。
 # シミュレーションモードを使うと接続が無くてもある程度動作確認できる。
@@ -20,7 +19,6 @@ class Communication:
     pidParamMap: dict[int, Train.PIDParam]
     prevUpdate: float
     deltaMap: dict[int, float]
-    sensorSignalBuffer: queue.Queue[int]
     connection: Optional[Connection]
 
     def __init__(self, pidParamMap: dict[int, Train.PIDParam]) -> None:
@@ -29,7 +27,6 @@ class Communication:
         self.pidParamMap = pidParamMap
         self.prevUpdate = 0.0
         self.deltaMap = {}
-        self.sensorSignalBuffer = queue.Queue()
         self.connection = None
 
     def setup(self, simulationMode: bool, connection: Optional[Connection]) -> None:
@@ -74,10 +71,16 @@ class Communication:
         return retval
 
     def availableSensorSignal(self) -> int:
-        return self.sensorSignalBuffer.qsize()
+        if self.connection:
+            return self.connection.atsServicer.sensorQueue.qsize()
+        else:
+            return 0
 
-    def receiveSensorSignal(self) -> int:
-        return self.sensorSignalBuffer.get()
+    def receiveSensorSignal(self) -> Optional[AtsServicer.SensorData]:
+        if self.connection:
+            return self.connection.atsServicer.sensorQueue.get()
+        else:
+            return None
 
     # 指定した車両にspeedを送る. PID制御もここで行う
     def sendSpeed(self, trainId: int, speed: float) -> None:
