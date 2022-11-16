@@ -7,6 +7,7 @@ group "default" {
     "multicaster",
     "positioning",
     "webrtc-sender",
+    "camera_sender",
     "frontend",
     "receiver-test",
     "logviewer",
@@ -74,10 +75,10 @@ target "webrtc-sender" {
   ]
 }
 
-target "frontend" {
-  context = "./frontend/site"
+target "camera_sender" {
+  context = "./frontend/camera_sender/"
   tags = [
-    GET_TAG("frontend")
+    GET_TAG("camera_sender")
   ]
 }
 
@@ -87,6 +88,14 @@ target "receiver-test" {
     GET_TAG("receiver-test")
   ]
 }
+
+target "frontend" {
+  context = "./frontend/site"
+  tags = [
+    GET_TAG("frontend")
+  ]
+}
+
 
 target "logviewer" {
   context = "./infra/logviewer"
