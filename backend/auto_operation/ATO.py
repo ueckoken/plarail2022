@@ -82,7 +82,10 @@ class ATO:
                 if currentSection is None:
                     print("[ATO] train.currentSection is None")
                     continue
-                if currentSection.id == testSection.id and train.mileage >= testSection.stationPosition:
+                if (
+                    currentSection.id == testSection.id
+                    and train.mileage >= testSection.stationPosition
+                ):
                     stopDuration = time.time() - self.__arriveTime[train.id]  # 停車からの経過時間
                     outSection = testSection.targetJunction.getOutSection()
                     if outSection is None:
