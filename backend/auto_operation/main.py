@@ -1,4 +1,3 @@
-import atexit
 import threading
 import time
 
@@ -7,7 +6,7 @@ from flask import Flask, render_template
 from flask_cors import CORS
 from flask_socketio import SocketIO
 
-from Components import Junction, Section, Stop
+from Components import Section, Stop
 from Connection import Connection
 from Operation import Operation
 
@@ -116,16 +115,6 @@ def index():
         esp_eye_ip_addr=conf.esp_eye_endpoint,
         max_speed=Operation.MAXSPEED,
     )
-
-
-@atexit.register
-def reset():
-    state = operation.state
-    state.communication.sendToggle(0, Junction.ServoState.Straight)
-    state.communication.sendToggle(1, Junction.ServoState.Straight)
-    state.communication.sendSpeed(0, 0)
-    state.communication.sendSpeed(1, 0)
-    print("successfully reset")
 
 
 if __name__ == "__main__":
