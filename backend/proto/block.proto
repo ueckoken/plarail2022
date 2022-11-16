@@ -3,7 +3,7 @@ syntax = "proto3";
 option go_package = "./spec";
 
 service BlockStateSync {
-  rpc NotifyState(NotifyStateRequest) returns (NotifyStateResponse) {}
+  rpc NotifyState(NotifyBlockStateRequest) returns (NotifyBlockStateResponse) {}
 }
 
 message NotifyBlockStateRequest {
