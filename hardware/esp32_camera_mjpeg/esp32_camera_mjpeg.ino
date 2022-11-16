@@ -17,25 +17,23 @@
 #include <WiFiClient.h>
 
 // Select camera model
-//#define CAMERA_MODEL_WROVER_KIT
+// #define CAMERA_MODEL_WROVER_KIT
 #define CAMERA_MODEL_ESP_EYE
-//#define CAMERA_MODEL_M5STACK_PSRAM
-//#define CAMERA_MODEL_M5STACK_WIDE
-//#define CAMERA_MODEL_AI_THINKER
+// #define CAMERA_MODEL_M5STACK_PSRAM
+// #define CAMERA_MODEL_M5STACK_WIDE
+// #define CAMERA_MODEL_AI_THINKER
 
 #include "camera_pins.h"
 
-#define SSID1 "takumi-kentaro"
-#define PWD1 "k0Ken-11235"
-// #define SSID1 ""
-// #define PWD1 ""
+#define SSID1 ""
+#define PWD1 ""
 
 OV2640 cam;
 
 WebServer server(80);
 
-const char HEADER[] = "HTTP/1.1 200 OK\r\n" \
-                      "Access-Control-Allow-Origin: *\r\n" \
+const char HEADER[] = "HTTP/1.1 200 OK\r\n"
+                      "Access-Control-Allow-Origin: *\r\n"
                       "Content-Type: multipart/x-mixed-replace; boundary=123456789000000000000987654321\r\n";
 const char BOUNDARY[] = "\r\n--123456789000000000000987654321\r\n";
 const char CTNTTYPE[] = "Content-Type: image/jpeg\r\nContent-Length: ";
@@ -55,19 +53,20 @@ void handle_jpg_stream(void)
 
   while (true)
   {
-    if (!client.connected()) break;
+    if (!client.connected())
+      break;
     cam.run();
     s = cam.getSize();
     client.write(CTNTTYPE, cntLen);
-    sprintf( buf, "%d\r\n\r\n", s );
+    sprintf(buf, "%d\r\n\r\n", s);
     client.write(buf, strlen(buf));
     client.write((char *)cam.getfb(), s);
     client.write(BOUNDARY, bdrLen);
   }
 }
 
-const char JHEADER[] = "HTTP/1.1 200 OK\r\n" \
-                       "Content-disposition: inline; filename=capture.jpg\r\n" \
+const char JHEADER[] = "HTTP/1.1 200 OK\r\n"
+                       "Content-disposition: inline; filename=capture.jpg\r\n"
                        "Content-type: image/jpeg\r\n\r\n";
 const int jhdLen = strlen(JHEADER);
 
@@ -75,7 +74,8 @@ void handle_jpg(void)
 {
   WiFiClient client = server.client();
 
-  if (!client.connected()) return;
+  if (!client.connected())
+    return;
   cam.run();
   client.write(JHEADER, jhdLen);
   client.write((char *)cam.getfb(), cam.getSize());
@@ -98,7 +98,7 @@ void setup()
 {
 
   Serial.begin(115200);
-  //while (!Serial);            //wait for serial connection.
+  // while (!Serial);            //wait for serial connection.
 
   camera_config_t config;
   config.ledc_channel = LEDC_CHANNEL_0;
