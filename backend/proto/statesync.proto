@@ -2,9 +2,14 @@ syntax = "proto3";
 
 option go_package = "./spec";
 
-service Control {
+// StateManagerはexternalにて立ち上げます。ポイント情報などを管理します。
+service StateManager{
   // UpdatePointStateはexternalへPointState更新要求を送る。
   rpc UpdatePointState(UpdatePointStateRequest) returns (UpdatePointStateResponse) {}
+}
+
+// Notificationはauto_operationなどで立ち上げます。StateManagerからポイント情報などの変更を受けとります。
+service Notification {
   // NotifyPointStateはexternalからauto-operationやinternalへPointStateの更新情報を伝える。
   rpc NotifyPointState(NotifyPointStateRequest) returns (NotifyPointStateResponse) {}
 }
