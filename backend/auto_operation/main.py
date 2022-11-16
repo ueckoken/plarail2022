@@ -88,10 +88,14 @@ def send_signal_to_browser():
 
         # 閉塞を送る
         for blockId, state in blocks.items():
-            connection.sendBlock(blockId=blockId, state="CLOSE" if state else "OPEN")
+            connection.sendBlock(
+                blockId=blockId, state="BLOCKSTATE_CLOSE" if state else "BLOCKSTATE_OPEN"
+            )
         # ストップレールを送る
         for stopId, state in stops.items():
-            connection.sendStop(stationId=stopId, state="UP" if state else "DOWN")
+            connection.sendStop(
+                stationId=stopId, state="POINTSTATE_ON" if state else "POINTSTATE_OFF"
+            )
 
         # websocketで送信
         socketio.emit(

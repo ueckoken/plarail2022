@@ -30,23 +30,27 @@ class Connection:
     serverAddress: str
     externalServerAddress: str
     atsServicer: "AtsServicer"
-    controlServicer: "ControlServicer"
+    pointStateNotificationServicer: "PointStateNotificationServicer"
     serverThread: Optional[threading.Thread]
 
     def __init__(self, serverAddress: str, externalServerAddress: str) -> None:
         self.serverAddress = serverAddress
         self.externalServerAddress = externalServerAddress
         self.atsServicer = AtsServicer()
-        self.controlServicer = ControlServicer()
+        self.pointStateNotificationServicer = PointStateNotificationServicer()
         self.serverThread = None
 
     @staticmethod
     def serveAndWait(
-        serverAddress: str, atsServicer: "AtsServicer", controlServicer: "ControlServicer"
+        serverAddress: str,
+        atsServicer: "AtsServicer",
+        pointStateNotificationServicer: "PointStateNotificationServicer",
     ) -> None:
         server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
         ats_pb2_grpc.add_AtsServicer_to_server(atsServicer, server)
-        statesync_pb2_grpc.add_ControlServicer_to_server(controlServicer, server)
+        statesync_pb2_grpc.add_PointStateNotificationServicer_to_server(
+            pointStateNotificationServicer, server
+        )
         server.add_insecure_port(serverAddress)
         server.start()
         server.wait_for_termination()
@@ -60,7 +64,7 @@ class Connection:
             kwargs={
                 "serverAddress": self.serverAddress,
                 "atsServicer": self.atsServicer,
-                "controlServicer": self.controlServicer,
+                "pointStateNotificationServicer": self.pointStateNotificationServicer,
             },
             daemon=True,
         )
@@ -70,26 +74,32 @@ class Connection:
     def sendStop(self, stationId: str, state: str) -> None:
         try:
             with grpc.insecure_channel(self.externalServerAddress) as channel:
-                stub = statesync_pb2_grpc.ControlStub(channel)
-                response = stub.Command2Internal(
-                    statesync_pb2.RequestSync(
-                        state=state, station=statesync_pb2.Stations(stationId=stationId)
+                stub = statesync_pb2_grpc.StateManagerStub(channel)
+                response = stub.UpdatePointState(
+                    statesync_pb2.UpdatePointStateRequest(
+                        state=statesync_pb2.PointAndState(
+                            station=statesync_pb2.Station(stationId=stationId),
+                            state=state,
+                        )
                     )
                 )
-            print(f"Send Stop: {statesync_pb2.ResponseSync.Response.Name(response.response)}")
+            print(f"Send Stop: {response}")
         except grpc._channel._InactiveRpcError as e:
             print(e)
 
     def sendBlock(self, blockId: str, state: str) -> None:
         try:
             with grpc.insecure_channel(self.externalServerAddress) as channel:
-                stub = block_pb2_grpc.BlockStateSyncStub(channel)
-                response = stub.NotifyState(
-                    block_pb2.NotifyStateRequest(
-                        state=state, block=block_pb2.Blocks(blockId=blockId)
+                stub = block_pb2_grpc.BlockStateManagerStub(channel)
+                response = stub.UpdateBlockState(
+                    block_pb2.UpdateBlockStateRequest(
+                        state=block_pb2.BlockAndState(
+                            blockId=blockId,
+                            state=state,
+                        )
                     )
                 )
-            print(f"Send Block: {block_pb2.NotifyStateResponse.Response.Name(response.response)}")
+            print(f"Send Block: {response}")
         except grpc._channel._InactiveRpcError as e:
             print(e)
 
@@ -115,7 +125,7 @@ class AtsServicer(ats_pb2_grpc.AtsServicer):
 
 
 # externalと通信するためのサーバー(新しい状態の更新を受けとる)
-class ControlServicer(statesync_pb2_grpc.ControlServicer):
+class PointStateNotificationServicer(statesync_pb2_grpc.PointStateNotificationServicer):
     @dataclass
     class PointData:
         stationId: str
@@ -127,17 +137,15 @@ class ControlServicer(statesync_pb2_grpc.ControlServicer):
         super().__init__()
         self.pointQueue = queue.Queue()
 
-    def Command2Internal(
-        self, request: statesync_pb2.Command2InternalRequest, context
-    ) -> statesync_pb2.Command2InternalResponse:
-        stationId = statesync_pb2.Stations.StationId.Name(request.station.stationId)
-        state = statesync_pb2.Command2InternalRequest.State.Name(request.state)
-        data = ControlServicer.PointData(stationId=stationId, state=state)
+    def NotifyPointState(
+        self, request: statesync_pb2.NotifyPointStateRequest, context
+    ) -> statesync_pb2.NotifyPointStateResponse:
+        stationId = statesync_pb2.StationId.Name(request.state.station.stationId)
+        state = statesync_pb2.PointStateEnum.Name(request.state.state)
+        data = PointStateNotificationServicer.PointData(stationId=stationId, state=state)
         print(f"Received: {data}")
         self.pointQueue.put(data)
-        return statesync_pb2.Command2InternalResponse(
-            response=statesync_pb2.Command2InternalResponse.SUCCESS
-        )
+        return statesync_pb2.NotifyPointStateResponse()
 
 
 # 使い方の例
@@ -154,14 +162,14 @@ def main() -> None:
             connection.atsServicer.sensorQueue.get()
 
         # ポイント情報を受信
-        while connection.controlServicer.pointQueue.qsize():
-            connection.controlServicer.pointQueue.get()
+        while connection.pointStateNotificationServicer.pointQueue.qsize():
+            connection.pointStateNotificationServicer.pointQueue.get()
 
         # ストップ情報を送信
-        connection.sendStop(stationId="shinjuku_s1", state="ON")
+        connection.sendStop(stationId="shinjuku_s1", state="POINTSTATE_ON")
 
         # 閉塞情報を送信
-        connection.sendBlock(blockId="shinjuku_b1", state="OPEN")
+        connection.sendBlock(blockId="shinjuku_b1", state="BLOCKSTATE_OPEN")
 
         time.sleep(1)
 
