@@ -21,7 +21,6 @@ class Communication:
     pidParamMap: dict[int, Train.PIDParam]
     prevUpdate: float
     arduino: Optional[serial.Serial]
-    esp32Map: dict[int, serial.Serial]
     deltaMap: dict[int, float]
     sensorSignalBuffer: queue.Queue[int]
 
@@ -31,7 +30,6 @@ class Communication:
         self.pidParamMap = pidParamMap
         self.prevUpdate = 0.0
         self.arduino = None
-        self.esp32Map = {}
         self.deltaMap = {}
         self.sensorSignalBuffer = queue.Queue()
 
@@ -47,8 +45,6 @@ class Communication:
             self.deltaMap[2] = 0.0
             self.deltaMap[3] = 0.0
         else:
-            self.esp32Map[0] = serial.Serial("/dev/cu.ESP32-Dr", 115200)
-            self.esp32Map[1] = serial.Serial("/dev/cu.ESP32-E6", 115200)
             self.deltaMap[0] = 0.0
             self.deltaMap[1] = 0.0
             self.deltaMap[2] = 0.0
@@ -70,18 +66,6 @@ class Communication:
                     self.sensorSignalBuffer.put(self.arduino.read())
 
         else:
-            for trainId in self.esp32Map.keys():
-                esp32 = self.esp32Map[trainId]
-                if esp32 != None:
-                    while esp32.in_waiting > 0:
-                        # ホールセンサ信号が来たら、車輪0.5回転分deltaを進める
-                        self.deltaMap[trainId] += 2 * pi * self.pidParamMap[trainId].r / 2
-                        # 同時刻に複数の信号が来る不具合のため、1回のループですべて消費する
-                        while esp32.in_waiting > 0:
-                            esp32.read()
-                else:  # 実機がない場合はsimulationを更新
-                    self.deltaMap[trainId] += self.simulationSpeedMap[trainId] * dt
-
             if self.arduino != None:
                 while self.arduino.in_waiting > 0:
                     self.sensorSignalBuffer.put(self.arduino.read())
@@ -102,18 +86,8 @@ class Communication:
         if self.simulationMode:
             self.simulationSpeedMap[trainId] = speed
         else:
-            esp32 = self.esp32Map[trainId]
-            if esp32 != None:
-                if speed > 0.1:
-                    INPUT_MIN = self.pidParamMap[trainId].INPUT_MIN
-                    KP = self.pidParamMap[trainId].kp
-                    input = int(INPUT_MIN + speed * KP)  # kp制御のみ
-                else:
-                    input = 0
-                if esp32 != None:
-                    esp32.write(input.to_bytes(1, "little"))
-            else:  # ESP32の実機がないときはsimulationを更新
-                self.simulationSpeedMap[trainId] = speed
+            # 何もしない
+            pass
 
     # 指定したポイントに切替命令を送る
     def sendToggle(self, servoId: int, servoState: Junction.ServoState) -> None:
