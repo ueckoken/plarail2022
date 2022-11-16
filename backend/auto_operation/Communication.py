@@ -3,9 +3,8 @@ import time
 from dataclasses import dataclass
 from typing import Optional
 
-import serial
-
 from Components import Junction, Train
+from Connection import Connection
 
 # ESP32 や Arduino との通信をまとめる。
 # シミュレーションモードを使うと接続が無くてもある程度動作確認できる。
@@ -22,6 +21,7 @@ class Communication:
     prevUpdate: float
     deltaMap: dict[int, float]
     sensorSignalBuffer: queue.Queue[int]
+    connection: Optional[Connection]
 
     def __init__(self, pidParamMap: dict[int, Train.PIDParam]) -> None:
         self.simulationMode = False
@@ -30,8 +30,9 @@ class Communication:
         self.prevUpdate = 0.0
         self.deltaMap = {}
         self.sensorSignalBuffer = queue.Queue()
+        self.connection = None
 
-    def setup(self, simulationMode: bool) -> None:
+    def setup(self, simulationMode: bool, connection: Optional[Connection]) -> None:
         self.simulationMode = simulationMode
         if self.simulationMode:
             self.simulationSpeedMap[0] = 0.0
@@ -47,6 +48,9 @@ class Communication:
             self.deltaMap[1] = 0.0
             self.deltaMap[2] = 0.0
             self.deltaMap[3] = 0.0
+            self.connection = connection
+            if connection:
+                connection.startServerThread()
         self.update()
 
     def update(self) -> None:
@@ -55,6 +59,7 @@ class Communication:
         self.prevUpdate = now
 
         if self.simulationMode:
+            # シミュレーションモードでは車両の位置を進める
             for trainId in self.deltaMap.keys():
                 self.deltaMap[trainId] += self.simulationSpeedMap[trainId] * dt
 

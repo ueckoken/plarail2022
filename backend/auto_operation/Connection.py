@@ -52,7 +52,10 @@ class Connection:
         server.wait_for_termination()
 
     def startServerThread(self) -> threading.Thread:
-        thread = threading.Thread(
+        if self.serverThread is not None:
+            return self.serverThread
+
+        self.serverThread = threading.Thread(
             target=Connection.serveAndWait,
             kwargs={
                 "serverAddress": self.serverAddress,
@@ -61,8 +64,8 @@ class Connection:
             },
             daemon=True,
         )
-        thread.start()
-        return thread
+        self.serverThread.start()
+        return self.serverThread
 
     def sendStop(self, stationId: str, state: str) -> None:
         with grpc.insecure_channel(self.externalServerAddress) as channel:

@@ -14,6 +14,8 @@ from Operation import *
 class Conf(pydantic.BaseSettings):
     esp_eye_endpoint: str
     secret_key: str
+    server_address: str
+    external_server_address: str
     simulation_mode: bool = False
 
 
@@ -25,7 +27,13 @@ except pydantic.ValidationError as e:
 
 # 自動運転システムの初期化
 operation = Operation()
-operation.state.communication.setup(simulationMode=conf.simulation_mode)
+operation.state.communication.setup(
+    simulationMode=conf.simulation_mode,
+    connection=Connection(
+        serverAddress=conf.server_address,
+        externalServerAddress=conf.external_server_address,
+    ),
+)
 operation.ato.setEnabled(1, True)
 
 # Flaskウェブサーバの初期化
