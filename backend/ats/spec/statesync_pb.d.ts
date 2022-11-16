@@ -23,14 +23,37 @@ export namespace Station {
   }
 }
 
-export class UpdatePointStateRequest extends jspb.Message {
+export class PointAndState extends jspb.Message {
   hasStation(): boolean;
   clearStation(): void;
   getStation(): Station | undefined;
   setStation(value?: Station): void;
 
-  getState(): PointStateMap[keyof PointStateMap];
-  setState(value: PointStateMap[keyof PointStateMap]): void;
+  getState(): StateMap[keyof StateMap];
+  setState(value: StateMap[keyof StateMap]): void;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): PointAndState.AsObject;
+  static toObject(includeInstance: boolean, msg: PointAndState): PointAndState.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: PointAndState, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): PointAndState;
+  static deserializeBinaryFromReader(message: PointAndState, reader: jspb.BinaryReader): PointAndState;
+}
+
+export namespace PointAndState {
+  export type AsObject = {
+    station?: Station.AsObject,
+    state: StateMap[keyof StateMap],
+  }
+}
+
+export class UpdatePointStateRequest extends jspb.Message {
+  hasState(): boolean;
+  clearState(): void;
+  getState(): PointAndState | undefined;
+  setState(value?: PointAndState): void;
 
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): UpdatePointStateRequest.AsObject;
@@ -44,8 +67,7 @@ export class UpdatePointStateRequest extends jspb.Message {
 
 export namespace UpdatePointStateRequest {
   export type AsObject = {
-    station?: Station.AsObject,
-    state: PointStateMap[keyof PointStateMap],
+    state?: PointAndState.AsObject,
   }
 }
 
@@ -70,13 +92,10 @@ export namespace UpdatePointStateResponse {
 }
 
 export class NotifyPointStateRequest extends jspb.Message {
-  hasStation(): boolean;
-  clearStation(): void;
-  getStation(): Station | undefined;
-  setStation(value?: Station): void;
-
-  getState(): PointStateMap[keyof PointStateMap];
-  setState(value: PointStateMap[keyof PointStateMap]): void;
+  hasState(): boolean;
+  clearState(): void;
+  getState(): PointAndState | undefined;
+  setState(value?: PointAndState): void;
 
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): NotifyPointStateRequest.AsObject;
@@ -90,8 +109,7 @@ export class NotifyPointStateRequest extends jspb.Message {
 
 export namespace NotifyPointStateRequest {
   export type AsObject = {
-    station?: Station.AsObject,
-    state: PointStateMap[keyof PointStateMap],
+    state?: PointAndState.AsObject,
   }
 }
 
@@ -141,13 +159,13 @@ export interface StationIdMap {
 
 export const StationId: StationIdMap;
 
-export interface PointStateMap {
+export interface StateMap {
   UNKNOWN: 0;
   ON: 1;
   OFF: 2;
 }
 
-export const PointState: PointStateMap;
+export const State: StateMap;
 
 export interface ResponseCodeMap {
   RESPONSECODE_UNKNOWN: 0;

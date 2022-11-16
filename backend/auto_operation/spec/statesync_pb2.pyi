@@ -4,9 +4,9 @@ from google.protobuf import message as _message
 from typing import ClassVar as _ClassVar, Mapping as _Mapping, Optional as _Optional, Union as _Union
 
 DESCRIPTOR: _descriptor.FileDescriptor
-OFF: PointState
-ON: PointState
-UNKNOWN: PointState
+OFF: State
+ON: State
+UNKNOWN: State
 chofu_p1: StationId
 chofu_s0: StationId
 chofu_s1: StationId
@@ -33,18 +33,24 @@ shinjuku_s2: StationId
 stationid_unknown: StationId
 
 class NotifyPointStateRequest(_message.Message):
-    __slots__ = ["state", "station"]
+    __slots__ = ["state"]
     STATE_FIELD_NUMBER: _ClassVar[int]
-    STATION_FIELD_NUMBER: _ClassVar[int]
-    state: PointState
-    station: Station
-    def __init__(self, station: _Optional[_Union[Station, _Mapping]] = ..., state: _Optional[_Union[PointState, str]] = ...) -> None: ...
+    state: PointAndState
+    def __init__(self, state: _Optional[_Union[PointAndState, _Mapping]] = ...) -> None: ...
 
 class NotifyPointStateResponse(_message.Message):
     __slots__ = ["response"]
     RESPONSE_FIELD_NUMBER: _ClassVar[int]
     response: ResponseCode
     def __init__(self, response: _Optional[_Union[ResponseCode, str]] = ...) -> None: ...
+
+class PointAndState(_message.Message):
+    __slots__ = ["state", "station"]
+    STATE_FIELD_NUMBER: _ClassVar[int]
+    STATION_FIELD_NUMBER: _ClassVar[int]
+    state: State
+    station: Station
+    def __init__(self, station: _Optional[_Union[Station, _Mapping]] = ..., state: _Optional[_Union[State, str]] = ...) -> None: ...
 
 class Station(_message.Message):
     __slots__ = ["stationId"]
@@ -53,12 +59,10 @@ class Station(_message.Message):
     def __init__(self, stationId: _Optional[_Union[StationId, str]] = ...) -> None: ...
 
 class UpdatePointStateRequest(_message.Message):
-    __slots__ = ["state", "station"]
+    __slots__ = ["state"]
     STATE_FIELD_NUMBER: _ClassVar[int]
-    STATION_FIELD_NUMBER: _ClassVar[int]
-    state: PointState
-    station: Station
-    def __init__(self, station: _Optional[_Union[Station, _Mapping]] = ..., state: _Optional[_Union[PointState, str]] = ...) -> None: ...
+    state: PointAndState
+    def __init__(self, state: _Optional[_Union[PointAndState, _Mapping]] = ...) -> None: ...
 
 class UpdatePointStateResponse(_message.Message):
     __slots__ = ["response"]
@@ -69,7 +73,7 @@ class UpdatePointStateResponse(_message.Message):
 class StationId(int, metaclass=_enum_type_wrapper.EnumTypeWrapper):
     __slots__ = []
 
-class PointState(int, metaclass=_enum_type_wrapper.EnumTypeWrapper):
+class State(int, metaclass=_enum_type_wrapper.EnumTypeWrapper):
     __slots__ = []
 
 class ResponseCode(int, metaclass=_enum_type_wrapper.EnumTypeWrapper):

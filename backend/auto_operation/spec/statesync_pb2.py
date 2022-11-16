@@ -13,7 +13,7 @@ _sym_db = _symbol_database.Default()
 
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x0fstatesync.proto\"(\n\x07Station\x12\x1d\n\tstationId\x18\x01 \x01(\x0e\x32\n.StationId\"P\n\x17UpdatePointStateRequest\x12\x19\n\x07station\x18\x01 \x01(\x0b\x32\x08.Station\x12\x1a\n\x05state\x18\x02 \x01(\x0e\x32\x0b.PointState\";\n\x18UpdatePointStateResponse\x12\x1f\n\x08response\x18\x01 \x01(\x0e\x32\r.ResponseCode\"P\n\x17NotifyPointStateRequest\x12\x19\n\x07station\x18\x01 \x01(\x0b\x32\x08.Station\x12\x1a\n\x05state\x18\x02 \x01(\x0e\x32\x0b.PointState\";\n\x18NotifyPointStateResponse\x12\x1f\n\x08response\x18\x01 \x01(\x0e\x32\r.ResponseCode*\xfe\x02\n\tStationId\x12\x15\n\x11stationid_unknown\x10\x00\x12\x0f\n\x0bshinjuku_s1\x10\x02\x12\x0f\n\x0bshinjuku_s2\x10\x03\x12\x12\n\x0esakurajosui_p1\x10\x0b\x12\x12\n\x0esakurajosui_p2\x10\x0c\x12\x12\n\x0esakurajosui_s0\x10\r\x12\x12\n\x0esakurajosui_s1\x10\x0e\x12\x12\n\x0esakurajosui_s2\x10\x0f\x12\x12\n\x0esakurajosui_s3\x10\x10\x12\x12\n\x0esakurajosui_s4\x10\x11\x12\x12\n\x0esakurajosui_s5\x10\x12\x12\x0c\n\x08\x63hofu_p1\x10\x15\x12\x0c\n\x08\x63hofu_s0\x10\x16\x12\x0c\n\x08\x63hofu_s1\x10\x17\x12\x0c\n\x08\x63hofu_s2\x10\x18\x12\x0c\n\x08\x63hofu_s3\x10\x19\x12\x0c\n\x08\x63hofu_s4\x10\x1a\x12\x10\n\x0chashimoto_s1\x10\x1f\x12\x10\n\x0chashimoto_s2\x10 \x12\x0f\n\x0bhachioji_s1\x10)\x12\x0f\n\x0bhachioji_s2\x10***\n\nPointState\x12\x0b\n\x07UNKNOWN\x10\x00\x12\x06\n\x02ON\x10\x01\x12\x07\n\x03OFF\x10\x02*[\n\x0cResponseCode\x12\x18\n\x14responsecode_UNKNOWN\x10\x00\x12\x18\n\x14responsecode_SUCCESS\x10\x01\x12\x17\n\x13responsecode_FAILED\x10\x02\x32\x9f\x01\n\x07\x43ontrol\x12I\n\x10UpdatePointState\x12\x18.UpdatePointStateRequest\x1a\x19.UpdatePointStateResponse\"\x00\x12I\n\x10NotifyPointState\x12\x18.NotifyPointStateRequest\x1a\x19.NotifyPointStateResponse\"\x00\x42\x08Z\x06./specb\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x0fstatesync.proto\"(\n\x07Station\x12\x1d\n\tstationId\x18\x01 \x01(\x0e\x32\n.StationId\"A\n\rPointAndState\x12\x19\n\x07station\x18\x01 \x01(\x0b\x32\x08.Station\x12\x15\n\x05state\x18\x02 \x01(\x0e\x32\x06.State\"8\n\x17UpdatePointStateRequest\x12\x1d\n\x05state\x18\x01 \x01(\x0b\x32\x0e.PointAndState\";\n\x18UpdatePointStateResponse\x12\x1f\n\x08response\x18\x01 \x01(\x0e\x32\r.ResponseCode\"8\n\x17NotifyPointStateRequest\x12\x1d\n\x05state\x18\x01 \x01(\x0b\x32\x0e.PointAndState\";\n\x18NotifyPointStateResponse\x12\x1f\n\x08response\x18\x01 \x01(\x0e\x32\r.ResponseCode*\xfe\x02\n\tStationId\x12\x15\n\x11stationid_unknown\x10\x00\x12\x0f\n\x0bshinjuku_s1\x10\x02\x12\x0f\n\x0bshinjuku_s2\x10\x03\x12\x12\n\x0esakurajosui_p1\x10\x0b\x12\x12\n\x0esakurajosui_p2\x10\x0c\x12\x12\n\x0esakurajosui_s0\x10\r\x12\x12\n\x0esakurajosui_s1\x10\x0e\x12\x12\n\x0esakurajosui_s2\x10\x0f\x12\x12\n\x0esakurajosui_s3\x10\x10\x12\x12\n\x0esakurajosui_s4\x10\x11\x12\x12\n\x0esakurajosui_s5\x10\x12\x12\x0c\n\x08\x63hofu_p1\x10\x15\x12\x0c\n\x08\x63hofu_s0\x10\x16\x12\x0c\n\x08\x63hofu_s1\x10\x17\x12\x0c\n\x08\x63hofu_s2\x10\x18\x12\x0c\n\x08\x63hofu_s3\x10\x19\x12\x0c\n\x08\x63hofu_s4\x10\x1a\x12\x10\n\x0chashimoto_s1\x10\x1f\x12\x10\n\x0chashimoto_s2\x10 \x12\x0f\n\x0bhachioji_s1\x10)\x12\x0f\n\x0bhachioji_s2\x10**%\n\x05State\x12\x0b\n\x07UNKNOWN\x10\x00\x12\x06\n\x02ON\x10\x01\x12\x07\n\x03OFF\x10\x02*[\n\x0cResponseCode\x12\x18\n\x14responsecode_UNKNOWN\x10\x00\x12\x18\n\x14responsecode_SUCCESS\x10\x01\x12\x17\n\x13responsecode_FAILED\x10\x02\x32\x9f\x01\n\x07\x43ontrol\x12I\n\x10UpdatePointState\x12\x18.UpdatePointStateRequest\x1a\x19.UpdatePointStateResponse\"\x00\x12I\n\x10NotifyPointState\x12\x18.NotifyPointStateRequest\x1a\x19.NotifyPointStateResponse\"\x00\x42\x08Z\x06./specb\x06proto3')
 
 _builder.BuildMessageAndEnumDescriptors(DESCRIPTOR, globals())
 _builder.BuildTopDescriptorsAndMessages(DESCRIPTOR, 'statesync_pb2', globals())
@@ -21,22 +21,24 @@ if _descriptor._USE_C_DESCRIPTORS == False:
 
   DESCRIPTOR._options = None
   DESCRIPTOR._serialized_options = b'Z\006./spec'
-  _STATIONID._serialized_start=348
-  _STATIONID._serialized_end=730
-  _POINTSTATE._serialized_start=732
-  _POINTSTATE._serialized_end=774
-  _RESPONSECODE._serialized_start=776
-  _RESPONSECODE._serialized_end=867
+  _STATIONID._serialized_start=367
+  _STATIONID._serialized_end=749
+  _STATE._serialized_start=751
+  _STATE._serialized_end=788
+  _RESPONSECODE._serialized_start=790
+  _RESPONSECODE._serialized_end=881
   _STATION._serialized_start=19
   _STATION._serialized_end=59
-  _UPDATEPOINTSTATEREQUEST._serialized_start=61
-  _UPDATEPOINTSTATEREQUEST._serialized_end=141
-  _UPDATEPOINTSTATERESPONSE._serialized_start=143
-  _UPDATEPOINTSTATERESPONSE._serialized_end=202
-  _NOTIFYPOINTSTATEREQUEST._serialized_start=204
-  _NOTIFYPOINTSTATEREQUEST._serialized_end=284
-  _NOTIFYPOINTSTATERESPONSE._serialized_start=286
-  _NOTIFYPOINTSTATERESPONSE._serialized_end=345
-  _CONTROL._serialized_start=870
-  _CONTROL._serialized_end=1029
+  _POINTANDSTATE._serialized_start=61
+  _POINTANDSTATE._serialized_end=126
+  _UPDATEPOINTSTATEREQUEST._serialized_start=128
+  _UPDATEPOINTSTATEREQUEST._serialized_end=184
+  _UPDATEPOINTSTATERESPONSE._serialized_start=186
+  _UPDATEPOINTSTATERESPONSE._serialized_end=245
+  _NOTIFYPOINTSTATEREQUEST._serialized_start=247
+  _NOTIFYPOINTSTATEREQUEST._serialized_end=303
+  _NOTIFYPOINTSTATERESPONSE._serialized_start=305
+  _NOTIFYPOINTSTATERESPONSE._serialized_end=364
+  _CONTROL._serialized_start=884
+  _CONTROL._serialized_end=1043
 # @@protoc_insertion_point(module_scope)
