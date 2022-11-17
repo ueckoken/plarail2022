@@ -1,6 +1,4 @@
-const Peer = window.Peer
-
-;
+const Peer = window.Peer;
 (async function main() {
   var sel = document.getElementById('select');
   const devices = (await navigator.mediaDevices.enumerateDevices())
