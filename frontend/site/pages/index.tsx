@@ -5,11 +5,15 @@ import RailroadMap from "../components/RailRoadMap"
 import VideoCast from "../components/VideoCast"
 import { useEffect, useRef, useState } from "react"
 import {
+  blockId,
+  blockIds,
   BlocklId,
+  BlockMessage,
   bunkiRailId,
   BunkiRailId,
   Message,
   StationId,
+  StationMessage,
   StationState,
   StopRailId,
   stopRailId,
@@ -115,7 +119,7 @@ const Home: NextPage = () => {
     ws.addEventListener("message", (e) => {
       console.log("recieved message")
       console.log(e)
-      const message: Message = JSON.parse(e.data)
+      const message: StationMessage = JSON.parse(e.data)
       console.log(message)
       if (message.station_name === "unknown" || message.state === "UNKNOWN") {
         return
@@ -132,6 +136,42 @@ const Home: NextPage = () => {
           ...previousSwitchPointState,
           [message.station_name]: message.state === "ON",
         }))
+      }
+    })
+    ws.addEventListener("error", (e) => {
+      console.log("error occured")
+      console.log(e)
+    })
+    ws.addEventListener("close", (e) => {
+      console.log("closed")
+      console.log(e)
+    })
+    return () => {
+      ws.close()
+    }
+  }, [])
+
+  useEffect(() => {
+    const ws = new WebSocket("wss://control.chofufes2022.ueckoken.club/block")
+    stationWs.current = ws
+    ws.addEventListener("open", (e) => {
+      console.log("opened")
+      console.log(e)
+    })
+    ws.addEventListener("message", (e) => {
+      console.log("recieved message")
+      console.log(e)
+      const message: BlockMessage = JSON.parse(e.data)
+      console.log(message)
+      if (message.block_name === "unknown" || message.state === "UNKNOWN") {
+        return
+      }
+      if (blockIds.is(message.block_name)) {
+        setBlockState((previousStopPointState) => ({
+          ...previousStopPointState,
+          [message.block_name]: message.state === "CLOSE",
+        }))
+        return
       }
     })
     ws.addEventListener("error", (e) => {

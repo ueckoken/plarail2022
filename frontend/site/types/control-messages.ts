@@ -1,3 +1,4 @@
+import { BlockId } from './../../../backend/ats/spec/block_pb.d';
 import * as t from "io-ts"
 
 // https://github.com/ueckoken/plarail2021-soft/blob/a3982c4ef4b20e371052b4ad36b777a04ed67d1a/backend/proto/statesync.proto#L28-L85
@@ -50,18 +51,22 @@ export const blockId = t.union([
   t.literal("hachioji_b1"),
   t.literal("hachioji_b2"),
 ])
-export type BlocklId = t.TypeOf<typeof blockId>
+export type BlockId = t.TypeOf<typeof blockIds>
 
 export const stationId = t.union([unknownId, stopRailId, bunkiRailId])
+export const blockIds = t.union([unknownId, blockId])
 export type StationId = t.TypeOf<typeof stationId>
 
 // https://github.com/ueckoken/plarail2021-soft/blob/a3982c4ef4b20e371052b4ad36b777a04ed67d1a/backend/proto/statesync.proto#L10-L14
 export type StationState = "UNKNOWN" | "ON" | "OFF"
+export type BlockState = "UNKNOWN" | "OPEN" | "CLOSE"
 
 export type StationMessage = {
   station_name: StationId
   state: StationState
 }
 
-// https://github.com/ueckoken/plarail2021-soft/blob/a3982c4ef4b20e371052b4ad36b777a04ed67d1a/backend/external/pkg/clientHandler/clientHandler.go#L28-L31
-export type Message = StationMessage
+export type BlockMessage = {
+  block_name: BlockId,
+  state: BlockState
+}
