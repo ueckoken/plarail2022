@@ -2,6 +2,9 @@ package internal
 
 import (
 	"context"
+	"fmt"
+	"net/http"
+	"time"
 
 	"github.com/gorilla/mux"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
@@ -138,6 +141,19 @@ func Run(logger *zap.Logger) {
 	r := mux.NewRouter()
 	r.HandleFunc("/", websockethandler.HandleStatic)
 	r.Handle("/metrics", promhttp.Handler())
-	go httpBlockServer.StartServer(r, "/blockws", int(envVal.ClientSideServer.BlockStatePort))
-	httpServer.StartServer(r, "/pointws", int(envVal.ClientSideServer.PointStatePort))
+	httpBlockServer.RegisterServer(r, "/blockws")
+	httpServer.RegisterServer(r, "/pointws")
+
+	srv := &http.Server{
+		Handler:           r,
+		Addr:              fmt.Sprintf("0.0.0.0:%d", int(envVal.ClientSideServer.Port)),
+		ReadHeaderTimeout: 5 * time.Second,
+		ReadTimeout:       5 * time.Second,
+		WriteTimeout:      5 * time.Second,
+	}
+
+	logger.Info("start listening")
+	if err := srv.ListenAndServe(); err != nil {
+		logger.Panic("failed to serve", zap.Error(err))
+	}
 }
