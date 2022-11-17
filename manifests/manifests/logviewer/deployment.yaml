@@ -14,7 +14,7 @@ spec:
         app: logviewer
     spec:
       containers:
-      - image: ghcr.io/ueckoken/plarail2022-logviewer:8eb9054-1668669047 # {"$imagepolicy": "plarail2021:logviewer"}
+      - image: ghcr.io/ueckoken/plarail2022-logviewer:478facd-1668672275 # {"$imagepolicy": "plarail2021:logviewer"}
         name: logviewer
         ports:
         - containerPort: 8080
