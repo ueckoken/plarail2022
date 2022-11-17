@@ -2,9 +2,13 @@ package internal
 
 import (
 	"context"
+
+	"github.com/gorilla/mux"
+	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"github.com/ueckoken/plarail2022/backend/external/pkg/envStore"
 	"github.com/ueckoken/plarail2022/backend/external/pkg/httphandler"
 	"github.com/ueckoken/plarail2022/backend/external/pkg/synccontroller"
+	"github.com/ueckoken/plarail2022/backend/external/pkg/websockethandler"
 	"github.com/ueckoken/plarail2022/backend/external/spec"
 
 	"go.uber.org/zap"
@@ -79,6 +83,7 @@ func Run(logger *zap.Logger) {
 		httpOutput,
 		httpInput,
 		envVal,
+		"httppointserver",
 	)
 
 	StartStationSync(logger.Named("station-sync"), synccontrollerInput, synccontrollerOutput)
@@ -98,6 +103,7 @@ func Run(logger *zap.Logger) {
 		httpBlockOutput,
 		httpBlockInput,
 		envVal,
+		"httpblockserver",
 	)
 
 	go func() {
@@ -129,6 +135,9 @@ func Run(logger *zap.Logger) {
 	grpcBlockHandl := NewGrpcBlockHandler(logger.Named("grpc-block-handler"), envVal, grpcBlockHandlerOutput, grpcBlockHandlerInput)
 
 	go GRPCListenAndServe(ctx, logger, uint(envVal.ClientSideServer.GrpcPort), grpcHandler, grpcBlockHandl)
-	go httpBlockServer.StartServer(int(envVal.ClientSideServer.BlockStatePort))
-	httpServer.StartServer(int(envVal.ClientSideServer.PointStatePort))
+	r := mux.NewRouter()
+	r.HandleFunc("/", websockethandler.HandleStatic)
+	r.Handle("/metrics", promhttp.Handler())
+	go httpBlockServer.StartServer(r, "/blockws", int(envVal.ClientSideServer.BlockStatePort))
+	httpServer.StartServer(r, "/pointws", int(envVal.ClientSideServer.PointStatePort))
 }
