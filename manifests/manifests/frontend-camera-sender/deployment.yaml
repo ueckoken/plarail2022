@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: soft-camera-sender
-          image: ghcr.io/ueckoken/plarail2022-soft-camera-sender:latest # FIXME
+          image: ghcr.io/ueckoken/plarail2022-camera_sender:27d82b2-1668657626 # FIXME
           imagePullPolicy: Always
           ports:
             - containerPort: 8080
