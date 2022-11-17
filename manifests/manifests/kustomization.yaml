@@ -7,3 +7,4 @@ resources:
   - ./logviewer
   - ./internal
 #  - ./positioning
+  - ./frontend-camera-sender
