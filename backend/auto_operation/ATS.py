@@ -83,7 +83,9 @@ class ATS:
         testSection = train.currentSection
         while True:
             # 青信号なら次のセクションへ
-            signal = self.__signalSystem.getSignal(testSection.id, testSection.targetJunction.getOutSection().id)
+            signal = self.__signalSystem.getSignal(
+                testSection.id, testSection.targetJunction.getOutSection().id
+            )
             if signal and signal.value == "G":
                 testSection = testSection.targetJunction.getOutSection()
             # 赤信号ならこのセクションの終わりを停止点として返す(停止余裕距離を引く)
