@@ -1,5 +1,4 @@
 from typing import Optional
-
 from Components import Junction, Station, Train
 from DiaPlanner import DiaPlanner
 from PointInterlock import PointInterlock
@@ -133,7 +132,7 @@ class PointSwitcher:
             # 駅で退避するつもりのtrainを取得
             trainsWantToGo: list[Train] = list(
                 filter(
-                    lambda t: (self.__diaPlanner.getDia(t.id, station.id).wait is False),  # type: ignore
+                    lambda t: not self.__diaPlanner.getDia(t.id, station.id).wait,
                     trains,
                 )
             )

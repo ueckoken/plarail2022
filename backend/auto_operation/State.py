@@ -1,7 +1,7 @@
+import typing
 from typing import Optional
-
 from Communication import Communication
-from Components import Junction, Section, Sensor, Station, Train
+from Components import Junction, Section, Sensor, Station, Stop, Train
 
 
 class State:
@@ -15,6 +15,8 @@ class State:
         self.sensorList: list[Sensor] = []
         self.stationList: list[Station] = []
         self.trainList: list[Train] = []
+        # TODO: もっといい感じにストップレールのIDを導出する
+        self.sectionIdToStopId: dict[Section.SectionId, Stop.StopId] = {}
 
         # Junction(id, servoId)
         self.junctionList.append(Junction("shinjuku_j1", -1))
@@ -205,8 +207,57 @@ class State:
         )
 
         # Sensor(id, section, position)
-        # self.sensorList.append(Sensor(0, self.getSectionById(1), State.STRAIGHT_UNIT * 2.5 + State.CURVE_UNIT * 2))
-        # self.sensorList.append(Sensor(1, self.getSectionById(4), State.STRAIGHT_UNIT * 2 + State.CURVE_UNIT * 2))
+        self.sensorList.append(
+            Sensor("shinjuku_d1", self.getSectionById("shinjuku_b1"), State.STRAIGHT_UNIT * 2)
+        )
+        self.sensorList.append(
+            Sensor("shinjuku_d2", self.getSectionById("shinjuku_b2"), State.STRAIGHT_UNIT * 2)
+        )
+        self.sensorList.append(
+            Sensor("sakurajosui_d1", self.getSectionById("sakurajosui_b1"), State.STRAIGHT_UNIT * 2)
+        )
+        self.sensorList.append(
+            Sensor("sakurajosui_d2", self.getSectionById("sakurajosui_b2"), State.STRAIGHT_UNIT * 2)
+        )
+        self.sensorList.append(
+            Sensor("sakurajosui_d3", self.getSectionById("sakurajosui_b3"), State.STRAIGHT_UNIT * 2)
+        )
+        self.sensorList.append(
+            Sensor("sakurajosui_d4", self.getSectionById("sakurajosui_b4"), State.STRAIGHT_UNIT * 2)
+        )
+        self.sensorList.append(
+            Sensor("sakurajosui_d5", self.getSectionById("sakurajosui_b5"), State.STRAIGHT_UNIT * 2)
+        )
+        self.sensorList.append(
+            Sensor("sakurajosui_d6", self.getSectionById("sakurajosui_b6"), State.STRAIGHT_UNIT * 2)
+        )
+        self.sensorList.append(
+            Sensor("chofu_d1", self.getSectionById("chofu_b1"), State.STRAIGHT_UNIT * 2)
+        )
+        self.sensorList.append(
+            Sensor("chofu_d2", self.getSectionById("chofu_b2"), State.STRAIGHT_UNIT * 2)
+        )
+        self.sensorList.append(
+            Sensor("chofu_d3", self.getSectionById("chofu_b3"), State.STRAIGHT_UNIT * 2)
+        )
+        self.sensorList.append(
+            Sensor("chofu_d4", self.getSectionById("chofu_b4"), State.STRAIGHT_UNIT * 2)
+        )
+        self.sensorList.append(
+            Sensor("chofu_d5", self.getSectionById("chofu_b5"), State.STRAIGHT_UNIT * 2)
+        )
+        self.sensorList.append(
+            Sensor("hashimoto_d1", self.getSectionById("hashimoto_b1"), State.STRAIGHT_UNIT * 2)
+        )
+        self.sensorList.append(
+            Sensor("hashimoto_d2", self.getSectionById("hashimoto_b2"), State.STRAIGHT_UNIT * 2)
+        )
+        self.sensorList.append(
+            Sensor("hachioji_d1", self.getSectionById("hachioji_b1"), State.STRAIGHT_UNIT * 2)
+        )
+        self.sensorList.append(
+            Sensor("hachioji_d2", self.getSectionById("hachioji_b2"), State.STRAIGHT_UNIT * 2)
+        )
 
         # Station(id, name)
         self.stationList.append(Station("shinjuku_up", "shinjuku_up"))
@@ -322,6 +373,32 @@ class State:
             )
         )  # 列車3を桜上水b4に配置
 
+        # 区間とストップレールの対応
+        # TODO: もっといい感じにストップレールのIDを導出する
+        self.sectionIdToStopId.update(
+            {
+                "shinjuku_b1": "sakurajosui_s0",
+                "shinjuku_b2": "shinjuku_s1",
+                "sakurajosui_b1": "sakurajosui_s1",
+                "sakurajosui_b2": "sakurajosui_s2",
+                "sakurajosui_b3": "sakurajosui_s3",
+                "sakurajosui_b4": "sakurajosui_s4",
+                "sakurajosui_b5": "chofu_s0",
+                "sakurajosui_b6": "shinjuku_s2",
+                "chofu_b1": "chofu_s1",
+                "chofu_b2": "chofu_s2",
+                "chofu_b3": "hashimoto_s1",
+                "chofu_b4": "hachioji_s2",
+                "chofu_b5": "sakurajosui_s5",
+                "hashimoto_b1": "hashimoto_s2",
+                "hashimoto_b2": "chofu_s3",
+                "hachioji_b1": "chofu_s4",
+                "hachioji_b2": "hachioji_s1",
+            }
+        )
+        # 停止点に重複がないことを確認
+        assert len(self.sectionIdToStopId.values()) == len(set(self.sectionIdToStopId.values()))
+
         # start communication
         self.communication = Communication({0: pidParam0, 1: pidParam1})
 
@@ -350,16 +427,20 @@ class State:
             train.move(delta)
 
         # センサによる補正
-        # while self.communication.availableSensorSignal() > 0:
-        #     id = self.communication.receiveSensorSignal()
-        #     sensor = self.getSensorById(id)
-        #     # sensorと同じセクションにいるtrainを取得して位置を補正
-        #     train = self.getTrainInSection(sensor.belongSection)
-        #     if train != None:
-        #         train.move(sensor.position - train.mileage)
-        #         print(f"[State.update] sensor {sensor.id}: train{train.id} position calibrated")
-        #     else:
-        #         print(f"[State.update] sensor {sensor.id}: train is not detected")
+        while self.communication.availableSensorSignal() > 0:
+            sensorData = self.communication.receiveSensorSignal()
+            if sensorData is None:
+                continue
+            id = typing.cast(Sensor.SensorId, sensorData.sensorId)  # TODO: IDを検証する
+            sensor = self.getSensorById(id)
+            # センサに近づいてくる列車で一番近いものを取得
+            approachingTrain = self.getApproachingTrain(sensor.belongSection, sensor.position)
+            if approachingTrain is not None:
+                approachingTrain.currentSection = sensor.belongSection
+                approachingTrain.mileage = sensor.position + 1.0  # センサより僅かに先に進める（センサを通過したことを示すため）
+                print(f"[State.update] sensor {sensor.id}: train{train.id} position updated")
+            else:
+                print(f"[State.update] sensor {sensor.id}: train is not detected")
 
     # Stateに格納されている状態を現実世界に送信する. 各種計算後に実行すること
     def sendCommand(self):
@@ -396,63 +477,45 @@ class State:
     # 指定されたsectionにいる列車を返す。列車がいなければNoneを返す
     def getTrainInSection(self, section: Section) -> Optional[Train]:
         trains = list(filter(lambda train: train.currentSection.id == section.id, self.trainList))  # type: ignore
-        train = trains[0]
-        if isinstance(train, Train):
-            return train
+        if trains:
+            return trains[0]
         else:
             return None
 
-    # 線路上のある点からある点までの距離を返す
-    # 2つの地点が同じsectionに存在する場合、s1>s2だと負の値を返す
-    def getDistance(
-        self,
-        s1: Section,
-        mileage1: float,
-        s2: Section,
-        mileage2: float,
-        originalStartSection: Optional[Section] = None,
-    ) -> float:
-        distance = 0.0
-        testSection = s1
-
-        # 何も見つけられずに最初の地点に戻ってきてしまった場合、終了
-        if originalStartSection is not None and s1.id == originalStartSection.id:
-            return s1.length
-
-        if originalStartSection is None:
-            originalStartSection = s1
-        while testSection.id != s2.id:
-            distance += testSection.length
-            next = testSection.targetJunction.getOutSection()
-            if testSection.targetJunction.outSectionCurve is None and next is not None:
-                testSection = next
+    # 指定された地点に近づいてくる列車で一番近いものを取得
+    def getApproachingTrain(self, section: Section, mileage: float) -> Train:
+        testSection = section
+        testedSectionId = []  # 一度確認したセクションIDを記録しておき、2回通ったら抜けられないとみてNoneを返す
+        while True:
+            approachingTrain = self.getTrainInSection(testSection)
+            # testSectionに列車が存在しない、または存在しても引数で指定された地点より進んだ位置にいる（＝遠ざかっている）場合、探索セクションをひとつ前へ
+            if approachingTrain is None or (
+                approachingTrain.currentSection.id == section.id
+                and approachingTrain.mileage > mileage
+            ):
+                testedSectionId.append(testSection.id)  # 一度確認したセクションIDを記録しておく
+                testSection = testSection.sourceJunction.getInSection()  # ひとつ前のセクションに検索範囲を移す
+                if testSection.id in testedSectionId:  # すでに確認済みの場合、一周して戻ってしまったので、列車はいない。Noneを返す
+                    return None
+            # 存在すればその列車を返す
             else:
-                straight = testSection.targetJunction.outSectionStraight
-                curve = testSection.targetJunction.outSectionCurve
-                if straight is None or curve is None:
-                    continue
-                distanceFrom2OutJucntionToS2ViaStraight = self.getDistance(
-                    straight,
-                    0,
-                    s2,
-                    mileage2,
-                    originalStartSection,
-                )
-                distanceFrom2OutJucntionToS2ViaCurve = self.getDistance(
-                    curve,
-                    0,
-                    s2,
-                    mileage2,
-                    originalStartSection,
-                )
-                return (
-                    distance
-                    - mileage1
-                    + min(
-                        distanceFrom2OutJucntionToS2ViaStraight,
-                        distanceFrom2OutJucntionToS2ViaCurve,
-                    )
-                )
-            if testSection.id == originalStartSection.id:
-                break  # 1周して戻ってきた場合は終了
+                return approachingTrain
+
+    # 線路上のある点からある点までの距離を返す
+    # 2つの地点が同じsectionに存在する場合、s1>s2だと負の値を返す。ポイントの状態的に、ある点からある点にたどり着くのが不可能な場合、noneを返す
+    def getDistance(self, s1: Section, mileage1: float, s2: Section, mileage2: float) -> float:
+        distance = 0.0
+        testSection: Section = s1
+        # 一度通過したjucntionのidを記録しておく。同じjunctionを2回通った場合は到達不能と判定しnanを返す
+        passedJunctionId: list[int] = []
+
+        while testSection.id != s2.id:
+            # junctionを2回目に通過した場合、一周してしまうのでnanを返す
+            if testSection.targetJunction.id in passedJunctionId:
+                return float("nan")
+            else:
+                passedJunctionId.append(testSection.targetJunction.id)  # 一度通過したjunctionのidを記録
+                distance += testSection.length
+                testSection = testSection.targetJunction.getOutSection()
+
         return distance - mileage1 + mileage2

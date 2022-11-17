@@ -4,41 +4,81 @@
 var grpc = require('@grpc/grpc-js');
 var block_pb = require('./block_pb.js');
 
-function serialize_NotifyStateRequest(arg) {
-  if (!(arg instanceof block_pb.NotifyStateRequest)) {
-    throw new Error('Expected argument of type NotifyStateRequest');
+function serialize_NotifyBlockStateRequest(arg) {
+  if (!(arg instanceof block_pb.NotifyBlockStateRequest)) {
+    throw new Error('Expected argument of type NotifyBlockStateRequest');
   }
   return Buffer.from(arg.serializeBinary());
 }
 
-function deserialize_NotifyStateRequest(buffer_arg) {
-  return block_pb.NotifyStateRequest.deserializeBinary(new Uint8Array(buffer_arg));
+function deserialize_NotifyBlockStateRequest(buffer_arg) {
+  return block_pb.NotifyBlockStateRequest.deserializeBinary(new Uint8Array(buffer_arg));
 }
 
-function serialize_NotifyStateResponse(arg) {
-  if (!(arg instanceof block_pb.NotifyStateResponse)) {
-    throw new Error('Expected argument of type NotifyStateResponse');
+function serialize_NotifyBlockStateResponse(arg) {
+  if (!(arg instanceof block_pb.NotifyBlockStateResponse)) {
+    throw new Error('Expected argument of type NotifyBlockStateResponse');
   }
   return Buffer.from(arg.serializeBinary());
 }
 
-function deserialize_NotifyStateResponse(buffer_arg) {
-  return block_pb.NotifyStateResponse.deserializeBinary(new Uint8Array(buffer_arg));
+function deserialize_NotifyBlockStateResponse(buffer_arg) {
+  return block_pb.NotifyBlockStateResponse.deserializeBinary(new Uint8Array(buffer_arg));
+}
+
+function serialize_UpdateBlockStateRequest(arg) {
+  if (!(arg instanceof block_pb.UpdateBlockStateRequest)) {
+    throw new Error('Expected argument of type UpdateBlockStateRequest');
+  }
+  return Buffer.from(arg.serializeBinary());
+}
+
+function deserialize_UpdateBlockStateRequest(buffer_arg) {
+  return block_pb.UpdateBlockStateRequest.deserializeBinary(new Uint8Array(buffer_arg));
+}
+
+function serialize_UpdateBlockStateResponse(arg) {
+  if (!(arg instanceof block_pb.UpdateBlockStateResponse)) {
+    throw new Error('Expected argument of type UpdateBlockStateResponse');
+  }
+  return Buffer.from(arg.serializeBinary());
+}
+
+function deserialize_UpdateBlockStateResponse(buffer_arg) {
+  return block_pb.UpdateBlockStateResponse.deserializeBinary(new Uint8Array(buffer_arg));
 }
 
 
-var BlockStateSyncService = exports.BlockStateSyncService = {
-  notifyState: {
-    path: '/BlockStateSync/NotifyState',
+// BlockStateManagerはblock状態を管理します。externalで動作します。
+var BlockStateManagerService = exports.BlockStateManagerService = {
+  // UpdateBlockStateはサーバのBlockStateを変更します。
+updateBlockState: {
+    path: '/BlockStateManager/UpdateBlockState',
     requestStream: false,
     responseStream: false,
-    requestType: block_pb.NotifyStateRequest,
-    responseType: block_pb.NotifyStateResponse,
-    requestSerialize: serialize_NotifyStateRequest,
-    requestDeserialize: deserialize_NotifyStateRequest,
-    responseSerialize: serialize_NotifyStateResponse,
-    responseDeserialize: deserialize_NotifyStateResponse,
+    requestType: block_pb.UpdateBlockStateRequest,
+    responseType: block_pb.UpdateBlockStateResponse,
+    requestSerialize: serialize_UpdateBlockStateRequest,
+    requestDeserialize: deserialize_UpdateBlockStateRequest,
+    responseSerialize: serialize_UpdateBlockStateResponse,
+    responseDeserialize: deserialize_UpdateBlockStateResponse,
   },
 };
 
-exports.BlockStateSyncClient = grpc.makeGenericClientConstructor(BlockStateSyncService);
+exports.BlockStateManagerClient = grpc.makeGenericClientConstructor(BlockStateManagerService);
+// BlockStateNotificationはblock状態の通知を受けます。auto_operationで動作します。
+var BlockStateNotificationService = exports.BlockStateNotificationService = {
+  notifyBlockState: {
+    path: '/BlockStateNotification/NotifyBlockState',
+    requestStream: false,
+    responseStream: false,
+    requestType: block_pb.NotifyBlockStateRequest,
+    responseType: block_pb.NotifyBlockStateResponse,
+    requestSerialize: serialize_NotifyBlockStateRequest,
+    requestDeserialize: deserialize_NotifyBlockStateRequest,
+    responseSerialize: serialize_NotifyBlockStateResponse,
+    responseDeserialize: deserialize_NotifyBlockStateResponse,
+  },
+};
+
+exports.BlockStateNotificationClient = grpc.makeGenericClientConstructor(BlockStateNotificationService);

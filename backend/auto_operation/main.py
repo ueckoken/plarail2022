@@ -1,4 +1,3 @@
-import atexit
 import threading
 import time
 
@@ -7,13 +6,16 @@ from flask import Flask, render_template
 from flask_cors import CORS
 from flask_socketio import SocketIO
 
-from Components import Junction
+from Components import Section, Stop
+from Connection import Connection
 from Operation import Operation
 
 
 class Conf(pydantic.BaseSettings):
     esp_eye_endpoint: str
     secret_key: str
+    auto_operation_server_address: str
+    external_server_address: str
     simulation_mode: bool = False
 
 
@@ -25,7 +27,13 @@ except pydantic.ValidationError as e:
 
 # 自動運転システムの初期化
 operation = Operation()
-operation.state.communication.setup(simulationMode=conf.simulation_mode)
+operation.state.communication.setup(
+    simulationMode=conf.simulation_mode,
+    connection=Connection(
+        autoOperationServerAddress=conf.auto_operation_server_address,
+        externalServerAddress=conf.external_server_address,
+    ),
+)
 operation.ato.setEnabled(1, True)
 
 # Flaskウェブサーバの初期化
@@ -54,22 +62,45 @@ def operation_loop():
 
 # ブラウザにwebsocketで0.1secおきに信号を送る関数
 def send_signal_to_browser():
+    connection = operation.state.communication.connection
+
+    if connection is None:
+        return
+
     while True:
         socketio.sleep(0.1)
-        train_taiken = operation.state.getTrainById(1)  # ラズパイ体験車(id=1)を取得
-        signal = operation.signalSystem.getSignal(
-            train_taiken.currentSection.id,
-            train_taiken.currentSection.targetJunction.getOutSection().id,
-        )  # 体験車から見た信号機を取得
-        distance = operation.ato.getDistanceUntilStop(train_taiken)  # 停止位置までの距離を取得
-        blocks = {}  # 閉塞を送る。区間0と3に列車がいるなら、{'s0': True, 's3': True} のような文字列
+        # 閉塞を送る。区間0と3に列車がいるなら、{'s0': True, 's3': True} のような文字列
+        blocks: dict[Section.SectionId, bool] = {}
+        for section in operation.state.sectionList:
+            blocks[section.id] = False
         for train in operation.state.trainList:
-            blocks["s" + str(train.currentSection.id)] = True
+            blocks[train.currentSection.id] = True
+        # どこのストップレールを上げるべきか送る。区間0と区間3を上げるなら、[1, 3]のような配列
+        stops: dict[Stop.StopId, bool] = {}
+        for section in operation.state.sectionList:
+            stopId = operation.state.sectionIdToStopId[section.id]
+            stops[stopId] = False
+        for train in operation.state.trainList:
+            if train.stopPoint:  # 列車には停止すべき点が存在しない場合もある(ATSを無効化した場合など)。停止点を持っている場合はsectionIDを送る
+                sectionId = train.stopPoint.section.id
+                stopId = operation.state.sectionIdToStopId[sectionId]
+                stops[stopId] = True
+
+        # 閉塞を送る
+        for blockId, state in blocks.items():
+            connection.sendBlock(
+                blockId=blockId, state="BLOCKSTATE_CLOSE" if state else "BLOCKSTATE_OPEN"
+            )
+        # ストップレールを送る
+        for stopId, state in stops.items():
+            connection.sendStop(
+                stationId=stopId, state="POINTSTATE_ON" if state else "POINTSTATE_OFF"
+            )
 
         # websocketで送信
         socketio.emit(
             "signal_taiken",
-            {"signal": signal.value, "distance": int(distance), "blocks": blocks},
+            {"signal": "R", "distance": 0, "blocks": blocks, "stops": stops},
         )
 
 
@@ -90,23 +121,9 @@ def index():
     )
 
 
-@app.before_first_request
-def before_first_request():
-    # ブラウザへデータを送信するタスクの開始
-    socketio.start_background_task(target=send_signal_to_browser)
-
-
-@atexit.register
-def reset():
-    state = operation.state
-    state.communication.sendToggle(0, Junction.ServoState.Straight)
-    state.communication.sendToggle(1, Junction.ServoState.Straight)
-    state.communication.sendSpeed(0, 0)
-    state.communication.sendSpeed(1, 0)
-    print("successfully reset")
-
-
 if __name__ == "__main__":
-    thread1 = threading.Thread(target=operation_loop, daemon=True)
-    thread1.start()  # 自動運転のオペレーションを開始
+    operationThread = threading.Thread(target=operation_loop, daemon=True)
+    operationThread.start()  # 自動運転のオペレーションを開始
+    signalThread = threading.Thread(target=send_signal_to_browser, daemon=True)
+    signalThread.start()  # ブラウザへデータを送信するタスクの開始
     socketio.run(app, host="0.0.0.0", port=50050)  # Flaskソケットを起動

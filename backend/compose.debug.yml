@@ -5,6 +5,7 @@ services:
       dockerfile: ./Dockerfile
     links:
       - internal
+      - auto-operation
     depends_on:
       - internal
     ports:
@@ -13,10 +14,26 @@ services:
     environment:
       - "CLIENTSIDESERVER_PORT=8080"
       - "INTERNALSERVER_ADDR=internal:54321"
-      - "CLIENTSIDESERVER_ATSADDRESS=internal:54321"
+      - "CLIENTSIDESERVER_ATSADDRESS=auto-operation:8080"
   internal:
     build:
       context: ./internal
       dockerfile: ./Dockerfile
     ports:
       - "6060:6060"
+  auto-operation:
+    build:
+      context: ./auto_operation
+      dockerfile: ./Dockerfile
+    environment:
+      - "ESP_EYE_ENDPOINT=none"
+      - "SECRET_KEY=awesome_secret_key"
+      - "AUTO_OPERATION_SERVER_ADDRESS=[::]:8080"
+      - "EXTERNAL_SERVER_ADDRESS=external:8080"
+  json2grpc:
+    build:
+      context: ./json2grpc
+    environment:
+      INTERNALENDPOINT: "internal:54321"
+    ports:
+      - "8081:8080"
