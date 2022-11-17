@@ -14,8 +14,6 @@
 `./backend/multicaster/one_to_multiple_cast_skyway.py`が動いています。webrtcのピアリングを行います。
 - "auth.chofufes2022.ueckoken.club"
 認証画面です。認証が必要なページに入るには先にここを通ってください。
-- "receiver-test.chofufes2022.ueckoken.club"
-`./frontend/skyway_receiver/index.html`が動いています。webrtcの受信側ページです。
 
 ### 認証あり
 

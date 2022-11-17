@@ -45,27 +45,6 @@ jobs:
           author_email: bot@example.com
           message: format by prettier
 
-  prettier-skyway-receiver:
-    runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: "frontend/skyway_receiver"
-    steps:
-      - name: checkout
-        uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
-        with:
-          node-version-file: ./frontend/skyway_receiver/.nvmrc
-          cache: npm
-          cache-dependency-path: ./frontend/skyway_receiver/package-lock.json
-      - run: npm ci
-      - run: npm run fmt
-      - uses: EndBug/add-and-commit@v9
-        with:
-          author_name: format BOT
-          author_email: bot@example.com
-          message: format by prettier
-
   black-auto_operation:
     runs-on: ubuntu-latest
     defaults:

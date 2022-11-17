@@ -9,7 +9,6 @@ group "default" {
     "webrtc-sender",
     "camera_sender",
     "frontend",
-    "receiver-test",
     "logviewer",
   ]
 }
@@ -79,13 +78,6 @@ target "camera_sender" {
   context = "./frontend/camera_sender/"
   tags = [
     GET_TAG("camera_sender")
-  ]
-}
-
-target "receiver-test" {
-  context = "./frontend/skyway_receiver"
-  tags = [
-    GET_TAG("receiver-test")
   ]
 }
 
