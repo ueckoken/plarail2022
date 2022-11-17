@@ -1,4 +1,4 @@
-import { BlockId } from './../../../backend/ats/spec/block_pb.d';
+import { BlockId } from "./../../../backend/ats/spec/block_pb.d"
 import * as t from "io-ts"
 
 // https://github.com/ueckoken/plarail2021-soft/blob/a3982c4ef4b20e371052b4ad36b777a04ed67d1a/backend/proto/statesync.proto#L28-L85
@@ -67,6 +67,6 @@ export type StationMessage = {
 }
 
 export type BlockMessage = {
-  block_name: BlockId,
+  block_name: BlockId
   state: BlockState
 }
