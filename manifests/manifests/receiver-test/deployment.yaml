@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: webrtc-receiver
-          image: ghcr.io/ueckoken/plarail2022-receiver-test:8eb9054-1668669047 # {"$imagepolicy": "plarail2021:webrtc-receiver"}
+          image: ghcr.io/ueckoken/plarail2022-receiver-test:478facd-1668672275 # {"$imagepolicy": "plarail2021:webrtc-receiver"}
           imagePullPolicy: Always
           ports:
             - containerPort: 80
