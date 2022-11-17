@@ -5,7 +5,6 @@ group "default" {
     "internal",
     "json2grpc",
     "multicaster",
-    "positioning",
     "webrtc-sender",
     "camera_sender",
     "frontend",
@@ -58,13 +57,6 @@ target "multicaster" {
   context = "./backend/multicaster"
   tags = [
     GET_TAG("frontend-python")
-  ]
-}
-
-target "positioning" {
-  context = "./backend/positioning"
-  tags = [
-    GET_TAG("positioning")
   ]
 }
 
