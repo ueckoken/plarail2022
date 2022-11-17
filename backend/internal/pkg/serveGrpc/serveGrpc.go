@@ -2,14 +2,14 @@ package serveGrpc
 
 import (
 	"fmt"
+	"github.com/ueckoken/plarail2022/backend/internal/internal"
+	"github.com/ueckoken/plarail2022/backend/internal/pkg/esp32healthcheck"
+	"github.com/ueckoken/plarail2022/backend/internal/pkg/station2espIp"
+	pb "github.com/ueckoken/plarail2022/backend/internal/spec"
 	"log"
 	"net"
 	"net/http"
 	"time"
-	"ueckoken/plarail2022-internal/internal"
-	"ueckoken/plarail2022-internal/pkg/esp32healthcheck"
-	"ueckoken/plarail2022-internal/pkg/station2espIp"
-	pb "ueckoken/plarail2022-internal/spec"
 
 	grpcPrometheus "github.com/grpc-ecosystem/go-grpc-prometheus"
 	"github.com/prometheus/client_golang/prometheus"
@@ -31,7 +31,7 @@ func (g *GrpcServer) StartServer() {
 		Stations: g.Stations,
 		client:   &http.Client{Timeout: g.Environment.NodeConnection.Timeout},
 	}
-	pb.RegisterControlServer(s, &c)
+	pb.RegisterPointStateNotificationServer(s, &c)
 
 	// After all your registrations, make sure all the Prometheus metrics are initialized.
 	grpcPrometheus.Register(s)

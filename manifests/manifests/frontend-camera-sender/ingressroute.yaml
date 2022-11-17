@@ -1,0 +1,14 @@
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: camera-sender
+  namespace: plarail2021
+spec:
+  routes:
+  - kind: Rule
+    match: Host(`camera-sender.chofufes2022.ueckoken.club`)
+    services:
+    - name: soft-camera-sender
+      port: 80
+  tls:
+    secretName: cloudflare-cert
