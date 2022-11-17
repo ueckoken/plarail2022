@@ -87,6 +87,22 @@ class Connection:
         except grpc._channel._InactiveRpcError as e:
             print(e)
 
+    def sendPoint(self, pointId: str, state: str) -> None:
+        try:
+            with grpc.insecure_channel(self.externalServerAddress) as channel:
+                stub = statesync_pb2_grpc.StateManagerStub(channel)
+                response = stub.UpdatePointState(
+                    statesync_pb2.UpdatePointStateRequest(
+                        state=statesync_pb2.PointAndState(
+                            station=statesync_pb2.Station(stationId=pointId),
+                            state=state
+                        )
+                    )
+                )
+            print(f"Send Point: {response}")
+        except grpc._channel._InactiveRpcError as e:
+            print(e)
+
     def sendBlock(self, blockId: str, state: str) -> None:
         try:
             with grpc.insecure_channel(self.externalServerAddress) as channel:

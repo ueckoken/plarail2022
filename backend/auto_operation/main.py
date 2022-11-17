@@ -6,7 +6,7 @@ from flask import Flask, render_template
 from flask_cors import CORS
 from flask_socketio import SocketIO
 
-from Components import Section, Stop
+from Components import Junction, Point, Section, Stop
 from Connection import Connection
 from Operation import Operation
 
@@ -69,13 +69,13 @@ def send_signal_to_browser():
 
     while True:
         socketio.sleep(0.1)
-        # 閉塞を送る。区間0と3に列車がいるなら、{'s0': True, 's3': True} のような文字列
+        # 閉塞を送る。
         blocks: dict[Section.SectionId, bool] = {}
         for section in operation.state.sectionList:
             blocks[section.id] = False
         for train in operation.state.trainList:
             blocks[train.currentSection.id] = True
-        # どこのストップレールを上げるべきか送る。区間0と区間3を上げるなら、[1, 3]のような配列
+        # どこのストップレールを上げるべきか送る。
         stops: dict[Stop.StopId, bool] = {}
         for section in operation.state.sectionList:
             stopId = operation.state.sectionIdToStopId[section.id]
@@ -85,6 +85,15 @@ def send_signal_to_browser():
                 sectionId = train.stopPoint.section.id
                 stopId = operation.state.sectionIdToStopId[sectionId]
                 stops[stopId] = True
+        # ポイント切り替えを送る。分岐側に向ける=true, 直進側に向ける=false
+        points: dict[Point.PointId, bool] = {}
+        for junction in operation.state.junctionList:
+            if junction.pointId is not None:  # サーボがついてるjunctionについて
+                pointId = junction.pointId
+                if junction.inSectionCurve:  # in2->out1という分岐器の場合
+                    points[pointId] = True if (junction.inServoState == Junction.ServoState.Curve) else False
+                if junction.outSectionCurve:  # in1->out2という分岐器の場合
+                    points[pointId] = True if (junction.outServoState == Junction.ServoState.Curve) else False
 
         # 閉塞を送る
         for blockId, state in blocks.items():
@@ -95,6 +104,11 @@ def send_signal_to_browser():
         for stopId, state in stops.items():
             connection.sendStop(
                 stationId=stopId, state="POINTSTATE_ON" if state else "POINTSTATE_OFF"
+            )
+        # ポイント切り替えを送る
+        for pointId, state in points.items():
+            connection.sendPoint(
+                pointId=pointId, state="POINTSTATE_ON" if state else "POINTSTATE_OFF"
             )
 
         # websocketで送信
