@@ -6,7 +6,7 @@ metadata:
   labels:
     app: soft-backend-internal
 spec:
-  type: ClusterIP
+  type: NodePort
   selector:
     app: soft-backend-internal
   ports:
