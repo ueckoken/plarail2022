@@ -34,6 +34,11 @@ func Run(logger *zap.Logger) {
 			default:
 				logger.Info("buffer full", zap.String("buffer", "httpInputKV"))
 			}
+			select {
+			case main2internal <- c:
+			default:
+				logger.Info("buffer full", zap.String("buffer", "internal"))
+			}
 		}
 	}()
 	go func() {
