@@ -198,45 +198,38 @@ const Home: NextPage = () => {
           </div>
           <button
             onClick={() => {
-              setRoomIds(["hachioji", "train1"])
+              setRoomIds(["hachioji", "train"])
             }}
           >
             京王八王子
           </button>
           <button
             onClick={() => {
-              setRoomIds(["kitano", "train1"])
+              setRoomIds(["chofu", "train"])
             }}
           >
             調布
           </button>
           <button
             onClick={() => {
-              setRoomIds(["chofu", "train1"])
+              setRoomIds(["hashimoto", "train"])
             }}
           >
-            調布
+            橋本
           </button>
           <button
             onClick={() => {
-              setRoomIds(["meidaimae", "train1"])
+              setRoomIds(["sakurajosui", "train"])
             }}
           >
-            明大前
+            桜上水
           </button>
           <button
             onClick={() => {
-              setRoomIds(["sasazuka", "train1"])
+              setRoomIds(["shinjuku", "train"])
             }}
           >
-            笹塚
-          </button>
-          <button
-            onClick={() => {
-              setRoomIds(["iwamotocho", "train1"])
-            }}
-          >
-            岩本町
+            新宿
           </button>
           <button
             onClick={() => {
