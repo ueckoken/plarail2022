@@ -1,5 +1,6 @@
 import typing
 from typing import Optional
+
 from Communication import Communication
 from Components import Junction, Section, Sensor, Station, Stop, Train
 

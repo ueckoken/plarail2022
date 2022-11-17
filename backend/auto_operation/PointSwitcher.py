@@ -1,4 +1,5 @@
 from typing import Optional
+
 from Components import Junction, Station, Train
 from DiaPlanner import DiaPlanner
 from PointInterlock import PointInterlock
