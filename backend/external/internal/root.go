@@ -43,13 +43,31 @@ func Run(logger *zap.Logger) {
 	}()
 	go func() {
 		for c := range httpInputKV {
-			httpInput <- &spec.PointAndState{Station: &spec.Station{StationId: c.Key}, State: c.Value}
+			select {
+			case httpInput <- &spec.PointAndState{Station: &spec.Station{StationId: c.Key}, State: c.Value}:
+			default:
+				logger.Info("buffer full", zap.String("buffer", "httpInput"))
+			}
 		}
 	}()
 
 	go func() {
 		for c := range httpOutput {
-			synccontrollerInput <- synccontroller.KV[spec.StationId, spec.PointStateEnum]{Key: c.GetStation().GetStationId(), Value: c.GetState()}
+			select {
+			case synccontrollerInput <- synccontroller.KV[spec.StationId, spec.PointStateEnum]{Key: c.GetStation().GetStationId(), Value: c.GetState()}:
+			default:
+				logger.Info("buffer full", zap.String("buffer", "synccontrollerInput-httpoutput"))
+			}
+		}
+	}()
+
+	go func() {
+		for c := range grpcHandlerInput {
+			select {
+			case synccontrollerInput <- c:
+			default:
+				logger.Info("buffer full", zap.String("buffer", "synccontrollerInput-grpchandler"))
+			}
 		}
 	}()
 

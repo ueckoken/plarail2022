@@ -2,6 +2,7 @@ resources:
   - ./external
   - ./frontend
   - ./frontend-python
+  - ./internal
   - ./webrtc-sender
   - ./receiver
   - ./automation.yaml
