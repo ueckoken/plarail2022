@@ -16,7 +16,8 @@ func Run(logger *zap.Logger) {
 	synccontrollerInput := make(chan synccontroller.KV[spec.StationId, spec.PointStateEnum])
 	synccontrollerOutput := make(chan synccontroller.KV[spec.StationId, spec.PointStateEnum])
 	grpcHandlerInput := make(chan synccontroller.KV[spec.StationId, spec.PointStateEnum])
-	main2grpcHandler := make(chan synccontroller.KV[spec.StationId, spec.PointStateEnum])
+	main2autooperation := make(chan synccontroller.KV[spec.StationId, spec.PointStateEnum])
+	main2internal := make(chan synccontroller.KV[spec.StationId, spec.PointStateEnum])
 	httpInputKV := make(chan synccontroller.KV[spec.StationId, spec.PointStateEnum])
 	httpInput := make(chan *spec.PointAndState)
 	httpOutput := make(chan *spec.PointAndState)
@@ -24,7 +25,7 @@ func Run(logger *zap.Logger) {
 	go func() {
 		for c := range synccontrollerOutput {
 			select {
-			case main2grpcHandler <- c:
+			case main2autooperation <- c:
 			default:
 				logger.Info("buffer full", zap.String("buffer", "main2grpcHandler"))
 			}
@@ -56,7 +57,9 @@ func Run(logger *zap.Logger) {
 		envVal,
 	)
 	StartStationSync(logger.Named("station-sync"), synccontrollerInput, synccontrollerOutput)
-	grpcHandler := NewGrpcHandler(logger.Named("grpc-handler"), envVal, main2grpcHandler, grpcHandlerInput)
+	grpcHandler := NewGrpcHandler(logger.Named("grpc-handler"), envVal, main2autooperation, grpcHandlerInput)
+	internalHandler := NewGrpcHandlerForInternal(logger.Named("grpc-internal"), envVal, main2internal)
+	go internalHandler.Run(ctx)
 
 	client2blocksync := make(chan synccontroller.KV[spec.BlockId, spec.BlockStateEnum])
 	blocksync2client := make(chan synccontroller.KV[spec.BlockId, spec.BlockStateEnum])
