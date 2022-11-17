@@ -305,7 +305,14 @@ const Home: NextPage = () => {
           </button>
           <button
             onClick={() => {
-              setRoomIds(["none", "hachioji","chofu","hashimoto","sakurajosui","shinjuku"])
+              setRoomIds([
+                "none",
+                "hachioji",
+                "chofu",
+                "hashimoto",
+                "sakurajosui",
+                "shinjuku",
+              ])
             }}
           >
             all
