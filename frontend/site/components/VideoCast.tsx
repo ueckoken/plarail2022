@@ -15,31 +15,32 @@ interface Prop {
   roomIds: string[]
   styles: CSSProperties[]
 }
-const SW_WSURL = "wss://webrtc.chofufes2022.ueckoken.club/"
+
 const SKYWAY_APIKEY =
   process.env.SKYWAY_APIKEY === undefined
     ? "2eb379e0-0374-4e3c-9674-d7415b0b7f27"
     : process.env.SKYWAY_APIKEY
 const SKYWAY_DEBUG_LEVEL = 2
 
-const skyWayPeer: Peer = new Peer({
-  key: SKYWAY_APIKEY,
-  debug: SKYWAY_DEBUG_LEVEL,
-})
 
 const VideoCast: FC<Prop> = ({ roomIds, styles }) => {
   const [isPeerAvailable, setIsPeerAvailable] = useState<boolean>(false)
+  const skyWayPeer = useRef<Peer>()
   useEffect(() => {
-    skyWayPeer?.on("open", (id) => {
+    skyWayPeer.current = new Peer({
+      key: SKYWAY_APIKEY,
+      debug: SKYWAY_DEBUG_LEVEL,
+    })
+    skyWayPeer.current.on("open", (id) => {
       console.log(`opened skyway peer id:${id}`)
       setIsPeerAvailable(true)
     })
-    skyWayPeer?.on("close", () => {
+    skyWayPeer.current.on("close", () => {
       console.log("closed skyway peer")
       setIsPeerAvailable(false)
     })
     return () => {
-      skyWayPeer?.destroy()
+      skyWayPeer.current?.destroy()
       setIsPeerAvailable(false)
     }
   }, [])
@@ -47,13 +48,13 @@ const VideoCast: FC<Prop> = ({ roomIds, styles }) => {
   return (
     <React.Fragment>
       {roomIds.map((roomId, index) => {
-        if (skyWayPeer === undefined || !isPeerAvailable) {
+        if (skyWayPeer.current === undefined || !isPeerAvailable) {
           return <p key={roomId}>Peer not available</p>
         }
         return (
           <RoomViewer
             roomId={roomId}
-            peer={skyWayPeer}
+            peer={skyWayPeer.current}
             key={roomId}
             style={styles[index]}
           />
