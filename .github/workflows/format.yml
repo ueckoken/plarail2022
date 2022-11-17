@@ -1,9 +1,6 @@
 name: formatter
 on:
   push:
-    paths:
-      - "frontend/**/*"
-      - "backend/multicaster/*"
     branches-ignore:
       - "main"
       - "deployment"
@@ -68,6 +65,26 @@ jobs:
           author_name: format BOT
           author_email: bot@example.com
           message: format by prettier
+
+  black-auto_operation:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: "backend/auto_operation"
+    steps:
+      - name: checkout
+        uses: actions/checkout@v3
+      - uses: actions/setup-python@v4
+        with:
+          python-version-file: ./backend/auto_operation/.python-version
+          cache: pip
+          cache-dependency-path: ./backend/auto_operation/requirements.dev.txt
+      - run: pip install -r requirements.dev.txt
+      - run: make format
+      - uses: EndBug/add-and-commit@v9
+        with:
+          message: format by black
+          default_author: github_actions
 
   black-multicaster:
     runs-on: ubuntu-latest

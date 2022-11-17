@@ -1,10 +1,10 @@
 package esp32healthcheck
 
 import (
+	"github.com/ueckoken/plarail2022/backend/internal/pkg/station2espIp"
 	"io"
 	"net/http"
 	"time"
-	"ueckoken/plarail2022-internal/pkg/station2espIp"
 
 	"github.com/prometheus/client_golang/prometheus"
 )

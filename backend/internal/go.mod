@@ -1,4 +1,4 @@
-module ueckoken/plarail2022-internal
+module github.com/ueckoken/plarail2022/backend/internal
 
 go 1.19
 

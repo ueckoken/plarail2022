@@ -3,9 +3,9 @@ package msg2Esp
 import (
 	"encoding/json"
 	"errors"
+	"github.com/ueckoken/plarail2022/backend/internal/pkg/Send2Json"
+	"github.com/ueckoken/plarail2022/backend/internal/pkg/station2espIp"
 	"net/http"
-	"ueckoken/plarail2022-internal/pkg/Send2Json"
-	"ueckoken/plarail2022-internal/pkg/station2espIp"
 )
 
 type sendData struct {

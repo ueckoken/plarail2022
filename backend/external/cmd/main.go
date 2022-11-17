@@ -1,8 +1,8 @@
 package main
 
 import (
+	"github.com/ueckoken/plarail2022/backend/external/internal"
 	"log"
-	"ueckoken/plarail2022-external/internal"
 
 	"go.uber.org/zap"
 )

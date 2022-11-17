@@ -2,11 +2,11 @@ package httphandler
 
 import (
 	"fmt"
+	"github.com/ueckoken/plarail2022/backend/external/pkg/envStore"
+	"github.com/ueckoken/plarail2022/backend/external/pkg/websockethandler"
 	"net/http"
 	"sync"
 	"time"
-	"ueckoken/plarail2022-external/pkg/envStore"
-	"ueckoken/plarail2022-external/pkg/websockethandler"
 
 	"github.com/gorilla/mux"
 	"github.com/prometheus/client_golang/prometheus"

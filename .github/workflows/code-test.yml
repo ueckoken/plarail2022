@@ -13,6 +13,24 @@ jobs:
         run: |
           bash <(curl https://raw.githubusercontent.com/rhysd/actionlint/main/scripts/download-actionlint.bash)
           ./actionlint -color -shellcheck=
+  backend-auto-operation:
+    defaults:
+      run:
+        working-directory: ./backend/auto_operation
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout
+        uses: actions/checkout@v3
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version-file: backend/auto_operation/.python-version
+          cache: "pip"
+      - name: install libraries
+        run: pip install -r requirements.txt -r requirements.dev.txt
+      - name: Run test
+        run: |-
+          make staticcheck
   backend-external:
     defaults:
       run:
