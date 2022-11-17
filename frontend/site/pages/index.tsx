@@ -189,9 +189,34 @@ const Home: NextPage = () => {
                 {
                   position: "absolute",
                   zIndex: 2,
-                  bottom: 4,
-                  right: 0,
-                  width: "25%",
+                  left: 0,
+                  width: "33%",
+                },
+                {
+                  position: "absolute",
+                  zIndex: 2,
+                  left: "33%",
+                  width: "33%",
+                },
+                {
+                  position: "absolute",
+                  zIndex: 2,
+                  left: "66%",
+                  width: "33%",
+                },
+                {
+                  position: "absolute",
+                  zIndex: 2,
+                  top: "50%",
+                  left: 0,
+                  width: "33%",
+                },
+                {
+                  position: "absolute",
+                  zIndex: 2,
+                  top: "50%",
+                  left: "33%",
+                  width: "33%",
                 },
               ]}
             />
@@ -237,6 +262,13 @@ const Home: NextPage = () => {
             }}
           >
             車両前景
+          </button>
+          <button
+            onClick={() => {
+              setRoomIds(["none", "hachioji","chofu","hashimoto","sakurajosui","shinjuku"])
+            }}
+          >
+            all
           </button>
         </section>
 
