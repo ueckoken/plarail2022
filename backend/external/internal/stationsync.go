@@ -29,7 +29,11 @@ func initStationSync(logger *zap.Logger, r *InitRule, initializer chan<- synccon
 			logger.Error("unknown state", zap.String("state", sta.State))
 			continue
 		}
-		initializer <- synccontroller.KV[spec.StationId, spec.PointStateEnum]{Key: spec.StationId(id), Value: spec.PointStateEnum(state)}
+		select {
+		case initializer <- synccontroller.KV[spec.StationId, spec.PointStateEnum]{Key: spec.StationId(id), Value: spec.PointStateEnum(state)}:
+		default:
+			logger.Error("failed to initialize sync controller, buffer full")
+		}
 		time.Sleep(500 * time.Millisecond)
 	}
 }
