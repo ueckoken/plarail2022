@@ -22,7 +22,6 @@ const SKYWAY_APIKEY =
     : process.env.SKYWAY_APIKEY
 const SKYWAY_DEBUG_LEVEL = 2
 
-
 const VideoCast: FC<Prop> = ({ roomIds, styles }) => {
   const [isPeerAvailable, setIsPeerAvailable] = useState<boolean>(false)
   const skyWayPeer = useRef<Peer>()
