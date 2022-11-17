@@ -6,7 +6,6 @@ group "default" {
     "json2grpc",
     "multicaster",
     "positioning",
-    "webrtc-sender",
     "camera_sender",
     "frontend",
     "receiver-test",
@@ -65,13 +64,6 @@ target "positioning" {
   context = "./backend/positioning"
   tags = [
     GET_TAG("positioning")
-  ]
-}
-
-target "webrtc-sender" {
-  context = "./frontend/momo_sender"
-  tags = [
-    GET_TAG("webrtc-sender")
   ]
 }
 

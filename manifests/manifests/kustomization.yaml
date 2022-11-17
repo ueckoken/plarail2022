@@ -3,7 +3,6 @@ resources:
   - ./python-webrtc-server
   - ./external
   - ./receiver-test
-  - ./webrtc-sender
   - ./logviewer
   - ./internal
 #  - ./positioning

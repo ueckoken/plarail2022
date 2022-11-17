@@ -3,7 +3,6 @@ resources:
   - ./frontend
   - ./frontend-python
   - ./internal
-  - ./webrtc-sender
   - ./receiver
   - ./automation.yaml
   - ./positioning
