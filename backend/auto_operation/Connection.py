@@ -94,8 +94,7 @@ class Connection:
                 response = stub.UpdatePointState(
                     statesync_pb2.UpdatePointStateRequest(
                         state=statesync_pb2.PointAndState(
-                            station=statesync_pb2.Station(stationId=pointId),
-                            state=state
+                            station=statesync_pb2.Station(stationId=pointId), state=state
                         )
                     )
                 )

@@ -91,9 +91,13 @@ def send_signal_to_browser():
             if junction.pointId is not None:  # サーボがついてるjunctionについて
                 pointId = junction.pointId
                 if junction.inSectionCurve:  # in2->out1という分岐器の場合
-                    points[pointId] = True if (junction.inServoState == Junction.ServoState.Curve) else False
+                    points[pointId] = (
+                        True if (junction.inServoState == Junction.ServoState.Curve) else False
+                    )
                 if junction.outSectionCurve:  # in1->out2という分岐器の場合
-                    points[pointId] = True if (junction.outServoState == Junction.ServoState.Curve) else False
+                    points[pointId] = (
+                        True if (junction.outServoState == Junction.ServoState.Curve) else False
+                    )
 
         # 閉塞を送る
         for blockId, state in blocks.items():
