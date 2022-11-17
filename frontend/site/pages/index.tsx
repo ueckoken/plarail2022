@@ -205,35 +205,35 @@ const Home: NextPage = () => {
           </button>
           <button
             onClick={() => {
-              setRoomIds(["chofu", "train"])
-            }}
-          >
-            調布
-          </button>
-          <button
-            onClick={() => {
-              setRoomIds(["hashimoto", "train"])
+              setRoomIds(["kitano", "train"])
             }}
           >
             橋本
           </button>
           <button
             onClick={() => {
-              setRoomIds(["sakurajosui", "train"])
+              setRoomIds(["hashimoto", "train"])
+            }}
+          >
+            調布
+          </button>
+          <button
+            onClick={() => {
+              setRoomIds(["chofu", "train"])
             }}
           >
             桜上水
           </button>
           <button
             onClick={() => {
-              setRoomIds(["shinjuku", "train"])
+              setRoomIds(["shinjyuku", "train"])
             }}
           >
             新宿
           </button>
           <button
             onClick={() => {
-              setRoomIds(["train1"])
+              setRoomIds(["train"])
             }}
           >
             車両前景
