@@ -2,6 +2,23 @@ const Peer = window.Peer
 
 ;
 (async function main() {
+  var sel = document.createElement("select");
+  var opt2 = document.createElement("option");
+  const devices = (await navigator.mediaDevices.enumerateDevices())
+    .filter((device) => device.kind === 'videoinput')
+    .map((device) => {
+      return {
+        text: device.label,
+        value: device.deviceId,
+      };
+    });
+  for (var i = 0; i < devices.length; i++) {
+    var opt = document.createElement("option");
+    opt.value = devices[i].value;
+    opt.text = devices[i].text;
+    sel.add(opt, null);
+  }
+  console.log(devices);
   const localVideo = document.getElementById("js-local-stream")
   const joinTrigger = document.getElementById("js-join-trigger")
   const leaveTrigger = document.getElementById("js-leave-trigger")
@@ -29,7 +46,9 @@ const Peer = window.Peer
 
   const localStream = await navigator.mediaDevices
     .getUserMedia({
-      video: true,
+      video: {
+        facingMode: 'user'
+      },
     })
     .catch(console.error)
 
