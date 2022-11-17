@@ -17,8 +17,8 @@ func Run(logger *zap.Logger) {
 	synccontrollerOutput := make(chan synccontroller.KV[spec.StationId, spec.PointStateEnum], 32)
 	grpcHandlerInput := make(chan synccontroller.KV[spec.StationId, spec.PointStateEnum])
 	main2autooperation := make(chan synccontroller.KV[spec.StationId, spec.PointStateEnum])
-	main2internal := make(chan synccontroller.KV[spec.StationId, spec.PointStateEnum])
-	httpInputKV := make(chan synccontroller.KV[spec.StationId, spec.PointStateEnum])
+	main2internal := make(chan synccontroller.KV[spec.StationId, spec.PointStateEnum], 32)
+	httpInputKV := make(chan synccontroller.KV[spec.StationId, spec.PointStateEnum], 32)
 	httpInput := make(chan *spec.PointAndState)
 	httpOutput := make(chan *spec.PointAndState)
 
