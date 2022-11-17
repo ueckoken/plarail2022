@@ -47,7 +47,8 @@ const VideoCast: FC<Prop> = ({ roomIds, styles }) => {
   return (
     <React.Fragment>
       {roomIds.map((roomId, index) => {
-        if (skyWayPeer.current === undefined || !isPeerAvailable) {
+        console.log("skyway peer", skyWayPeer.current)
+        if (!skyWayPeer.current || !isPeerAvailable) {
           return <p key={roomId}>Peer not available</p>
         }
         return (
@@ -75,6 +76,8 @@ const RoomViewer: FC<RoomViewerProps> = ({ roomId, peer, style }) => {
 
   useEffect(() => {
     console.log("joinroom ", roomId)
+    console.log("peerinfo", peer)
+    while (!peer.open) {}
     const skywayRoom = peer.joinRoom(roomId, {
       mode: "sfu",
     })
