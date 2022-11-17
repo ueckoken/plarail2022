@@ -6,3 +6,5 @@ resources:
   - ./receiver
   - ./automation.yaml
   - ./positioning
+  - ./auto-operation
+  - ./logviewer

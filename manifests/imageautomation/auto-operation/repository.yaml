@@ -1,0 +1,8 @@
+apiVersion: image.toolkit.fluxcd.io/v1beta1
+kind: ImageRepository
+metadata:
+  name: auto-operation
+  namespace: plarail2021
+spec:
+  image: ghcr.io/ueckoken/plarail2022-auto-operation
+  interval: 1m0s
