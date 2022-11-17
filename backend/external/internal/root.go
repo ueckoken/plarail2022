@@ -14,7 +14,7 @@ import (
 func Run(logger *zap.Logger) {
 	ctx := context.Background()
 	synccontrollerInput := make(chan synccontroller.KV[spec.StationId, spec.PointStateEnum])
-	synccontrollerOutput := make(chan synccontroller.KV[spec.StationId, spec.PointStateEnum])
+	synccontrollerOutput := make(chan synccontroller.KV[spec.StationId, spec.PointStateEnum], 32)
 	grpcHandlerInput := make(chan synccontroller.KV[spec.StationId, spec.PointStateEnum])
 	main2autooperation := make(chan synccontroller.KV[spec.StationId, spec.PointStateEnum])
 	main2internal := make(chan synccontroller.KV[spec.StationId, spec.PointStateEnum])
@@ -41,6 +41,7 @@ func Run(logger *zap.Logger) {
 			}
 		}
 	}()
+
 	go func() {
 		for c := range httpInputKV {
 			select {
