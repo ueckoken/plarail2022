@@ -1,6 +1,7 @@
 const Peer = window.Peer
 
-;(async function main() {
+;
+(async function main() {
   const localVideo = document.getElementById("js-local-stream")
   const joinTrigger = document.getElementById("js-join-trigger")
   const leaveTrigger = document.getElementById("js-leave-trigger")
@@ -28,7 +29,6 @@ const Peer = window.Peer
 
   const localStream = await navigator.mediaDevices
     .getUserMedia({
-      audio: true,
       video: true,
     })
     .catch(console.error)
@@ -76,7 +76,10 @@ const Peer = window.Peer
       await newVideo.play().catch(console.error)
     })
 
-    room.on("data", ({ data, src }) => {
+    room.on("data", ({
+      data,
+      src
+    }) => {
       // Show a message sent to the room and who sent
       messages.textContent += `${src}: ${data}\n`
     })
