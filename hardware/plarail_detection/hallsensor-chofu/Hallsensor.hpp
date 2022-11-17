@@ -1,7 +1,6 @@
 #ifndef Hallsensor_H
 #define Hallsensor_H
 
-
 enum SensorName {
     unknown = 0,
     
@@ -26,23 +25,6 @@ enum SensorName {
     
     hachioji_d1 = 41,
     hachioji_d2 = 42,
-};
-
-// クラスの定義
-class Hallsensor
-{
-public:
-    Hallsensor(enum SensorName s, int h);
-    enum SensorName sen;
-    int hpin;
-    StaticJsonDocument<JSON_OBJECT_SIZE(1)> doc;
-    char json_string[255];
-    void detect();
-    void postJson();
-    int ttl;
-    int state = 1;
-    unsigned long prevtime = 0;
-    int status_code = 0;
 };
 
 #endif

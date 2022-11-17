@@ -1,74 +1,89 @@
 #include <ArduinoJson.h>
 #include <WiFi.h>
 #include <HTTPClient.h>
-#define LED_PIN 13
-#define HL_PIN 27
+#include "Hallsensor.hpp"
+
+struct Station {
+    int pin;
+    int state;
+    unsigned long prevtime;
+    char jsonString[255];
+};
+
+struct Station chofu[5];
 
 const char* ssid = "";
 const char* password = "";
-
-StaticJsonDocument<JSON_OBJECT_SIZE(1)> doc;
-char json_string[255];
-    
-void setupjson(){
-    doc["Sensor"] = 1;
-
-    serializeJson(doc, json_string, sizeof(json_string));
-}
 
 HTTPClient http;
 
 void setup() {
     Serial.begin(115200);
+
     WiFi.begin(ssid, password);
-    setupjson();
-    pinMode(LED_PIN, OUTPUT);
-    pinMode(HL_PIN, INPUT);
-    http.begin("http://localhost:8080/sensor");
+    while (WiFi.status() != WL_CONNECTED) {
+      delay(500);
+      Serial.println("connecting");
+    }
+    if (WiFi.status() == WL_CONNECTED) { Serial.println("conected");}
+
+    http.begin("http://:8081/sensor");
     http.addHeader("Content-Type", "application/json");
+
+    setupStation(&chofu[0], 34, chofu_d1);
+    setupStation(&chofu[1], 35, chofu_d2);
+    setupStation(&chofu[2], 32, chofu_d3);
+    setupStation(&chofu[3], 33, chofu_d4);
+    setupStation(&chofu[4], 25, chofu_d5);
 }
 
-int state = 1;
-unsigned long prevtime = 0;
-
 void loop() {
-    if(digitalRead(HL_PIN) == HIGH){
-        digitalWrite(LED_PIN, HIGH);
-        if(state == 0 && millis() - prevtime > 3000) {
-            int ttl = 5;
-            int status_code = http.POST((uint8_t *)json_string, strlen(json_string));
-            while (status_code == -2 && ttl > 0){
-                status_code = http.POST((uint8_t *)json_string, strlen(json_string));
-                ttl--;
-            }
-            if (status_code == 200){
-                prevtime = millis();
-                Serial.println("[POST]Send to server");
-            }
-            else{
-                Serial.println(status_code);
-                Serial.println("[POST]failed to send to server");
-            }
+    for (int i = 0; i < 5; i++) {
+        detect(&chofu[i]);
+    }
+}
+
+
+
+StaticJsonDocument<JSON_OBJECT_SIZE(1)> doc;
+
+void setupStation(struct Station *s, const int p, enum SensorName d){
+    s->pin = p;
+    pinMode(s->pin, INPUT);
+    s->state = 1;
+    s->prevtime = 0;
+    doc["Sensor"] = d;
+    serializeJson(doc, s->jsonString, sizeof(s->jsonString));
+}
+
+void sendPost(struct Station *s) {
+    int ttl = 5;
+    int status_code = http.POST((uint8_t *)s->jsonString, strlen(s->jsonString));
+    while (status_code == -2 && ttl > 0){
+        status_code = http.POST((uint8_t *)s->jsonString, strlen(s->jsonString));
+        ttl--;
+    }
+    if (status_code == 200){
+        s->prevtime = millis();
+        Serial.println("[POST]Send to server");
+        Serial.println(http.getString());
+    }
+    else{
+        Serial.println(status_code);
+        Serial.println("[POST]failed to send to server");
+    }
+}
+
+void detect(struct Station *s) {
+    if(digitalRead(s->pin) == HIGH){
+        if(s->state == 0 && millis() - s->prevtime > 3000) {
+            sendPost(s);
         }
-        state = 1;
+        s->state = 1;
     } else {
-        digitalWrite(LED_PIN, LOW);
-        if(state == 1 && millis() - prevtime > 3000) {
-            int ttl = 5;
-            int status_code = http.POST((uint8_t *)json_string, strlen(json_string));
-            while (status_code == -2 && ttl > 0){
-                status_code = http.POST((uint8_t *)json_string, strlen(json_string));
-                ttl--;
-            }
-            if (status_code == 200){
-                prevtime = millis();
-                Serial.println("[POST]Send to server");
-            }
-            else{
-                Serial.println(status_code);
-                Serial.println("[POST]failed to send to server");
-            }
+        if(s->state == 1 && millis() - s->prevtime > 3000) {
+            sendPost(s);
         }
-        state = 0;
+        s->state = 0;
     }
 }

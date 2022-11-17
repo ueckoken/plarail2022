@@ -10,7 +10,7 @@ Hallsensor::Hallsensor(enum SensorName s, int h) {
     pinMode(hpin, INPUT);
     doc["Sensor"] = sen;
     serializeJson(doc, json_string, sizeof(json_string));
-    http.begin("http://lacalhost8080:8081/sensor");
+    http.begin("http://:8081/sensor");
     http.addHeader("Content-Type", "application/json");
 }
 
@@ -27,6 +27,7 @@ void Hallsensor::postJson() {
     }
     else{
         Serial.println(status_code);
+        Serial.println(http.errorToString(status_code));
         Serial.println("[POST]failed to send to server");
         Serial.println(json_string);
     }
