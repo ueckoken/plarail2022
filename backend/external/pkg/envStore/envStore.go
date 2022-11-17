@@ -37,9 +37,9 @@ func (p *Port) Unmarshal(s string) error {
 
 type Env struct {
 	ClientSideServer struct {
-		Port Port `envconfig:"default=54321"`
-		GrpcPort       Port `envconfig:"default=9000"`
-		ATSAddress     hostnamePort
+		Port       Port `envconfig:"default=54321"`
+		GrpcPort   Port `envconfig:"default=9000"`
+		ATSAddress hostnamePort
 	}
 	InternalServer struct {
 		Addr        hostnamePort
