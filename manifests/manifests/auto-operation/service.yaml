@@ -10,7 +10,7 @@ spec:
   selector:
     app: auto-operation
   ports:
-    - name: web
-      port: 80
+    - name: grpc-for-external
+      port: 50051
       protocol: TCP
-      targetPort: 50050
+      targetPort: 50051

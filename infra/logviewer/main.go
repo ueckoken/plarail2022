@@ -15,17 +15,8 @@ type logHandler struct {
 	logviewer client.LogViewer
 }
 
-var allowedAppName = []string{
-	"soft-frontend", "soft-backend-external",
-}
-
 func isAllowed(appname string) bool {
-	for _, a := range allowedAppName {
-		if a == appname {
-			return true
-		}
-	}
-	return false
+	return true
 }
 
 func (l logHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {

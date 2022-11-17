@@ -1,0 +1,14 @@
+apiVersion: image.toolkit.fluxcd.io/v1beta1
+kind: ImagePolicy
+metadata:
+  name: auto-operation
+  namespace: plarail2021
+spec:
+  imageRepositoryRef:
+    name: auto-operation
+  filterTags:
+    pattern: '[a-f0-9]+-(?P<ts>[0-9]+)'
+    extract: '$ts'
+  policy:
+    numerical:
+      order: asc

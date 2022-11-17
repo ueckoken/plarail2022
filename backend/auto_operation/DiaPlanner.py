@@ -1,6 +1,7 @@
 from dataclasses import dataclass
 
-from State import *
+from Components import Section, Station
+from State import State
 
 # ダイヤを管理、更新する
 # Diaクラスの意味:
@@ -107,10 +108,7 @@ class DiaPlanner:
             waitingTrain = self.__state.getTrainInSection(
                 self.__state.getSectionById("sakurajosui_b1")
             )  # 桜上水下り退避線にいる列車
-            if (
-                waitingTrain != None
-                and self.getDia(waitingTrain.id, "sakurajosui_down").wait == True
-            ):
+            if waitingTrain is not None and self.getDia(waitingTrain.id, "sakurajosui_down").wait:
                 for train in self.__state.trainList:
                     # sectionが変化した瞬間だけ、mileageがprevmileageより小さくなることを利用し、桜上水を出発した下り列車がいるか判断。いれば、追い抜きに成功したので、退避していたほうの退避フラグをリセット
                     if (
@@ -130,7 +128,7 @@ class DiaPlanner:
             sakurajosuiDepartedTrain = self.__state.getTrainInSection(
                 self.__state.getSectionById("sakurajosui_b5")
             )  # 桜上水下りを出発後の列車を取得
-            if sakurajosuiDepartedTrain != None and (
+            if sakurajosuiDepartedTrain is not None and (
                 sakurajosuiDepartedTrain.id == 1 or sakurajosuiDepartedTrain.id == 3
             ):  # 各停列車なら
                 self.setDia(
@@ -146,7 +144,7 @@ class DiaPlanner:
             waitingTrain = self.__state.getTrainInSection(
                 self.__state.getSectionById("sakurajosui_b4")
             )  # 桜上水上り退避線にいる列車
-            if waitingTrain != None and self.getDia(waitingTrain.id, "sakurajosui_up").wait == True:
+            if waitingTrain is not None and self.getDia(waitingTrain.id, "sakurajosui_up").wait:
                 for train in self.__state.trainList:
                     # sectionが変化した瞬間だけ、mileageがprevmileageより小さくなることを利用し、桜上水を出発した上り列車がいるか判断。いれば、追い抜きに成功したので、退避していたほうの退避フラグをリセット
                     if (
@@ -166,7 +164,7 @@ class DiaPlanner:
             sakurajosuiDepartedTrain = self.__state.getTrainInSection(
                 self.__state.getSectionById("sakurajosui_b6")
             )  # 桜上水上りを出発後の列車を取得
-            if sakurajosuiDepartedTrain != None and (
+            if sakurajosuiDepartedTrain is not None and (
                 sakurajosuiDepartedTrain.id == 1 or sakurajosuiDepartedTrain.id == 3
             ):  # 各停列車なら
                 self.setDia(
