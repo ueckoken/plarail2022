@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: soft-backend-external
-          image: ghcr.io/ueckoken/plarail2022-external:b45cb24-1668675064 # {"$imagepolicy": "plarail2021:external"}
+          image: ghcr.io/ueckoken/plarail2022-external:f54c2bd-1668677172 # {"$imagepolicy": "plarail2021:external"}
           imagePullPolicy: Always
           ports:
             - containerPort: 8080
