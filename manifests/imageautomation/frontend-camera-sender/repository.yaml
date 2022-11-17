@@ -1,8 +1,8 @@
 apiVersion: image.toolkit.fluxcd.io/v1beta1
 kind: ImageRepository
 metadata:
-  name: positioning
+  name: frontend-camera-sender
   namespace: plarail2021
 spec:
-  image: ghcr.io/ueckoken/plarail2022-positioning
+  image: ghcr.io/ueckoken/plarail2022-camera_sender
   interval: 1m0s

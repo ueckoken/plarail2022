@@ -1,11 +1,9 @@
 resources:
-  - ./frontend
-  - ./python-webrtc-server
+  - ./auto-operation
   - ./external
+  - ./frontend
+  - ./frontend-camera-sender
+  - ./internal
+  - ./logviewer
   - ./receiver-test
   - ./webrtc-sender
-  - ./logviewer
-  - ./internal
-#  - ./positioning
-  - ./frontend-camera-sender
-  - ./auto-operation
