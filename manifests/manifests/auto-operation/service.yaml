@@ -11,6 +11,6 @@ spec:
     app: auto-operation
   ports:
     - name: grpc-for-external
-      port: 50050
+      port: 50051
       protocol: TCP
-      targetPort: 50050
+      targetPort: 50051
