@@ -53,12 +53,12 @@ message Stations {
 
     sakurajosui_p1 = 11;
     sakurajosui_p2 = 12;
-    sakurajosui_s1 = 13;
-    sakurajosui_s2 = 14;
-    sakurajosui_s3 = 15;
-    sakurajosui_s4 = 16;
-    sakurajosui_s5 = 17;
-    sakurajosui_s6 = 18;
+    sakurajosui_s0 = 13;
+    sakurajosui_s1 = 14;
+    sakurajosui_s2 = 15;
+    sakurajosui_s3 = 16;
+    sakurajosui_s4 = 17;
+    sakurajosui_s5 = 18;
 
     chofu_p1 = 21;
     chofu_s0 = 22;
