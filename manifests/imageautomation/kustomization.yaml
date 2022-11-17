@@ -1,11 +1,11 @@
 resources:
+  - ./auto-operation
   - ./external
   - ./frontend
+  - ./frontend-camera-sender
   - ./frontend-python
   - ./internal
-  - ./webrtc-sender
-  - ./receiver
-  - ./automation.yaml
-  - ./positioning
-  - ./auto-operation
   - ./logviewer
+  - ./webrtc-receiver
+  - ./webrtc-sender
+  - ./automation.yaml
