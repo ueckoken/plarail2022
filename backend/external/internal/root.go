@@ -75,21 +75,60 @@ func Run(logger *zap.Logger) {
 	envVal := envStore.GetEnv()
 
 	httpServer := httphandler.NewHTTPServer(
-		logger.Named("sync-controller"),
+		logger.Named("http-state"),
 		httpOutput,
 		httpInput,
 		envVal,
 	)
+
 	StartStationSync(logger.Named("station-sync"), synccontrollerInput, synccontrollerOutput)
 	grpcHandler := NewGrpcHandler(logger.Named("grpc-handler"), envVal, main2autooperation, grpcHandlerInput)
 	internalHandler := NewGrpcHandlerForInternal(logger.Named("grpc-internal"), envVal, main2internal)
 	go internalHandler.Run(ctx)
 
-	client2blocksync := make(chan synccontroller.KV[spec.BlockId, spec.BlockStateEnum])
-	blocksync2client := make(chan synccontroller.KV[spec.BlockId, spec.BlockStateEnum])
-	startBlockSync(logger.Named("blocksync"), client2blocksync, blocksync2client)
-	grpcBlockHandl := NewGrpcBlockHandler(logger.Named("grpc-block-handler"), envVal, client2blocksync, blocksync2client)
+	httpBlockInput := make(chan *spec.BlockAndState)
+	httpBlockOutput := make(chan *spec.BlockAndState)
+	blocksyncInput := make(chan synccontroller.KV[spec.BlockId, spec.BlockStateEnum])
+	blocksyncOutput := make(chan synccontroller.KV[spec.BlockId, spec.BlockStateEnum])
+	grpcBlockHandlerInput := make(chan synccontroller.KV[spec.BlockId, spec.BlockStateEnum])
+	grpcBlockHandlerOutput := make(chan synccontroller.KV[spec.BlockId, spec.BlockStateEnum])
+
+	httpBlockServer := httphandler.NewHTTPServer(
+		logger.Named("http-block"),
+		httpBlockOutput,
+		httpBlockInput,
+		envVal,
+	)
+
+	go func() {
+		for c := range grpcBlockHandlerOutput {
+			select {
+			case blocksyncInput <- synccontroller.KV[spec.BlockId, spec.BlockStateEnum]{Key: c.Key, Value: c.Value}:
+			default:
+				logger.Info("buffer full", zap.String("buffer", "blocksyncInput-grpchandler"))
+			}
+		}
+	}()
+
+	go func() {
+		for c := range blocksyncOutput {
+			select {
+			case grpcBlockHandlerInput <- c:
+			default:
+				logger.Info("buffer full", zap.String("buffer", "grpcblockhandlerinput-blocksync"))
+			}
+			select {
+			case httpBlockInput <- &spec.BlockAndState{BlockId: c.Key, State: c.Value}:
+			default:
+				logger.Info("buffer full", zap.String("buffer", "httpblockinput-blocksync"))
+			}
+		}
+	}()
+
+	startBlockSync(logger.Named("blocksync"), blocksyncInput, blocksyncOutput)
+	grpcBlockHandl := NewGrpcBlockHandler(logger.Named("grpc-block-handler"), envVal, grpcBlockHandlerOutput, grpcBlockHandlerInput)
 
 	go GRPCListenAndServe(ctx, logger, uint(envVal.ClientSideServer.GrpcPort), grpcHandler, grpcBlockHandl)
-	httpServer.StartServer()
+	go httpBlockServer.StartServer(int(envVal.ClientSideServer.BlockStatePort))
+	httpServer.StartServer(int(envVal.ClientSideServer.PointStatePort))
 }

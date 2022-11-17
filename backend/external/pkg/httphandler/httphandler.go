@@ -76,7 +76,7 @@ type ClientsCollection[T proto.Message] struct {
 }
 
 // StartServer starts HTTP server and websocket server.
-func (h *HTTPServer[T]) StartServer() {
+func (h *HTTPServer[T]) StartServer(port int) {
 	clientChannelSend := make(chan websockethandler.ClientChannel[T])
 	handlerInput := make(chan T)
 	go h.registerClient(clientChannelSend)
@@ -91,7 +91,7 @@ func (h *HTTPServer[T]) StartServer() {
 	r.Handle("/metrics", promhttp.Handler())
 	srv := &http.Server{
 		Handler:           r,
-		Addr:              fmt.Sprintf("0.0.0.0:%d", h.environment.ClientSideServer.Port),
+		Addr:              fmt.Sprintf("0.0.0.0:%d", port),
 		ReadHeaderTimeout: 5 * time.Second,
 		ReadTimeout:       5 * time.Second,
 		WriteTimeout:      5 * time.Second,
