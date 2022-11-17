@@ -176,17 +176,25 @@ class Junction:
         if self.outSectionStraight and self.outSectionCurve:  # OUT側に2本入ってくる分岐点の場合outServoStateをセット
             self.outServoState = servoState
 
-    def getOutSection(self) -> Optional[Section]:
+    def getOutSection(self) -> Section:
         if self.outServoState == Junction.ServoState.Curve:
-            return self.outSectionCurve
+            if self.outSectionCurve is not None:
+                return self.outSectionCurve
         else:
-            return self.outSectionStraight
+            if self.outSectionStraight is not None:
+                return self.outSectionStraight
+        print("[Junction.getOutSection] Corresponding outSection is None")
+        raise TypeError
 
-    def getInSection(self) -> Optional[Section]:
+    def getInSection(self) -> Section:
         if self.inServoState == Junction.ServoState.Curve:
-            return self.inSectionCurve
+            if self.inSectionCurve is not None:
+                return self.inSectionCurve
         else:
-            return self.inSectionStraight
+            if self.inSectionStraight is not None:
+                return self.inSectionStraight
+        print("[Junction.getInSection] Corresponding inSection is None")
+        raise TypeError
 
 
 @dataclass
@@ -248,10 +256,11 @@ class Train:
 
     id: int
     targetSpeed: float
-    currentSection: Optional["Section"]
+    currentSection: Section
     mileage: float
     prevMileage: float
     pidParam: "PIDParam"
+    stopPoint: Optional["StopPoint"]
 
     def __init__(
         self,

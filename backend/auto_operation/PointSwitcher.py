@@ -150,10 +150,8 @@ class PointSwitcher:
                 return trainsWantToGo[0]
 
     # 指定したjunctionの直前にある駅を取得
-    def __getNearestStation(self, junction: Junction) -> Optional[Station]:
-        searchSection = junction.inSectionStraight
-        while searchSection is not None and searchSection.station is None:
-            searchSection = searchSection.sourceJunction.inSectionStraight
-        if searchSection is None:
-            return None
+    def __getNearestStation(self, junction: Junction) -> Station:
+        searchSection = junction.getInSection()
+        while searchSection.station is None:
+            searchSection = searchSection.sourceJunction.getInSection()
         return searchSection.station

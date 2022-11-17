@@ -484,7 +484,7 @@ class State:
             return None
 
     # 指定された地点に近づいてくる列車で一番近いものを取得
-    def getApproachingTrain(self, section: Section, mileage: float) -> Train:
+    def getApproachingTrain(self, section: Section, mileage: float) -> Optional[Train]:
         testSection = section
         testedSectionId = []  # 一度確認したセクションIDを記録しておき、2回通ったら抜けられないとみてNoneを返す
         while True:
@@ -508,7 +508,7 @@ class State:
         distance = 0.0
         testSection: Section = s1
         # 一度通過したjucntionのidを記録しておく。同じjunctionを2回通った場合は到達不能と判定しnanを返す
-        passedJunctionId: list[int] = []
+        passedJunctionId: list[Junction.JunctionId] = []
 
         while testSection.id != s2.id:
             # junctionを2回目に通過した場合、一周してしまうのでnanを返す
