@@ -4,10 +4,9 @@ import { Point, TrainData } from "../../types/svgPartsTypes"
 interface Props {
   positions: [Point, Point, ...Point[]]
   trains: TrainData[]
-  isClosed: boolean
 }
 
-const Rail: FC<Props> = ({ positions, trains, isClosed }) => {
+const Rail: FC<Props> = ({ positions, trains }) => {
   const pointsText = positions
     .map((point: Point) => `${point.x}, ${point.y}`)
     .join("\n")
@@ -15,8 +14,7 @@ const Rail: FC<Props> = ({ positions, trains, isClosed }) => {
     <g>
       <polyline
         points={pointsText}
-        stroke={isClosed ? "red" : "black"}
-        strokeWidth={isClosed ? "2" : "1"}
+        stroke={trains.length !== 0 ? "blue" : "black"}
         fill="none"
       />
     </g>

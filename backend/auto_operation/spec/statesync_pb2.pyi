@@ -70,12 +70,12 @@ class Stations(_message.Message):
     hashimoto_s2: Stations.StationId
     sakurajosui_p1: Stations.StationId
     sakurajosui_p2: Stations.StationId
-    sakurajosui_s0: Stations.StationId
     sakurajosui_s1: Stations.StationId
     sakurajosui_s2: Stations.StationId
     sakurajosui_s3: Stations.StationId
     sakurajosui_s4: Stations.StationId
     sakurajosui_s5: Stations.StationId
+    sakurajosui_s6: Stations.StationId
     shinjuku_s1: Stations.StationId
     shinjuku_s2: Stations.StationId
     stationId: Stations.StationId
