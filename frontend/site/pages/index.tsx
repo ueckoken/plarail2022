@@ -34,7 +34,7 @@ const INITIAL_STOP_POINT_STATE: StopPointState = {
   hachioji_s1: false,
   hachioji_s2: false,
   hashimoto_s1: false,
-  hashimoto_s2: false
+  hashimoto_s2: false,
 }
 
 type BlockState = Record<BlocklId, boolean>
@@ -164,9 +164,7 @@ const Home: NextPage = () => {
       </Head>
 
       <header>
-        <h1 className={styles.title}>
-          工研&times;鉄研プラレール展示
-        </h1>
+        <h1 className={styles.title}>工研&times;鉄研プラレール展示</h1>
       </header>
 
       <main className={styles.main}>
