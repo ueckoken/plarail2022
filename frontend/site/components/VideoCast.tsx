@@ -42,7 +42,7 @@ const VideoCast: FC<Prop> = ({ roomIds, styles }) => {
       skyWayPeer.current?.destroy()
       setIsPeerAvailable(false)
     }
-  }, [])
+  }, [setIsPeerAvailable, skyWayPeer])
 
   return (
     <React.Fragment>
