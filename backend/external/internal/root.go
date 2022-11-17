@@ -61,7 +61,7 @@ func Run(logger *zap.Logger) {
 		}
 	}()
 
-	go func(){
+	go func() {
 		for c := range grpcHandlerInput {
 			select {
 			case synccontrollerInput <- c:
