@@ -178,7 +178,7 @@ const Home: NextPage = () => {
               position: "relative",
             }}
           >
-            {/* <VideoCast
+            <VideoCast
               roomIds={roomIds}
               styles={[
                 {
@@ -194,7 +194,7 @@ const Home: NextPage = () => {
                   width: "25%",
                 },
               ]}
-            /> */}
+            />
           </div>
           <button
             onClick={() => {
