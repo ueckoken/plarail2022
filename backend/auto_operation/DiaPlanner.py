@@ -51,7 +51,7 @@ class DiaPlanner:
         self.setDia(0, "hachioji_down", False, 5, "chofu_b4", "hachioji_b1")
         self.setDia(0, "hachioji_up", False, 5, "hachioji_b1", "hachioji_b2")
         self.setDia(0, "chofu_up", False, 5, "hachioji_b2", "chofu_b5")
-        self.setDia(0, "sakurajosui_up", False, 0, "sakurajosui_b4", "sakurajosui_b6")
+        self.setDia(0, "sakurajosui_up", False, 0, "sakurajosui_b3", "sakurajosui_b6")
         self.setDia(0, "shinjuku_up", False, 5, "sakurajosui_b6", "shinjuku_b2")
 
         # 初期値として、列車1は八王子経由の普通とする
@@ -61,7 +61,7 @@ class DiaPlanner:
         self.setDia(1, "hachioji_down", False, 5, "chofu_b4", "hachioji_b1")
         self.setDia(1, "hachioji_up", False, 5, "hachioji_b1", "hachioji_b2")
         self.setDia(1, "chofu_up", False, 5, "hachioji_b2", "chofu_b5")
-        self.setDia(1, "sakurajosui_up", False, 5, "sakurajosui_b4", "sakurajosui_b6")
+        self.setDia(1, "sakurajosui_up", False, 5, "sakurajosui_b3", "sakurajosui_b6")
         self.setDia(1, "shinjuku_up", False, 5, "sakurajosui_b6", "shinjuku_b2")
 
         # 初期値として、列車2は橋本経由の特急とする→各停に変更
@@ -71,7 +71,7 @@ class DiaPlanner:
         self.setDia(2, "hashimoto_down", False, 5, "chofu_b3", "hashimoto_b1")
         self.setDia(2, "hashimoto_up", False, 5, "hashimoto_b1", "hashimoto_b2")
         self.setDia(2, "chofu_up", False, 5, "hashimoto_b2", "chofu_b5")
-        self.setDia(2, "sakurajosui_up", False, 0, "sakurajosui_b4", "sakurajosui_b6")
+        self.setDia(2, "sakurajosui_up", False, 0, "sakurajosui_b3", "sakurajosui_b6")
         self.setDia(2, "shinjuku_up", False, 5, "sakurajosui_b6", "shinjuku_b2")
 
         # 初期値として、列車3は橋本経由の普通とする
@@ -81,7 +81,7 @@ class DiaPlanner:
         self.setDia(3, "hashimoto_down", False, 5, "chofu_b3", "hashimoto_b1")
         self.setDia(3, "hashimoto_up", False, 5, "hashimoto_b1", "hashimoto_b2")
         self.setDia(3, "chofu_up", False, 5, "hashimoto_b2", "chofu_b5")
-        self.setDia(3, "sakurajosui_up", False, 5, "sakurajosui_b4", "sakurajosui_b6")
+        self.setDia(3, "sakurajosui_up", False, 5, "sakurajosui_b3", "sakurajosui_b6")
         self.setDia(3, "shinjuku_up", False, 5, "sakurajosui_b6", "shinjuku_b2")
 
     # ダイヤ自動更新のルールを記述. 毎update時によぶ

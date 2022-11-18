@@ -367,7 +367,7 @@ class State:
         self.trainList.append(
             Train(
                 3,
-                self.getSectionById("sakurajosui_b4"),
+                self.getSectionById("sakurajosui_b3"),
                 State.STRAIGHT_UNIT * 4,
                 pidParam1,
             )
