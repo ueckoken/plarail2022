@@ -48,7 +48,7 @@ func (g GrpcStateHandler) handleInput(ctx context.Context) {
 	}
 	defer con.Close()
 	for d := range g.stateInput {
-		go func(d synccontroller.KV[spec.StationId, spec.PointStateEnum]){
+		go func(d synccontroller.KV[spec.StationId, spec.PointStateEnum]) {
 			client := spec.NewPointStateNotificationClient(con)
 			req := &spec.NotifyPointStateRequest{
 				State: &spec.PointAndState{
@@ -93,7 +93,7 @@ func (g GrpcBlockHandler) handleInput(ctx context.Context) {
 	}
 	defer con.Close()
 	for d := range g.stateInput {
-		go func(d synccontroller.KV[spec.BlockId, spec.BlockStateEnum]){
+		go func(d synccontroller.KV[spec.BlockId, spec.BlockStateEnum]) {
 			client := spec.NewBlockStateNotificationClient(con)
 			req := &spec.NotifyBlockStateRequest{
 				State: &spec.BlockAndState{BlockId: d.Key, State: d.Value},
@@ -140,7 +140,7 @@ func (g GrpcStateHandlerForInternal) handleInput(ctx context.Context) {
 	defer con.Close()
 	client := spec.NewPointStateNotificationClient(con)
 	for d := range g.stateInput {
-		go func(d synccontroller.KV[spec.StationId, spec.PointStateEnum]){
+		go func(d synccontroller.KV[spec.StationId, spec.PointStateEnum]) {
 			req := &spec.NotifyPointStateRequest{
 				State: &spec.PointAndState{
 					Station: &spec.Station{StationId: d.Key},
