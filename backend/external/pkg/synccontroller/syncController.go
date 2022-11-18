@@ -96,7 +96,6 @@ func (s *SyncController[T, U]) periodicallySync() {
 				}
 			}
 			s.kvs.mtx.Unlock()
-			s.logger.Info("unlocked")
 		}()
 	}
 }

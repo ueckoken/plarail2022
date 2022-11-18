@@ -2,10 +2,27 @@ const Peer = window.Peer
 
 ;
 (async function main() {
+  var sel = document.getElementById('select');
+  const devices = (await navigator.mediaDevices.enumerateDevices())
+    .filter((device) => device.kind === 'videoinput')
+    .map((device) => {
+      return {
+        text: device.label,
+        value: device.deviceId,
+      };
+    });
+  for (var i = 0; i < devices.length; i++) {
+    var opt = document.createElement("option");
+    opt.value = devices[i].value;
+    opt.text = devices[i].text;
+    sel.add(opt, null);
+  }
+  console.log(devices);
   const localVideo = document.getElementById("js-local-stream")
   const joinTrigger = document.getElementById("js-join-trigger")
   const leaveTrigger = document.getElementById("js-leave-trigger")
   const remoteVideos = document.getElementById("js-remote-streams")
+  const setCameraTrigger = document.getElementById("set-camera-trigger")
   const roomId = document.getElementById("js-room-id")
   const roomMode = document.getElementById("js-room-mode")
   const localText = document.getElementById("js-local-text")
@@ -27,16 +44,34 @@ const Peer = window.Peer
     () => (roomMode.textContent = getRoomModeByHash())
   )
 
-  const localStream = await navigator.mediaDevices
+  let localStream = await navigator.mediaDevices
     .getUserMedia({
-      video: true,
+      video: {
+        deviceId: document.getElementById('select').value
+      }
     })
-    .catch(console.error)
+    .catch(console.error);
+
+  setCameraTrigger.addEventListener("click", async () => {
+    localStream = await navigator.mediaDevices
+      .getUserMedia({
+        video: {
+          deviceId: document.getElementById('select').value
+        }
+      })
+      .catch(console.error)
+    // Render local stream
+    localVideo.muted = true;
+    localVideo.srcObject = localStream;
+    localVideo.playsInline = true;
+    await localVideo.play().catch(console.error)
+  });
+
 
   // Render local stream
-  localVideo.muted = true
-  localVideo.srcObject = localStream
-  localVideo.playsInline = true
+  localVideo.muted = true;
+  localVideo.srcObject = localStream;
+  localVideo.playsInline = true;
   await localVideo.play().catch(console.error)
 
   // eslint-disable-next-line require-atomic-updates

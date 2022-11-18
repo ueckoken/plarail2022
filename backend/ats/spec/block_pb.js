@@ -821,7 +821,7 @@ proto.BlockId = {
   HASHIMOTO_B1: 31,
   HASHIMOTO_B2: 32,
   HACHIOJI_B1: 41,
-  HASHIOJI_B2: 42
+  HACHIOJI_B2: 42
 };
 
 goog.object.extend(exports, proto);

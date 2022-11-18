@@ -1,0 +1,8 @@
+apiVersion: image.toolkit.fluxcd.io/v1beta1
+kind: ImageRepository
+metadata:
+  name: internal
+  namespace: plarail2021
+spec:
+  image: ghcr.io/ueckoken/plarail2022-internal
+  interval: 1m0s

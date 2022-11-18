@@ -116,3 +116,42 @@ func GRPCListenAndServe(ctx context.Context, logger *zap.Logger, port uint, hand
 		logger.Panic("failed to server", zap.Error(err))
 	}
 }
+
+// GrpcStateHandler is a handler for gRPC.
+type GrpcStateHandlerForInternal struct {
+	logger     *zap.Logger
+	env        *envStore.Env
+	stateInput <-chan synccontroller.KV[spec.StationId, spec.PointStateEnum]
+}
+
+// / handleInput transmits changes received in channel to ATS.
+func (g GrpcStateHandlerForInternal) handleInput(ctx context.Context) {
+	con, err := grpc.DialContext(ctx, g.env.InternalServer.Addr.String(),
+		grpc.WithTransportCredentials(insecure.NewCredentials()),
+	)
+	if err != nil {
+		g.logger.Error("failed to connect ATS", zap.Error(err))
+	}
+	defer con.Close()
+	for d := range g.stateInput {
+		client := spec.NewPointStateNotificationClient(con)
+		req := &spec.NotifyPointStateRequest{
+			State: &spec.PointAndState{
+				Station: &spec.Station{StationId: d.Key},
+				State:   d.Value,
+			},
+		}
+		_, err := client.NotifyPointState(ctx, req)
+		if err != nil {
+			g.logger.Error("failed to send data to ATS", zap.Any("payload", req), zap.Error(err))
+		}
+	}
+}
+
+func NewGrpcHandlerForInternal(logger *zap.Logger, env *envStore.Env, stateInput <-chan synccontroller.KV[spec.StationId, spec.PointStateEnum]) *GrpcStateHandlerForInternal {
+	return &GrpcStateHandlerForInternal{logger, env, stateInput}
+}
+
+func (g GrpcStateHandlerForInternal) Run(ctx context.Context) {
+	g.handleInput(ctx)
+}
