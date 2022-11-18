@@ -26,4 +26,4 @@ spec:
             - name: AUTO_OPERATION_SERVER_ADDRESS
               value: "[::]:8080"
             - name: EXTERNAL_SERVER_ADDRESS
-              value: soft-backend-external:8080
+              value: soft-backend-external:9000
