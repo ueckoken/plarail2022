@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: positioning
-          image: ghcr.io/ueckoken/plarail2022-positioning:dbc5d63-1668787572 # {"$imagepolicy": "plarail2021:positioning"}
+          image: ghcr.io/ueckoken/plarail2022-positioning:e238eb5-1668789236 # {"$imagepolicy": "plarail2021:positioning"}
           imagePullPolicy: Always
           ports:
             - containerPort: 8080
