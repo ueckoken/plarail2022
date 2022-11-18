@@ -368,7 +368,7 @@ class State:
         self.trainList.append(
             Train(
                 3,
-                self.getSectionById("sakurajosui_b4"),
+                self.getSectionById("sakurajosui_b3"),
                 State.STRAIGHT_UNIT * 4,
                 pidParam1,
             )
@@ -434,13 +434,6 @@ class State:
         # 車両への指令送信
         for train in self.trainList:
             self.communication.sendSpeed(train.id, train.targetSpeed)
-
-        # ポイントへの指令送信
-        for junction in self.junctionList:
-            if junction.servoId > -1 and junction.toggleRequested:
-                self.communication.sendToggle(junction.servoId, junction.outServoState)
-                junction.toggleRequested = False
-                # inServoStateは、実際にはサーボモーターがついていないので送信しない
 
     def getJunctionById(self, id: Junction.JunctionId) -> Junction:
         return list(filter(lambda item: item.id == id, self.junctionList))[0]
