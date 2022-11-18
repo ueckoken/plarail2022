@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"github.com/gorilla/mux"
+	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"github.com/ueckoken/plarail2022/backend/external/pkg/envStore"
 	"github.com/ueckoken/plarail2022/backend/external/pkg/httphandler"
@@ -29,8 +30,47 @@ func Run(logger *zap.Logger) {
 	httpInput := make(chan *spec.PointAndState)
 	httpOutput := make(chan *spec.PointAndState)
 
+	namespace := "internal"
+
+	synccontrollerOutputTotal := prometheus.NewCounterVec(
+		prometheus.CounterOpts{
+			Namespace: namespace,
+			Name:      "synccontroller_output_total",
+			Help:      "",
+		},
+		[]string{},
+	)
+
+	httpInputKVTotal := prometheus.NewCounterVec(
+		prometheus.CounterOpts{
+			Namespace: namespace,
+			Name:      "httpinputkv_total",
+			Help:      "",
+		},
+		[]string{},
+	)
+
+	httpOutputTotal := prometheus.NewCounterVec(
+		prometheus.CounterOpts{
+			Namespace: namespace,
+			Name:      "httpoutput_total",
+			Help:      "",
+		},
+		[]string{},
+	)
+
+	grpcHandlerInputTotal := prometheus.NewCounterVec(
+		prometheus.CounterOpts{
+			Namespace: namespace,
+			Name:      "grpchandler_total",
+			Help:      "",
+		},
+		[]string{},
+	)
+
 	go func() {
 		for c := range synccontrollerOutput {
+			synccontrollerOutputTotal.With(prometheus.Labels{}).Inc()
 			main2autooperation <- c
 			httpInputKV <- c
 			main2internal <- c
@@ -39,31 +79,22 @@ func Run(logger *zap.Logger) {
 
 	go func() {
 		for c := range httpInputKV {
-			select {
-			case httpInput <- &spec.PointAndState{Station: &spec.Station{StationId: c.Key}, State: c.Value}:
-			default:
-				logger.Info("buffer full", zap.String("buffer", "httpInput"))
-			}
+			httpInputKVTotal.With(prometheus.Labels{}).Inc()
+			httpInput <- &spec.PointAndState{Station: &spec.Station{StationId: c.Key}, State: c.Value}
 		}
 	}()
 
 	go func() {
 		for c := range httpOutput {
-			select {
-			case synccontrollerInput <- synccontroller.KV[spec.StationId, spec.PointStateEnum]{Key: c.GetStation().GetStationId(), Value: c.GetState()}:
-			default:
-				logger.Info("buffer full", zap.String("buffer", "synccontrollerInput-httpoutput"))
-			}
+			httpOutputTotal.With(prometheus.Labels{}).Inc()
+			synccontrollerInput <- synccontroller.KV[spec.StationId, spec.PointStateEnum]{Key: c.GetStation().GetStationId(), Value: c.GetState()}
 		}
 	}()
 
 	go func() {
 		for c := range grpcHandlerInput {
-			select {
-			case synccontrollerInput <- c:
-			default:
-				logger.Info("buffer full", zap.String("buffer", "synccontrollerInput-grpchandler"))
-			}
+			grpcHandlerInputTotal.With(prometheus.Labels{}).Inc()
+			synccontrollerInput <- c
 		}
 	}()
 
@@ -97,18 +128,34 @@ func Run(logger *zap.Logger) {
 		"httpblockserver",
 	)
 
+	grpcBlockHandlerOutputTotal := prometheus.NewCounterVec(
+		prometheus.CounterOpts{
+			Namespace: namespace,
+			Name:      "grpcblockhandleroutput_total",
+			Help:      "",
+		},
+		[]string{},
+	)
+
+	blocksyncOutputTotal := prometheus.NewCounterVec(
+		prometheus.CounterOpts{
+			Namespace: namespace,
+			Name:      "",
+			Help:      "",
+		},
+		[]string{},
+	)
+
 	go func() {
 		for c := range grpcBlockHandlerOutput {
-			select {
-			case blocksyncInput <- synccontroller.KV[spec.BlockId, spec.BlockStateEnum]{Key: c.Key, Value: c.Value}:
-			default:
-				logger.Info("buffer full", zap.String("buffer", "blocksyncInput-grpchandler"))
-			}
+			grpcBlockHandlerOutputTotal.With(prometheus.Labels{}).Inc()
+			blocksyncInput <- synccontroller.KV[spec.BlockId, spec.BlockStateEnum]{Key: c.Key, Value: c.Value}
 		}
 	}()
 
 	go func() {
 		for c := range blocksyncOutput {
+			blocksyncOutputTotal.With(prometheus.Labels{}).Inc()
 			grpcBlockHandlerInput <- c
 			httpBlockInput <- &spec.BlockAndState{BlockId: c.Key, State: c.Value}
 		}
