@@ -63,6 +63,13 @@ stations:
       on_angle: 0
       off_angle: 120
   - station:
+      name: chofu_p1
+      address: 'http://192.168.1.203:80'
+      pin: 18
+      set_angle: true
+      on_angle: 0
+      off_angle: 110
+  - station:
       name: sakurajosui_s0
       address: 'http://192.168.1.204:80'
       pin: 4
@@ -104,6 +111,20 @@ stations:
       set_angle: true
       on_angle: 0
       off_angle: 130
+  - station:
+      name: sakurajosui_p1
+      address: 'http://192.168.1.204:80'
+      pin: 19
+      set_angle: true
+      on_angle: 0
+      off_angle: 90
+  - station:
+      name: sakurajosui_p2
+      address: 'http://192.168.1.204:80'
+      pin: 21
+      set_angle: true
+      on_angle: 0
+      off_angle: 120
   - station:
       name: shinjuku_s1
       address: 'http://192.168.1.205:80'
