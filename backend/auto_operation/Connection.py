@@ -16,7 +16,6 @@ from concurrent import futures
 from dataclasses import dataclass
 from typing import Optional
 
-import certifi
 import grpc
 
 import spec.ats_pb2 as ats_pb2
