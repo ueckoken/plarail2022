@@ -3,6 +3,8 @@ kind: Ingress
 metadata:
   name: auto-operation-nginx
   namespace: plarail2021
+  annotations:
+    cert-manager.io/cluster-issuer: "letsencrypt-prod"
 spec:
   ingressClassName: nginx
   rules:
@@ -16,3 +18,8 @@ spec:
                 name: auto-operation
                 port:
                   number: 8080
+  tls:
+    - hosts:
+        - *.chofufes2022.ueckoken.club
+        - chofufes2022.ueckoken.club
+      secretName: letsencrypt-prod
