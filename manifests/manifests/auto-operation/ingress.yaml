@@ -4,7 +4,7 @@ metadata:
   name: auto-operation-nginx
   namespace: plarail2021
 spec:
-  ingressClassName: ingress-nginx
+  ingressClassName: nginx
   rules:
     - host: operate.chofufes2022.ueckoken.club
       http:
