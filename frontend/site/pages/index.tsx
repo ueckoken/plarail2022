@@ -63,7 +63,7 @@ const INITIAL_BLOCK_STATE: BlockState = {
   hashimoto_b2: false,
   hachioji_b1: false,
   hachioji_b2: false,
-  unknown: false
+  unknown: false,
 }
 
 type SwitchPointState = Record<BunkiRailId, boolean>
