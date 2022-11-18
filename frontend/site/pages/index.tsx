@@ -147,14 +147,6 @@ const Home: NextPage = () => {
     }
   }, [])
 
-  useEffect(() => {
-    const intervalId = setInterval(() => {
-      const tmpTrainPosition1 = trainPosition1 + 0.01
-      setTrainPosition1(tmpTrainPosition1 <= 1 ? tmpTrainPosition1 : 0)
-    }, 20)
-    return () => clearInterval(intervalId)
-  })
-
   return (
     <div className={styles.container}>
       <Head>
