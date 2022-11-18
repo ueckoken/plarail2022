@@ -156,22 +156,6 @@ jobs:
         run: |-
           make test
 
-  frontend-skyway_receiver:
-    runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: ./frontend/skyway_receiver
-    steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
-        with:
-          node-version-file: ./frontend/skyway_receiver/.nvmrc
-          cache: npm
-          cache-dependency-path: ./frontend/skyway_receiver/package-lock.json
-      - name: dependency-install
-        run: npm ci
-      - name: build
-        run: npm run build
   backend-speed:
     runs-on: ubuntu-latest
     defaults:

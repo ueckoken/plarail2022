@@ -4,7 +4,6 @@ resources:
   - ./external
   # internalは学内サーバで管理
   # - ./internal/
-  - ./receiver-test
   - ./logviewer
 #  - ./positioning
   - ./frontend-camera-sender

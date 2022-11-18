@@ -21,9 +21,6 @@ ats:
 multicaster:
   - any:
       - "backend/multicaster/**"
-skyway_receiver:
-  - any:
-      - "frontend/skyway_receiver/**"
 site:
   - any:
       - "frontend/site/**"

@@ -4,7 +4,6 @@ resources:
   - ./frontend-python
   - ./internal
   - ./json2grpc
-  - ./receiver
   - ./automation.yaml
   - ./positioning
   - ./auto-operation
