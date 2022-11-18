@@ -5,9 +5,8 @@ import RailroadMap from "../components/RailRoadMap"
 import VideoCast from "../components/VideoCast"
 import { useEffect, useRef, useState } from "react"
 import {
-  blockId,
+  BlockId,
   blockIdMap,
-  blockIdMapReverse,
   blockIds,
   BlockMessage,
   BlockStateIdMap,
@@ -45,7 +44,7 @@ const INITIAL_STOP_POINT_STATE: StopPointState = {
   hashimoto_s2: false,
 }
 
-type BlockState = Record<BlocklId, boolean>
+type BlockState = Record<BlockId, boolean>
 const INITIAL_BLOCK_STATE: BlockState = {
   shinjuku_b1: false,
   shinjuku_b2: false,
@@ -64,6 +63,7 @@ const INITIAL_BLOCK_STATE: BlockState = {
   hashimoto_b2: false,
   hachioji_b1: false,
   hachioji_b2: false,
+  unknown: false
 }
 
 type SwitchPointState = Record<BunkiRailId, boolean>
