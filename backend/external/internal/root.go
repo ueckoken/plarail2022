@@ -146,7 +146,7 @@ func Run(logger *zap.Logger) {
 
 	srv := &http.Server{
 		Handler:           r,
-		Addr:              fmt.Sprintf("0.0.0.0:%d", int(envVal.ClientSideServer)),
+		Addr:              fmt.Sprintf("0.0.0.0:%d", envVal.ClientSideServer.Port),
 		ReadHeaderTimeout: 5 * time.Second,
 		ReadTimeout:       5 * time.Second,
 		WriteTimeout:      5 * time.Second,
