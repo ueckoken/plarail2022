@@ -18,6 +18,7 @@ spec:
           imagePullPolicy: Always
           ports:
             - containerPort: 50051
+            - containerPort: 6543
           envFrom:
             - configMapRef:
                 name: auto-operation-env
