@@ -184,6 +184,6 @@ export type StationMessage = {
 }
 
 export type BlockMessage = {
-  block_name: BlockId
-  state: BlockState
+  blockId: keyof typeof blockIdMap
+  state: keyof typeof StationStateIdMap
 }

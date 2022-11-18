@@ -170,13 +170,13 @@ const Home: NextPage = () => {
       // console.log(e)
       const message: BlockMessage = JSON.parse(e.data)
       // console.log(message)
-      if (message.block_name === "unknown" || message.state === "UNKNOWN") {
+      if (message.blockId === 0 || message.state === 0) {
         return
       }
-      if (blockIds.is(message.block_name)) {
+      if (blockIds.is(blockIdMap[message.blockId])) {
         setBlockState((previousStopPointState) => ({
           ...previousStopPointState,
-          [message.block_name]: message.state === "CLOSE",
+          [blockIdMap[message.blockId]]: message.state === 2,
         }))
         return
       }
