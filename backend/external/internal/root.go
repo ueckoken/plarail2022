@@ -90,7 +90,7 @@ func Run(logger *zap.Logger) {
 	)
 
 	StartStationSync(logger.Named("station-sync"), synccontrollerInput, synccontrollerOutput)
-	grpcHandler := NewGrpcHandler(logger.Named("grpc-handler"), envVal, main2autooperation, grpcHandlerInput)
+	grpcHandler := NewGrpcHandler(logger.Named("grpc-handler"), envVal, grpcHandlerInput, main2autooperation)
 	internalHandler := NewGrpcHandlerForInternal(logger.Named("grpc-internal"), envVal, main2internal)
 	go internalHandler.Run(ctx)
 
