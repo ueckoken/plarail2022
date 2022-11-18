@@ -1,0 +1,23 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: soft-backend-json2grpc
+  namespace: plarail2021
+spec:
+  selector:
+    matchLabels:
+      app: soft-backend-json2grpc
+  template:
+    metadata:
+      labels:
+        app: soft-backend-json2grpc
+    spec:
+      containers:
+        - name: soft-backend-json2grpc
+          image: ghcr.io/ueckoken/plarail2022-json2grpc:df4f652-1668679369 # {"$imagepolicy": "plarail2021:json2grpc"}
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8080
+          env:
+            - name: INTERNALENDPOINT
+              value: "192.168.0.50:54321"
