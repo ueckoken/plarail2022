@@ -2,6 +2,8 @@ package main
 
 import (
 	"context"
+	"crypto/tls"
+	"crypto/x509"
 	"log"
 	"net/http"
 	"os"
@@ -13,7 +15,7 @@ import (
 	atspb "github.com/ueckoken/backend/json2grpc/spec"
 
 	"google.golang.org/grpc"
-	"google.golang.org/grpc/credentials/insecure"
+	"google.golang.org/grpc/credentials"
 )
 
 type Config struct {
@@ -25,12 +27,19 @@ func main() {
 	var conf Config
 	envconfig.MustProcess("", &conf)
 	baseCtx := context.Background()
+	certpool, err := x509.SystemCertPool()
+	if err != nil {
+		log.Fatalln("systemcertpool failed", err)
+	}
+	config := &tls.Config{RootCAs: certpool, ServerName: conf.InternalEndpoint}
+	cred := credentials.NewTLS(config)
+
 	grpcCtx, cancel := context.WithTimeout(baseCtx, 5*time.Second)
 	defer cancel()
 	conn, err := grpc.DialContext(
 		grpcCtx,
 		conf.InternalEndpoint,
-		grpc.WithTransportCredentials(insecure.NewCredentials()),
+		grpc.WithTransportCredentials(cred),
 		grpc.WithBlock(),
 	)
 	if err != nil {
