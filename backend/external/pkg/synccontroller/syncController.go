@@ -26,11 +26,12 @@ func newStationKVS[T, U comparable]() *stationKVS[T, U] {
 	return &skvs
 }
 
-func (skvs *stationKVS[T, U]) update(kv KV[T, U]) error {
+func (skvs *stationKVS[T, U]) update(kv KV[T, U]) (isChangedbool bool) {
 	skvs.mtx.Lock()
 	defer skvs.mtx.Unlock()
+	old := skvs.values[kv.Key]
 	skvs.values[kv.Key] = &kv.Value
-	return nil
+	return skvs.values[kv.Key] == old
 }
 
 func (skvs *stationKVS[T, U]) get(key T) (value *U, err error) {
@@ -73,12 +74,10 @@ func (s *SyncController[T, U]) Run() {
 func (s *SyncController[T, U]) triggeredSync() {
 	for c := range s.stateInput {
 		s.logger.Info("state input received", zap.Any("state", c))
-		err := s.kvs.update(c)
-		if err != nil {
-			log.Println("syncController validator err: ", err)
-			continue
+		changed := s.kvs.update(c)
+		if changed{
+			s.stateOutput <- c
 		}
-		s.stateOutput <- c
 	}
 }
 
