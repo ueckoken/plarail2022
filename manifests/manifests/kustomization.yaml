@@ -2,6 +2,8 @@ resources:
   - ./frontend
   - ./python-webrtc-server
   - ./external
+   # internal は別サーバで管理
+  - ./internal/
   - ./json2grpc
   - ./receiver-test
   - ./webrtc-sender
