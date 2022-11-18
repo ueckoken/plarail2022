@@ -9,6 +9,8 @@ spec:
       match: Host(`operate.chofufes2022.ueckoken.club`)
       services:
         - name: auto-operation
-          port: 8080
+          namespace: plarail2021
+          port: grpc
+          kind: Service
   tls:
     secretName: cloudflare-cert
