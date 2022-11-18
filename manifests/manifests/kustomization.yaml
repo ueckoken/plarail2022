@@ -2,6 +2,7 @@ resources:
   - ./frontend
   - ./python-webrtc-server
   - ./external
+  - ./json2grpc
   - ./receiver-test
   - ./webrtc-sender
   - ./logviewer
