@@ -1,5 +1,5 @@
 resources:
-#  - ./nginx
+  - ./nginx
   - ./traefik
   - ./cert-manager
 #  - ./prometheus
