@@ -1,6 +1,7 @@
 # externalとproxyとの繋ぎ込みをするためのクラス
 
 
+import certifi
 import grpc
 
 import spec.ats_pb2 as ats_pb2
@@ -9,7 +10,6 @@ import spec.block_pb2 as block_pb2
 import spec.block_pb2_grpc as block_pb2_grpc
 import spec.statesync_pb2 as statesync_pb2
 import spec.statesync_pb2_grpc as statesync_pb2_grpc
-
 
 def testATS():
     with grpc.insecure_channel("operate.chofufes2022.ueckoken.club") as channel:
