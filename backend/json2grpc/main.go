@@ -38,10 +38,7 @@ func main() {
 	}
 	cred := credentials.NewTLS(config)
 
-	grpcCtx, cancel := context.WithTimeout(baseCtx, 5*time.Second)
-	defer cancel()
-	conn, err := grpc.DialContext(
-		grpcCtx,
+	conn, err := grpc.Dial(
 		conf.InternalEndpoint,
 		grpc.WithTransportCredentials(cred),
 		grpc.WithBlock(),
