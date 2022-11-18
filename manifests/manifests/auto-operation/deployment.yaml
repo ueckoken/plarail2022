@@ -14,10 +14,16 @@ spec:
     spec:
       containers:
         - name: soft-backend-auto-operation
-          image: ghcr.io/ueckoken/plarail2022-auto-operation:df4f652-1668679369 # {"$imagepolicy": "plarail2021:auto-operation"}
+          image: ghcr.io/ueckoken/plarail2022-auto-operation:b1e097a-1668799336 # {"$imagepolicy": "plarail2021:auto-operation"}
           imagePullPolicy: Always
           ports:
-            - containerPort: 50051
-          envFrom:
-            - configMapRef:
-                name: auto-operation-env
+            - containerPort: 8080
+          env:
+            - name: ESP_EYE_ENDPOINT
+              value: none
+            - name: SECRET_KEY
+              value: awesome
+            - name: AUTO_OPERATION_SERVER_ADDRESS
+              value: "[::]:8080"
+            - name: EXTERNAL_SERVER_ADDRESS
+              value: soft-backend-external:9000

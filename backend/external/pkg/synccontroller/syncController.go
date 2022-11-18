@@ -89,11 +89,7 @@ func (s *SyncController[T, U]) periodicallySync() {
 			s.kvs.mtx.Lock()
 			d := s.kvs.retrieve()
 			for key, value := range d {
-				select {
-				case s.stateOutput <- KV[T, U]{Key: key, Value: *value}:
-				default:
-					s.logger.Info("buffer full")
-				}
+				s.stateOutput <- KV[T, U]{Key: key, Value: *value}
 			}
 			s.kvs.mtx.Unlock()
 		}()

@@ -1,7 +1,7 @@
 import typing
 
 from Communication import Communication
-from Components import Junction, Section, Sensor, Station, Stop, Train
+from Components import Junction, Point, Section, Sensor, Station, Stop, Train
 
 
 class State:
@@ -17,22 +17,23 @@ class State:
         self.trainList: list[Train] = []
         # TODO: もっといい感じにストップレールのIDを導出する
         self.sectionIdToStopId: dict[Section.SectionId, Stop.StopId] = {}
+        self.junctionIdToPointId: dict[Junction.JunctionId, Point.PointId] = {}
 
-        # Junction(id, servoId)
-        self.junctionList.append(Junction("shinjuku_j1", -1))
-        self.junctionList.append(Junction("shinjuku_j2", -1))
-        self.junctionList.append(Junction("sakurajosui_j1", -1))
-        self.junctionList.append(Junction("sakurajosui_j2", -1))
-        self.junctionList.append(Junction("sakurajosui_j3", -1))
-        self.junctionList.append(Junction("sakurajosui_j4", -1))
-        self.junctionList.append(Junction("chofu_j1", -1))
-        self.junctionList.append(Junction("chofu_j2", -1))
-        self.junctionList.append(Junction("chofu_j3", -1))
-        self.junctionList.append(Junction("chofu_j4", -1))
-        self.junctionList.append(Junction("hashimoto_j1", -1))
-        self.junctionList.append(Junction("hashimoto_j2", -1))
-        self.junctionList.append(Junction("hachioji_j1", -1))
-        self.junctionList.append(Junction("hachioji_j2", -1))
+        # Junction(id, pointId)
+        self.junctionList.append(Junction("shinjuku_j1", None))
+        self.junctionList.append(Junction("shinjuku_j2", None))
+        self.junctionList.append(Junction("sakurajosui_j1", "sakurajosui_p1"))
+        self.junctionList.append(Junction("sakurajosui_j2", "sakurajosui_p2"))
+        self.junctionList.append(Junction("sakurajosui_j3", None))
+        self.junctionList.append(Junction("sakurajosui_j4", None))
+        self.junctionList.append(Junction("chofu_j1", "chofu_p1"))
+        self.junctionList.append(Junction("chofu_j2", None))
+        self.junctionList.append(Junction("chofu_j3", None))
+        self.junctionList.append(Junction("chofu_j4", None))
+        self.junctionList.append(Junction("hashimoto_j1", None))
+        self.junctionList.append(Junction("hashimoto_j2", None))
+        self.junctionList.append(Junction("hachioji_j1", None))
+        self.junctionList.append(Junction("hachioji_j2", None))
 
         # Section(id, sourceJuncction, targetJuncction, sourceServoState, targetServoState, length)
         self.sectionList.append(
@@ -367,7 +368,7 @@ class State:
         self.trainList.append(
             Train(
                 3,
-                self.getSectionById("sakurajosui_b4"),
+                self.getSectionById("sakurajosui_b3"),
                 State.STRAIGHT_UNIT * 4,
                 pidParam1,
             )
@@ -402,20 +403,6 @@ class State:
         # start communication
         self.communication = Communication({0: pidParam0, 1: pidParam1})
 
-        # 初回の着発番線に合わせてここにtoggleを書く
-        self.communication.sendToggle(
-            self.getJunctionById("sakurajosui_j1").servoId, Junction.ServoState.Straight
-        )
-        self.communication.sendToggle(
-            self.getJunctionById("sakurajosui_j2").servoId, Junction.ServoState.Straight
-        )
-        self.communication.sendToggle(
-            self.getJunctionById("chofu_j1").servoId, Junction.ServoState.Curve
-        )
-        self.communication.sendToggle(
-            self.getJunctionById("chofu_j2").servoId, Junction.ServoState.Straight
-        )
-
     # 現実世界の状態を取得しStateに反映する. 定期的に実行すること
     def update(self):
         # 情報取得
@@ -447,13 +434,6 @@ class State:
         # 車両への指令送信
         for train in self.trainList:
             self.communication.sendSpeed(train.id, train.targetSpeed)
-
-        # ポイントへの指令送信
-        for junction in self.junctionList:
-            if junction.servoId > -1 and junction.toggleRequested:
-                self.communication.sendToggle(junction.servoId, junction.outServoState)
-                junction.toggleRequested = False
-                # inServoStateは、実際にはサーボモーターがついていないので送信しない
 
     def getJunctionById(self, id: Junction.JunctionId) -> Junction:
         return list(filter(lambda item: item.id == id, self.junctionList))[0]

@@ -5,12 +5,19 @@ import RailroadMap from "../components/RailRoadMap"
 import VideoCast from "../components/VideoCast"
 import { useEffect, useRef, useState } from "react"
 import {
-  BlocklId,
+  BlockId,
+  blockIdMap,
+  blockIds,
+  BlockMessage,
+  BlockStateIdMap,
   bunkiRailId,
   BunkiRailId,
-  Message,
+  pointIdMap,
+  pointIdMapReverse,
   StationId,
+  StationMessage,
   StationState,
+  StationStateIdMapReverse,
   StopRailId,
   stopRailId,
 } from "../types/control-messages"
@@ -37,7 +44,7 @@ const INITIAL_STOP_POINT_STATE: StopPointState = {
   hashimoto_s2: false,
 }
 
-type BlockState = Record<BlocklId, boolean>
+type BlockState = Record<BlockId, boolean>
 const INITIAL_BLOCK_STATE: BlockState = {
   shinjuku_b1: false,
   shinjuku_b2: false,
@@ -56,6 +63,7 @@ const INITIAL_BLOCK_STATE: BlockState = {
   hashimoto_b2: false,
   hachioji_b1: false,
   hachioji_b2: false,
+  unknown: false,
 }
 
 type SwitchPointState = Record<BunkiRailId, boolean>
@@ -86,10 +94,13 @@ const Home: NextPage = () => {
     stationId: StationId,
     state: StationState
   ) => {
-    const message: Message = {
-      station_name: stationId,
-      state: state,
+    const message: StationMessage = {
+      station: {
+        stationId: pointIdMapReverse[stationId] as keyof typeof pointIdMap,
+      },
+      state: StationStateIdMapReverse[state] as keyof typeof BlockStateIdMap,
     }
+    console.log(JSON.stringify(message))
     stationWs.current?.send(JSON.stringify(message))
   }
   const toggleStopPointOrSwitchPointState = (stationId: StationId) => {
@@ -106,32 +117,68 @@ const Home: NextPage = () => {
   }
 
   useEffect(() => {
-    const ws = new WebSocket("wss://control.chofufes2022.ueckoken.club/ws")
+    const ws = new WebSocket("wss://control.chofufes2022.ueckoken.club/pointws")
     stationWs.current = ws
     ws.addEventListener("open", (e) => {
       console.log("opened")
       console.log(e)
     })
     ws.addEventListener("message", (e) => {
-      console.log("recieved message")
-      console.log(e)
-      const message: Message = JSON.parse(e.data)
-      console.log(message)
-      if (message.station_name === "unknown" || message.state === "UNKNOWN") {
+      // console.log("recieved message")
+      // console.log(e)
+      const message: StationMessage = JSON.parse(e.data)
+      // console.log(message.station.stationId)
+      if (message.station.stationId === 0 || message.state === 0) {
         return
       }
-      if (stopRailId.is(message.station_name)) {
+      if (stopRailId.is(pointIdMap[message.station.stationId])) {
         setStopPointState((previousStopPointState) => ({
           ...previousStopPointState,
-          [message.station_name]: message.state === "ON",
+          [pointIdMap[message.station.stationId]]: message.state === 1,
         }))
         return
       }
-      if (bunkiRailId.is(message.station_name)) {
+      if (bunkiRailId.is(pointIdMap[message.station.stationId])) {
         setSwitchPointState((previousSwitchPointState) => ({
           ...previousSwitchPointState,
-          [message.station_name]: message.state === "ON",
+          [pointIdMap[message.station.stationId]]: message.state === 1,
         }))
+      }
+    })
+    ws.addEventListener("error", (e) => {
+      console.log("error occured")
+      console.log(e)
+    })
+    ws.addEventListener("close", (e) => {
+      console.log("closed")
+      console.log(e)
+    })
+    return () => {
+      ws.close()
+    }
+  }, [])
+
+  useEffect(() => {
+    const ws = new WebSocket("wss://control.chofufes2022.ueckoken.club/blockws")
+    stationWs.current = ws
+    ws.addEventListener("open", (e) => {
+      console.log("opened")
+      console.log(e)
+    })
+    ws.addEventListener("message", (e) => {
+      // console.log("recieved message")
+      // console.log(e)
+      const message: BlockMessage = JSON.parse(e.data)
+      // console.log(message)
+      if (message.blockId === 0 || message.state === 0) {
+        return
+      }
+      if (blockIds.is(blockIdMap[message.blockId])) {
+        setBlockState((previousStopPointState) => ({
+          ...previousStopPointState,
+          [blockIdMap[message.blockId]]: message.state === 2,
+        }))
+        return
       }
     })
     ws.addEventListener("error", (e) => {
@@ -189,9 +236,34 @@ const Home: NextPage = () => {
                 {
                   position: "absolute",
                   zIndex: 2,
-                  bottom: 4,
-                  right: 0,
-                  width: "25%",
+                  left: 0,
+                  width: "33%",
+                },
+                {
+                  position: "absolute",
+                  zIndex: 2,
+                  left: "33%",
+                  width: "33%",
+                },
+                {
+                  position: "absolute",
+                  zIndex: 2,
+                  left: "66%",
+                  width: "33%",
+                },
+                {
+                  position: "absolute",
+                  zIndex: 2,
+                  top: "50%",
+                  left: 0,
+                  width: "33%",
+                },
+                {
+                  position: "absolute",
+                  zIndex: 2,
+                  top: "50%",
+                  left: "33%",
+                  width: "33%",
                 },
               ]}
             />
@@ -238,6 +310,20 @@ const Home: NextPage = () => {
           >
             車両前景
           </button>
+          <button
+            onClick={() => {
+              setRoomIds([
+                "none",
+                "hachioji",
+                "chofu",
+                "hashimoto",
+                "sakurajosui",
+                "shinjuku",
+              ])
+            }}
+          >
+            all
+          </button>
         </section>
 
         <section>
@@ -252,9 +338,9 @@ const Home: NextPage = () => {
                 id: "koken",
               },
             }}
-            onStopPointOrSwitchPointClick={(stationId) =>
-              setSelectedStationId(stationId)
-            }
+            onStopPointOrSwitchPointClick={(stationId) => {
+              toggleStopPointOrSwitchPointState(stationId)
+            }}
           />
         </section>
       </main>

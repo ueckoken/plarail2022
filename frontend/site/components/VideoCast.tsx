@@ -30,19 +30,27 @@ const VideoCast: FC<Prop> = ({ roomIds, styles }) => {
       key: SKYWAY_APIKEY,
       debug: SKYWAY_DEBUG_LEVEL,
     })
-    skyWayPeer.current.on("open", (id) => {
-      console.log(`opened skyway peer id:${id}`)
+    function onPeerOpen(id: string) {
+      console.log(`opened skyway peer id: ${id}`)
       setIsPeerAvailable(true)
-    })
-    skyWayPeer.current.on("close", () => {
-      console.log("closed skyway peer")
-      setIsPeerAvailable(false)
-    })
-    return () => {
-      skyWayPeer.current?.destroy()
+    }
+    function onPeerClose() {
+      console.log(`closed skyway peer id: ${skyWayPeer.current?.id}`)
       setIsPeerAvailable(false)
     }
-  }, [setIsPeerAvailable, skyWayPeer])
+    skyWayPeer.current.on("open", onPeerOpen)
+    skyWayPeer.current.on("close", onPeerClose)
+    return () => {
+      console.log("clean up skyway peer")
+      if (skyWayPeer.current === undefined) {
+        return
+      }
+      skyWayPeer.current.off("open", onPeerOpen)
+      skyWayPeer.current.off("close", onPeerClose)
+      skyWayPeer.current.destroy()
+      skyWayPeer.current = undefined
+    }
+  }, [setIsPeerAvailable])
 
   return (
     <React.Fragment>
