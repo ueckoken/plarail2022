@@ -2,7 +2,6 @@ package synccontroller
 
 import (
 	"fmt"
-	"log"
 	"sync"
 	"time"
 
@@ -26,12 +25,12 @@ func newStationKVS[T, U comparable]() *stationKVS[T, U] {
 	return &skvs
 }
 
-func (skvs *stationKVS[T, U]) update(kv KV[T, U]) (isChangedbool bool) {
+func (skvs *stationKVS[T, U]) update(kv KV[T, U]) (isChanged bool) {
 	skvs.mtx.Lock()
 	defer skvs.mtx.Unlock()
 	old := skvs.values[kv.Key]
 	skvs.values[kv.Key] = &kv.Value
-	return skvs.values[kv.Key] == old
+	return skvs.values[kv.Key] != old
 }
 
 func (skvs *stationKVS[T, U]) get(key T) (value *U, err error) {
