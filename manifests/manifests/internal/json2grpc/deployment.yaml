@@ -20,4 +20,4 @@ spec:
             - containerPort: 8080
           env:
             - name: INTERNALENDPOINT
-              value: "internal.chofufes2022.ueckoken.club"
+              value: "192.168.0.50:54321"

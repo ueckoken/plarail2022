@@ -23,10 +23,10 @@ func Run(logger *zap.Logger) {
 	synccontrollerInput := make(chan synccontroller.KV[spec.StationId, spec.PointStateEnum])
 	synccontrollerOutput := make(chan synccontroller.KV[spec.StationId, spec.PointStateEnum], 32)
 	grpcHandlerInput := make(chan synccontroller.KV[spec.StationId, spec.PointStateEnum])
-	main2autooperation := make(chan synccontroller.KV[spec.StationId, spec.PointStateEnum])
+	main2autooperation := make(chan synccontroller.KV[spec.StationId, spec.PointStateEnum], 32)
 	main2internal := make(chan synccontroller.KV[spec.StationId, spec.PointStateEnum], 32)
 	httpInputKV := make(chan synccontroller.KV[spec.StationId, spec.PointStateEnum], 32)
-	httpInput := make(chan *spec.PointAndState)
+	httpInput := make(chan *spec.PointAndState, 32)
 	httpOutput := make(chan *spec.PointAndState)
 
 	go func() {
@@ -90,7 +90,7 @@ func Run(logger *zap.Logger) {
 	)
 
 	StartStationSync(logger.Named("station-sync"), synccontrollerInput, synccontrollerOutput)
-	grpcHandler := NewGrpcHandler(logger.Named("grpc-handler"), envVal, main2autooperation, grpcHandlerInput)
+	grpcHandler := NewGrpcHandler(logger.Named("grpc-handler"), envVal, grpcHandlerInput, main2autooperation)
 	internalHandler := NewGrpcHandlerForInternal(logger.Named("grpc-internal"), envVal, main2internal)
 	go internalHandler.Run(ctx)
 
@@ -146,7 +146,7 @@ func Run(logger *zap.Logger) {
 
 	srv := &http.Server{
 		Handler:           r,
-		Addr:              fmt.Sprintf("0.0.0.0:%d", int(envVal.ClientSideServer.Port)),
+		Addr:              fmt.Sprintf("0.0.0.0:%d", envVal.ClientSideServer.Port),
 		ReadHeaderTimeout: 5 * time.Second,
 		ReadTimeout:       5 * time.Second,
 		WriteTimeout:      5 * time.Second,

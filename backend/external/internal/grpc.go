@@ -3,10 +3,11 @@ package internal
 import (
 	"context"
 	"fmt"
+	"net"
+
 	"github.com/ueckoken/plarail2022/backend/external/pkg/envStore"
 	"github.com/ueckoken/plarail2022/backend/external/pkg/synccontroller"
 	"github.com/ueckoken/plarail2022/backend/external/spec"
-	"net"
 
 	"go.uber.org/zap"
 	"google.golang.org/grpc"
@@ -74,10 +75,10 @@ func NewGrpcBlockHandler(logger *zap.Logger, env *envStore.Env, stateOutput chan
 	return &GrpcBlockHandler{logger: logger, env: env, stateOutput: stateOutput, stateInput: stateInput}
 }
 
-// NotifyState handles requests from ATS.
-func (g GrpcBlockHandler) NotifyState(_ context.Context, req *spec.NotifyBlockStateRequest) (*spec.NotifyBlockStateResponse, error) {
+// UpdateBlockState handles requests from ATS.
+func (g GrpcBlockHandler) UpdateBlockState(_ context.Context, req *spec.UpdateBlockStateRequest) (*spec.UpdateBlockStateResponse, error) {
 	g.stateOutput <- synccontroller.KV[spec.BlockId, spec.BlockStateEnum]{Key: req.GetState().GetBlockId(), Value: req.GetState().GetState()}
-	return &spec.NotifyBlockStateResponse{}, nil
+	return &spec.UpdateBlockStateResponse{}, nil
 }
 
 // handleInput transmits changes received in channel to ATS.
