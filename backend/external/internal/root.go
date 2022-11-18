@@ -16,6 +16,7 @@ import (
 	"github.com/ueckoken/plarail2022/backend/external/spec"
 
 	"go.uber.org/zap"
+	"net/http/pprof"
 )
 
 // Run runs external server.
@@ -23,7 +24,7 @@ func Run(logger *zap.Logger) {
 	ctx := context.Background()
 	synccontrollerInput := make(chan synccontroller.KV[spec.StationId, spec.PointStateEnum])
 	synccontrollerOutput := make(chan synccontroller.KV[spec.StationId, spec.PointStateEnum])
-	grpcHandlerInput := make(chan synccontroller.KV[spec.StationId, spec.PointStateEnum])
+	grpcHandlerOutput := make(chan synccontroller.KV[spec.StationId, spec.PointStateEnum])
 	main2autooperation := make(chan synccontroller.KV[spec.StationId, spec.PointStateEnum])
 	main2internal := make(chan synccontroller.KV[spec.StationId, spec.PointStateEnum])
 	httpInputKV := make(chan synccontroller.KV[spec.StationId, spec.PointStateEnum])
@@ -59,10 +60,10 @@ func Run(logger *zap.Logger) {
 		[]string{},
 	)
 
-	grpcHandlerInputTotal := prometheus.NewCounterVec(
+	grpcHandlerOutputTotal := prometheus.NewCounterVec(
 		prometheus.CounterOpts{
 			Namespace: namespace,
-			Name:      "grpchandler_total",
+			Name:      "grpchandleroutput_total",
 			Help:      "",
 		},
 		[]string{},
@@ -71,7 +72,7 @@ func Run(logger *zap.Logger) {
 	prometheus.MustRegister(synccontrollerOutputTotal)
 	prometheus.MustRegister(httpInputKVTotal)
 	prometheus.MustRegister(httpOutputTotal)
-	prometheus.MustRegister(grpcHandlerInputTotal)
+	prometheus.MustRegister(grpcHandlerOutputTotal)
 
 	go func() {
 		for c := range synccontrollerOutput {
@@ -97,8 +98,8 @@ func Run(logger *zap.Logger) {
 	}()
 
 	go func() {
-		for c := range grpcHandlerInput {
-			grpcHandlerInputTotal.With(prometheus.Labels{}).Inc()
+		for c := range grpcHandlerOutput {
+			grpcHandlerOutputTotal.With(prometheus.Labels{}).Inc()
 			synccontrollerInput <- c
 		}
 	}()
@@ -114,7 +115,7 @@ func Run(logger *zap.Logger) {
 	)
 
 	StartStationSync(logger.Named("station-sync"), synccontrollerInput, synccontrollerOutput)
-	grpcHandler := NewGrpcHandler(logger.Named("grpc-handler"), envVal, grpcHandlerInput, main2autooperation)
+	grpcHandler := NewGrpcHandler(logger.Named("grpc-handler"), envVal, main2autooperation, grpcHandlerOutput)
 	internalHandler := NewGrpcHandlerForInternal(logger.Named("grpc-internal"), envVal, main2internal)
 	go internalHandler.Run(ctx)
 
@@ -169,12 +170,13 @@ func Run(logger *zap.Logger) {
 	}()
 
 	startBlockSync(logger.Named("blocksync"), blocksyncInput, blocksyncOutput)
-	grpcBlockHandl := NewGrpcBlockHandler(logger.Named("grpc-block-handler"), envVal, grpcBlockHandlerOutput, grpcBlockHandlerInput)
+	grpcBlockHandl := NewGrpcBlockHandler(logger.Named("grpc-block-handler"), envVal, grpcBlockHandlerInput, grpcBlockHandlerOutput)
 
 	go GRPCListenAndServe(ctx, logger, uint(envVal.ClientSideServer.GrpcPort), grpcHandler, grpcBlockHandl)
 	r := mux.NewRouter()
 	r.HandleFunc("/", websockethandler.HandleStatic)
 	r.Handle("/metrics", promhttp.Handler())
+	r.Handle("/pprof", pprof.Handler("pprof"))
 	httpBlockServer.RegisterServer(r, "/blockws")
 	httpServer.RegisterServer(r, "/pointws")
 

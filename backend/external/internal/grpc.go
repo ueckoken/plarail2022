@@ -24,7 +24,7 @@ type GrpcStateHandler struct {
 }
 
 // NewGrpcHandler creates gRPC handler that handles requests from ATS.
-func NewGrpcHandler(logger *zap.Logger, env *envStore.Env, stateOutput chan<- synccontroller.KV[spec.StationId, spec.PointStateEnum], stateInput <-chan synccontroller.KV[spec.StationId, spec.PointStateEnum]) *GrpcStateHandler {
+func NewGrpcHandler(logger *zap.Logger, env *envStore.Env, stateInput <-chan synccontroller.KV[spec.StationId, spec.PointStateEnum], stateOutput chan<- synccontroller.KV[spec.StationId, spec.PointStateEnum]) *GrpcStateHandler {
 	return &GrpcStateHandler{logger: logger, env: env, stateOutput: stateOutput, stateInput: stateInput}
 }
 
@@ -71,7 +71,7 @@ type GrpcBlockHandler struct {
 }
 
 // NewGrpcBlockHandler creates gRPC handler.
-func NewGrpcBlockHandler(logger *zap.Logger, env *envStore.Env, stateOutput chan<- synccontroller.KV[spec.BlockId, spec.BlockStateEnum], stateInput <-chan synccontroller.KV[spec.BlockId, spec.BlockStateEnum]) *GrpcBlockHandler {
+func NewGrpcBlockHandler(logger *zap.Logger, env *envStore.Env, stateInput <-chan synccontroller.KV[spec.BlockId, spec.BlockStateEnum], stateOutput chan<- synccontroller.KV[spec.BlockId, spec.BlockStateEnum]) *GrpcBlockHandler {
 	return &GrpcBlockHandler{logger: logger, env: env, stateOutput: stateOutput, stateInput: stateInput}
 }
 
