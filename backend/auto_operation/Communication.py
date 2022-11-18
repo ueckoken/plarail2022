@@ -94,5 +94,6 @@ class Communication:
     # 指定したポイントに切替命令を送る
     def sendToggle(self, servoId: int, servoState: Junction.ServoState) -> None:
         # 何もしない。
-        # もともとはポイントに切替命令を送ることができたが削除された。
+        # もともとはArduinoにポイント切替命令を送ることができたが削除された。
+        # 代わりにmain.py内でConnection.pyに向けて切り替え指令を送る。
         pass

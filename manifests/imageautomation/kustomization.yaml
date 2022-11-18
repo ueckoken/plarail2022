@@ -3,7 +3,7 @@ resources:
   - ./frontend
   - ./frontend-python
   - ./internal
-  - ./webrtc-sender
+  - ./json2grpc
   - ./automation.yaml
   - ./positioning
   - ./auto-operation

@@ -42,7 +42,7 @@ enum BlockId {
   hashimoto_b2 = 32;
 
   hachioji_b1 = 41;
-  hashioji_b2 = 42;
+  hachioji_b2 = 42;
 }
 
 message BlockAndState {

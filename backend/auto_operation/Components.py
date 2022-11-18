@@ -120,7 +120,7 @@ class Junction:
     ]
 
     id: JunctionId
-    servoId: int
+    pointId: Optional[Point.PointId]  # junctionにサーボモータがついている場合のみ対応するPointIdを代入
     inSectionStraight: Optional["Section"]
     inSectionCurve: Optional["Section"]
     outSectionStraight: Optional["Section"]
@@ -130,9 +130,9 @@ class Junction:
     belongStation: Optional["Station"]
     toggleRequested: bool
 
-    def __init__(self, id: JunctionId, servoId: int) -> None:
+    def __init__(self, id: JunctionId, pointId: Optional[Point.PointId]) -> None:
         self.id = id
-        self.servoId = servoId
+        self.pointId = pointId
         self.inSectionStraight = None
         self.inSectionCurve = None
         self.outSectionStraight = None

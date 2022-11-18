@@ -23,8 +23,6 @@ grafanaというメトリクス可視化ツールが動いています。ID、�
 prometheusというメトリクス収集ツールが動いています。基本的に見なくていいです。
 - "alert.chofufes2022.ueckoken.club"
 使おうと思いましたがやめました。
-- "webrtc-sender.chofufes2022.ueckoken.club"
-`./frontend/momo_sender/index.html`が動いています。webrtcの配信者側ページです。
 
 
 ## 学内

@@ -14,12 +14,19 @@ struct Station hashimoto[2];
 
 const char* ssid = "";
 const char* password = "";
+const char* json2grpcAddr = "http://:54322/sensor";
+const IPAddress ipaddr(192, 168, 0, 0);  // ESP32 static IP address
+const IPAddress gateway(192, 168, 0, 0);  // default gateway
+const IPAddress subnet(255, 255, 254, 0);  // subnet mask
 
 HTTPClient http;
 
 void setup() {
     Serial.begin(115200);
-
+    if (!WiFi.config(ipaddr, gateway, subnet)) {
+       Serial.println("Failed to configure!");
+       while (1);
+    }
     WiFi.begin(ssid, password);
     while (WiFi.status() != WL_CONNECTED) {
       delay(500);
@@ -27,7 +34,7 @@ void setup() {
     }
     if (WiFi.status() == WL_CONNECTED) { Serial.println("conected");}
 
-    http.begin("http://:8081/sensor");
+    http.begin(json2grpcAddr);
     http.addHeader("Content-Type", "application/json");
 
     setupStation(&hashimoto[0], 34, hashimoto_d1);

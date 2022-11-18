@@ -5,7 +5,7 @@ import SwitchPoint from "./svgParts/SwitchPoint"
 import StopPoint from "./svgParts/StopPoint"
 import { Point, TrainData } from "../types/svgPartsTypes"
 import {
-  BlocklId,
+  BlockId,
   BunkiRailId,
   StationId,
   StopRailId,
@@ -16,7 +16,7 @@ interface Prop {
     stop: Record<StopRailId, boolean>
     switchState: Record<BunkiRailId, boolean>
     train1: TrainData
-    blockState: Record<BlocklId, boolean>
+    blockState: Record<BlockId, boolean>
   }
   onStopPointOrSwitchPointClick?: (stationId: StationId) => any
 }

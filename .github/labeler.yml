@@ -21,9 +21,6 @@ ats:
 multicaster:
   - any:
       - "backend/multicaster/**"
-momo_sender:
-  - any:
-      - "frontend/momo_sender/**"
 site:
   - any:
       - "frontend/site/**"
