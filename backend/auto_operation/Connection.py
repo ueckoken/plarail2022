@@ -25,6 +25,7 @@ import spec.block_pb2_grpc as block_pb2_grpc
 import spec.statesync_pb2 as statesync_pb2
 import spec.statesync_pb2_grpc as statesync_pb2_grpc
 
+
 class Connection:
     autoOperationServerAddress: str
     externalServerAddress: str
