@@ -67,7 +67,7 @@ func NewHTTPServer[T proto.Message](logger *zap.Logger, httpOutput chan<- T, htt
 // When client is disconnected, this will remove it and stop sending data.
 type ClientsCollection[T proto.Message] struct {
 	clients []websockethandler.ClientChannel[T]
-	mtx     sync.Mutex
+	mtx     sync.RWMutex
 }
 
 // StartServer starts HTTP server and websocket server.
@@ -86,12 +86,14 @@ func (h *HTTPServer[T]) RegisterServer(r *mux.Router, endpoint string) {
 // broadcastChanges receives the change from main channel and broadcast it to clients.
 func (h *HTTPServer[T]) broadcastChanges() {
 	for d := range h.httpInput {
-		h.clients.mtx.Lock()
-		h.totalCLientCommands.With(prometheus.Labels{}).Inc()
-		for _, c := range h.clients.clients {
-			c.SyncToClient <- d
-		}
-		h.clients.mtx.Unlock()
+		go func(d T) {
+			h.clients.mtx.RLock()
+			defer h.clients.mtx.RUnlock()
+			h.totalCLientCommands.With(prometheus.Labels{}).Inc()
+			for _, c := range h.clients.clients {
+				c.SyncToClient <- d
+			}
+		}(d)
 	}
 }
 

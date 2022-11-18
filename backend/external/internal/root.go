@@ -22,14 +22,14 @@ import (
 // Run runs external server.
 func Run(logger *zap.Logger) {
 	ctx := context.Background()
-	synccontrollerInput := make(chan synccontroller.KV[spec.StationId, spec.PointStateEnum])
-	synccontrollerOutput := make(chan synccontroller.KV[spec.StationId, spec.PointStateEnum])
-	grpcHandlerOutput := make(chan synccontroller.KV[spec.StationId, spec.PointStateEnum])
-	main2autooperation := make(chan synccontroller.KV[spec.StationId, spec.PointStateEnum])
-	main2internal := make(chan synccontroller.KV[spec.StationId, spec.PointStateEnum])
-	httpInputKV := make(chan synccontroller.KV[spec.StationId, spec.PointStateEnum])
-	httpInput := make(chan *spec.PointAndState)
-	httpOutput := make(chan *spec.PointAndState)
+	synccontrollerInput := make(chan synccontroller.KV[spec.StationId, spec.PointStateEnum], 64)
+	synccontrollerOutput := make(chan synccontroller.KV[spec.StationId, spec.PointStateEnum], 64)
+	grpcHandlerOutput := make(chan synccontroller.KV[spec.StationId, spec.PointStateEnum], 64)
+	main2autooperation := make(chan synccontroller.KV[spec.StationId, spec.PointStateEnum], 64)
+	main2internal := make(chan synccontroller.KV[spec.StationId, spec.PointStateEnum], 64)
+	httpInputKV := make(chan synccontroller.KV[spec.StationId, spec.PointStateEnum], 64)
+	httpInput := make(chan *spec.PointAndState, 64)
+	httpOutput := make(chan *spec.PointAndState, 64)
 
 	namespace := "internal"
 
@@ -119,12 +119,12 @@ func Run(logger *zap.Logger) {
 	internalHandler := NewGrpcHandlerForInternal(logger.Named("grpc-internal"), envVal, main2internal)
 	go internalHandler.Run(ctx)
 
-	httpBlockInput := make(chan *spec.BlockAndState)
-	httpBlockOutput := make(chan *spec.BlockAndState)
-	blocksyncInput := make(chan synccontroller.KV[spec.BlockId, spec.BlockStateEnum])
-	blocksyncOutput := make(chan synccontroller.KV[spec.BlockId, spec.BlockStateEnum])
-	grpcBlockHandlerInput := make(chan synccontroller.KV[spec.BlockId, spec.BlockStateEnum])
-	grpcBlockHandlerOutput := make(chan synccontroller.KV[spec.BlockId, spec.BlockStateEnum])
+	httpBlockInput := make(chan *spec.BlockAndState, 64)
+	httpBlockOutput := make(chan *spec.BlockAndState, 64)
+	blocksyncInput := make(chan synccontroller.KV[spec.BlockId, spec.BlockStateEnum], 64)
+	blocksyncOutput := make(chan synccontroller.KV[spec.BlockId, spec.BlockStateEnum], 64)
+	grpcBlockHandlerInput := make(chan synccontroller.KV[spec.BlockId, spec.BlockStateEnum], 64)
+	grpcBlockHandlerOutput := make(chan synccontroller.KV[spec.BlockId, spec.BlockStateEnum], 64)
 
 	httpBlockServer := httphandler.NewHTTPServer(
 		logger.Named("http-block"),
