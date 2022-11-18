@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: plarail2022-soft-frontend
-          image: ghcr.io/ueckoken/plarail2022-frontend:e238eb5-1668789236 # {"$imagepolicy": "plarail2021:frontend"}
+          image: ghcr.io/ueckoken/plarail2022-frontend:b1e097a-1668799336 # {"$imagepolicy": "plarail2021:frontend"}
           imagePullPolicy: Always
           ports:
             - containerPort: 8080
