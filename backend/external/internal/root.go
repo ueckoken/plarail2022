@@ -68,6 +68,11 @@ func Run(logger *zap.Logger) {
 		[]string{},
 	)
 
+	prometheus.MustRegister(synccontrollerOutputTotal)
+	prometheus.MustRegister(httpInputKVTotal)
+	prometheus.MustRegister(httpOutputTotal)
+	prometheus.MustRegister(grpcHandlerInputTotal)
+
 	go func() {
 		for c := range synccontrollerOutput {
 			synccontrollerOutputTotal.With(prometheus.Labels{}).Inc()
@@ -145,6 +150,8 @@ func Run(logger *zap.Logger) {
 		},
 		[]string{},
 	)
+	prometheus.MustRegister(grpcBlockHandlerOutputTotal)
+	prometheus.MustRegister(blocksyncOutputTotal)
 
 	go func() {
 		for c := range grpcBlockHandlerOutput {
