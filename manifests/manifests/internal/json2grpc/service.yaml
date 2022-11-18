@@ -6,7 +6,7 @@ metadata:
   labels:
     app: soft-backend-json2grpc
 spec:
-  type: NodePort
+  type: LoadBalancer
   selector:
     app: soft-backend-json2grpc
   ports:
