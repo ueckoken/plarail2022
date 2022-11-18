@@ -9,6 +9,6 @@ spec:
       match: Host(`operate.chofufes2022.ueckoken.club`)
       services:
         - name: auto-operation
-          port: 80
+          port: 8080
   tls:
     secretName: cloudflare-cert

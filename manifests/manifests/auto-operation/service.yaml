@@ -10,7 +10,7 @@ spec:
   selector:
     app: auto-operation
   ports:
-    - name: grpc-for-external
-      port: 50051
+    - name: grpc
+      port: 8080
       protocol: TCP
-      targetPort: 50051
+      targetPort: 8080

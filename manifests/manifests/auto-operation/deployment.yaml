@@ -18,6 +18,13 @@ spec:
           imagePullPolicy: Always
           ports:
             - containerPort: 50051
-          envFrom:
-            - configMapRef:
-                name: auto-operation-env
+          env:
+            - name: ESP_EYE_ENDPOINT
+              value: none
+            - name: SECRET_KEY
+              value: awesome 
+            - name: AUTO_OPERATION_SERVER_ADDRESS
+              value: "[::]:8080"
+            - name: EXTERNAL_SERVER_ADDRESS
+              value: external:8080
+              
