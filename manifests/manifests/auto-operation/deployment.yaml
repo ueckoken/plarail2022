@@ -17,7 +17,7 @@ spec:
           image: ghcr.io/ueckoken/plarail2022-auto-operation:df4f652-1668679369 # {"$imagepolicy": "plarail2021:auto-operation"}
           imagePullPolicy: Always
           ports:
-            - containerPort: 50051
+            - containerPort: 8080
           env:
             - name: ESP_EYE_ENDPOINT
               value: none
