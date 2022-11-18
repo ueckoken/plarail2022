@@ -31,7 +31,11 @@ func main() {
 	if err != nil {
 		log.Fatalln("systemcertpool failed", err)
 	}
-	config := &tls.Config{RootCAs: certpool, ServerName: conf.InternalEndpoint}
+	config := &tls.Config{
+		RootCAs:    certpool,
+		ServerName: conf.InternalEndpoint,
+		MinVersion: tls.VersionTLS13,
+	}
 	cred := credentials.NewTLS(config)
 
 	grpcCtx, cancel := context.WithTimeout(baseCtx, 5*time.Second)
