@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: soft-backend-internal
-          image: ghcr.io/ueckoken/plarail2022-internal:e398c60-1668783807 # {"$imagepolicy": "plarail2021:internal"}
+          image: ghcr.io/ueckoken/plarail2022-internal:dbc5d63-1668787572 # {"$imagepolicy": "plarail2021:internal"}
           imagePullPolicy: Always
           ports:
             - containerPort: 54321
