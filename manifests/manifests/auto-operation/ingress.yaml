@@ -23,4 +23,4 @@ spec:
     - hosts:
         - "*.chofufes2022.ueckoken.club"
         - "chofufes2022.ueckoken.club"
-      secretName: traefik-6cc55f75d7-njv8p
+      secretName: cloudflare-cert
