@@ -145,7 +145,7 @@ func Run(logger *zap.Logger) {
 	blocksyncOutputTotal := prometheus.NewCounterVec(
 		prometheus.CounterOpts{
 			Namespace: namespace,
-			Name:      "",
+			Name:      "blocksyncoutput_total",
 			Help:      "",
 		},
 		[]string{},
