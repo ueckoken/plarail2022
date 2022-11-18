@@ -26,9 +26,6 @@ import spec.block_pb2_grpc as block_pb2_grpc
 import spec.statesync_pb2 as statesync_pb2
 import spec.statesync_pb2_grpc as statesync_pb2_grpc
 
-cred = grpc.ssl_channel_credentials(root_certificates=bytes(certifi.contents(), "utf-8"))
-
-
 class Connection:
     autoOperationServerAddress: str
     externalServerAddress: str
@@ -54,7 +51,7 @@ class Connection:
         statesync_pb2_grpc.add_PointStateNotificationServicer_to_server(
             pointStateNotificationServicer, server
         )
-        server.add_insecure_port(autoOperationServerAddress, cred)
+        server.add_insecure_port(autoOperationServerAddress)
         server.start()
         server.wait_for_termination()
 
@@ -76,7 +73,7 @@ class Connection:
 
     def sendStop(self, stationId: str, state: str) -> None:
         try:
-            with grpc.secure_channel(self.externalServerAddress, cred) as channel:
+            with grpc.insecure_channel(self.externalServerAddress) as channel:
                 stub = statesync_pb2_grpc.StateManagerStub(channel)
                 response = stub.UpdatePointState(
                     statesync_pb2.UpdatePointStateRequest(
@@ -92,7 +89,7 @@ class Connection:
 
     def sendBlock(self, blockId: str, state: str) -> None:
         try:
-            with grpc.secure_channel(self.externalServerAddress, cred) as channel:
+            with grpc.insecure_channel(self.externalServerAddress) as channel:
                 stub = block_pb2_grpc.BlockStateManagerStub(channel)
                 response = stub.UpdateBlockState(
                     block_pb2.UpdateBlockStateRequest(
