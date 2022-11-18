@@ -435,13 +435,6 @@ class State:
         for train in self.trainList:
             self.communication.sendSpeed(train.id, train.targetSpeed)
 
-        # ポイントへの指令送信
-        for junction in self.junctionList:
-            if junction.servoId > -1 and junction.toggleRequested:
-                self.communication.sendToggle(junction.servoId, junction.outServoState)
-                junction.toggleRequested = False
-                # inServoStateは、実際にはサーボモーターがついていないので送信しない
-
     def getJunctionById(self, id: Junction.JunctionId) -> Junction:
         return list(filter(lambda item: item.id == id, self.junctionList))[0]
 
