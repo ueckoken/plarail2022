@@ -1,24 +1,23 @@
 import threading
 import time
+from concurrent import futures
 
+import grpc
 import pydantic
 from flask import Flask, render_template
 from flask_cors import CORS
 from flask_socketio import SocketIO
 
-from Components import Section, Stop
-from Connection import Connection
-from Operation import Operation
-
-from Connection import AtsServicer, PointStateNotificationServicer
-import grpc
-from concurrent import futures
 import spec.ats_pb2 as ats_pb2
 import spec.ats_pb2_grpc as ats_pb2_grpc
 import spec.block_pb2 as block_pb2
 import spec.block_pb2_grpc as block_pb2_grpc
 import spec.statesync_pb2 as statesync_pb2
 import spec.statesync_pb2_grpc as statesync_pb2_grpc
+from Components import Section, Stop
+from Connection import AtsServicer, Connection, PointStateNotificationServicer
+from Operation import Operation
+
 
 class Conf(pydantic.BaseSettings):
     esp_eye_endpoint: str
@@ -128,7 +127,8 @@ def index():
         esp_eye_ip_addr=conf.esp_eye_endpoint,
         max_speed=Operation.MAXSPEED,
     )
-    
+
+
 # gRPCサーバーを起動する
 def serve():
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
@@ -137,6 +137,7 @@ def serve():
     server.add_insecure_port("[::]:6543")
     server.start()
     server.wait_for_termination()
+
 
 if __name__ == "__main__":
     operationThread = threading.Thread(target=operation_loop, daemon=True)
