@@ -338,10 +338,9 @@ const Home: NextPage = () => {
                 id: "koken",
               },
             }}
-            onStopPointOrSwitchPointClick={(stationId) =>{
+            onStopPointOrSwitchPointClick={(stationId) => {
               toggleStopPointOrSwitchPointState(stationId)
-            }
-            }
+            }}
           />
         </section>
       </main>

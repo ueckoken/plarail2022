@@ -155,32 +155,32 @@ export type BlockState = "UNKNOWN" | "OPEN" | "CLOSE"
 export const BlockStateIdMap = {
   0: "UNKNOWN",
   1: "OPEN",
-  2: "CLOSE"
+  2: "CLOSE",
 }
 
 export const BlockStateIdMapReverse = {
   UNKNOWN: 0,
   OPEN: 1,
-  CLOSE: 2
+  CLOSE: 2,
 }
 
 export const StationStateIdMap = {
   0: "UNKNOWN",
   1: "ON",
-  2: "OFF"
+  2: "OFF",
 }
 
 export const StationStateIdMapReverse = {
   UNKNOWN: 0,
   ON: 1,
-  OFF: 2
+  OFF: 2,
 }
 
 export type StationMessage = {
   station: {
-    stationId: keyof typeof pointIdMap;
+    stationId: keyof typeof pointIdMap
   }
-  state: keyof typeof BlockStateIdMap;
+  state: keyof typeof BlockStateIdMap
 }
 
 export type BlockMessage = {
