@@ -5,6 +5,8 @@ metadata:
   namespace: flux-system
 spec:
   interval: 10m
+  values:
+    installCRDs: true
   targetNamespace: nginx-ingress
   chart:
     spec:
