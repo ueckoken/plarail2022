@@ -44,21 +44,23 @@ func (g GrpcStateHandler) handleInput(ctx context.Context) {
 		grpc.WithTransportCredentials(insecure.NewCredentials()),
 	)
 	if err != nil {
-		g.logger.Error("failed to connect ATS", zap.Error(err))
+		g.logger.Error("failed to connect to ATS", zap.Error(err))
 	}
 	defer con.Close()
 	for d := range g.stateInput {
-		client := spec.NewPointStateNotificationClient(con)
-		req := &spec.NotifyPointStateRequest{
-			State: &spec.PointAndState{
-				Station: &spec.Station{StationId: d.Key},
-				State:   d.Value,
-			},
-		}
-		_, err := client.NotifyPointState(ctx, req)
-		if err != nil {
-			g.logger.Error("failed to send data to ATS", zap.Any("payload", req), zap.Error(err))
-		}
+		go func(d synccontroller.KV[spec.StationId, spec.PointStateEnum]){
+			client := spec.NewPointStateNotificationClient(con)
+			req := &spec.NotifyPointStateRequest{
+				State: &spec.PointAndState{
+					Station: &spec.Station{StationId: d.Key},
+					State:   d.Value,
+				},
+			}
+			_, err := client.NotifyPointState(ctx, req)
+			if err != nil {
+				g.logger.Error("failed to send data to ATS", zap.Any("payload", req), zap.Error(err))
+			}
+		}(d)
 	}
 }
 
@@ -87,18 +89,20 @@ func (g GrpcBlockHandler) handleInput(ctx context.Context) {
 		grpc.WithTransportCredentials(insecure.NewCredentials()),
 	)
 	if err != nil {
-		g.logger.Error("failed to connect ATS", zap.Error(err))
+		g.logger.Error("failed to connect to ATS", zap.Error(err))
 	}
 	defer con.Close()
 	for d := range g.stateInput {
-		client := spec.NewBlockStateNotificationClient(con)
-		req := &spec.NotifyBlockStateRequest{
-			State: &spec.BlockAndState{BlockId: d.Key, State: d.Value},
-		}
-		_, err := client.NotifyBlockState(ctx, req)
-		if err != nil {
-			g.logger.Error("failed to send data to ATS", zap.Any("payload", req), zap.Error(err))
-		}
+		go func(d synccontroller.KV[spec.BlockId, spec.BlockStateEnum]){
+			client := spec.NewBlockStateNotificationClient(con)
+			req := &spec.NotifyBlockStateRequest{
+				State: &spec.BlockAndState{BlockId: d.Key, State: d.Value},
+			}
+			_, err := client.NotifyBlockState(ctx, req)
+			if err != nil {
+				g.logger.Error("failed to send data to ATS", zap.Any("payload", req), zap.Error(err))
+			}
+		}(d)
 	}
 }
 
@@ -131,21 +135,23 @@ func (g GrpcStateHandlerForInternal) handleInput(ctx context.Context) {
 		grpc.WithTransportCredentials(insecure.NewCredentials()),
 	)
 	if err != nil {
-		g.logger.Error("failed to connect ATS", zap.Error(err))
+		g.logger.Error("failed to connect to internal", zap.Error(err))
 	}
 	defer con.Close()
+	client := spec.NewPointStateNotificationClient(con)
 	for d := range g.stateInput {
-		client := spec.NewPointStateNotificationClient(con)
-		req := &spec.NotifyPointStateRequest{
-			State: &spec.PointAndState{
-				Station: &spec.Station{StationId: d.Key},
-				State:   d.Value,
-			},
-		}
-		_, err := client.NotifyPointState(ctx, req)
-		if err != nil {
-			g.logger.Error("failed to send data to ATS", zap.Any("payload", req), zap.Error(err))
-		}
+		go func(d synccontroller.KV[spec.StationId, spec.PointStateEnum]){
+			req := &spec.NotifyPointStateRequest{
+				State: &spec.PointAndState{
+					Station: &spec.Station{StationId: d.Key},
+					State:   d.Value,
+				},
+			}
+			_, err := client.NotifyPointState(ctx, req)
+			if err != nil {
+				g.logger.Error("failed to send data to ATS", zap.Any("payload", req), zap.Error(err))
+			}
+		}(d)
 	}
 }
 
