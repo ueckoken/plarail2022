@@ -11,7 +11,7 @@ spec:
     - name: soft-frontend
       port: 80
     middlewares:
-      - name: traefik-oauth2-proxy-verify
+      - name: ipwhitelist
         namespace: traefik
   tls:
     secretName: cloudflare-cert
