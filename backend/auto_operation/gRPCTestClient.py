@@ -1,7 +1,5 @@
 # externalとproxyとの繋ぎ込みをするためのクラス
 
-
-import certifi
 import grpc
 
 import spec.ats_pb2 as ats_pb2
