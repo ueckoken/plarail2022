@@ -14,3 +14,9 @@ spec:
         name: traefik
         namespace: traefik
       interval: 10m
+  values:
+    logs:
+      general:
+        level: INFO
+      access:
+        enabled: true

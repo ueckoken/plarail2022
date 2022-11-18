@@ -13,9 +13,9 @@ chofu_b3: BlockId
 chofu_b4: BlockId
 chofu_b5: BlockId
 hachioji_b1: BlockId
+hachioji_b2: BlockId
 hashimoto_b1: BlockId
 hashimoto_b2: BlockId
-hashioji_b2: BlockId
 sakurajosui_b1: BlockId
 sakurajosui_b2: BlockId
 sakurajosui_b3: BlockId

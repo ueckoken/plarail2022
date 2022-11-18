@@ -2,9 +2,16 @@ package internal
 
 import (
 	"context"
+	"fmt"
+	"net/http"
+	"time"
+
+	"github.com/gorilla/mux"
+	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"github.com/ueckoken/plarail2022/backend/external/pkg/envStore"
 	"github.com/ueckoken/plarail2022/backend/external/pkg/httphandler"
 	"github.com/ueckoken/plarail2022/backend/external/pkg/synccontroller"
+	"github.com/ueckoken/plarail2022/backend/external/pkg/websockethandler"
 	"github.com/ueckoken/plarail2022/backend/external/spec"
 
 	"go.uber.org/zap"
@@ -16,10 +23,10 @@ func Run(logger *zap.Logger) {
 	synccontrollerInput := make(chan synccontroller.KV[spec.StationId, spec.PointStateEnum])
 	synccontrollerOutput := make(chan synccontroller.KV[spec.StationId, spec.PointStateEnum], 32)
 	grpcHandlerInput := make(chan synccontroller.KV[spec.StationId, spec.PointStateEnum])
-	main2autooperation := make(chan synccontroller.KV[spec.StationId, spec.PointStateEnum])
+	main2autooperation := make(chan synccontroller.KV[spec.StationId, spec.PointStateEnum], 32)
 	main2internal := make(chan synccontroller.KV[spec.StationId, spec.PointStateEnum], 32)
 	httpInputKV := make(chan synccontroller.KV[spec.StationId, spec.PointStateEnum], 32)
-	httpInput := make(chan *spec.PointAndState)
+	httpInput := make(chan *spec.PointAndState, 32)
 	httpOutput := make(chan *spec.PointAndState)
 
 	go func() {
@@ -79,10 +86,11 @@ func Run(logger *zap.Logger) {
 		httpOutput,
 		httpInput,
 		envVal,
+		"httppointserver",
 	)
 
 	StartStationSync(logger.Named("station-sync"), synccontrollerInput, synccontrollerOutput)
-	grpcHandler := NewGrpcHandler(logger.Named("grpc-handler"), envVal, main2autooperation, grpcHandlerInput)
+	grpcHandler := NewGrpcHandler(logger.Named("grpc-handler"), envVal, grpcHandlerInput, main2autooperation)
 	internalHandler := NewGrpcHandlerForInternal(logger.Named("grpc-internal"), envVal, main2internal)
 	go internalHandler.Run(ctx)
 
@@ -98,6 +106,7 @@ func Run(logger *zap.Logger) {
 		httpBlockOutput,
 		httpBlockInput,
 		envVal,
+		"httpblockserver",
 	)
 
 	go func() {
@@ -129,6 +138,22 @@ func Run(logger *zap.Logger) {
 	grpcBlockHandl := NewGrpcBlockHandler(logger.Named("grpc-block-handler"), envVal, grpcBlockHandlerOutput, grpcBlockHandlerInput)
 
 	go GRPCListenAndServe(ctx, logger, uint(envVal.ClientSideServer.GrpcPort), grpcHandler, grpcBlockHandl)
-	go httpBlockServer.StartServer(int(envVal.ClientSideServer.BlockStatePort))
-	httpServer.StartServer(int(envVal.ClientSideServer.PointStatePort))
+	r := mux.NewRouter()
+	r.HandleFunc("/", websockethandler.HandleStatic)
+	r.Handle("/metrics", promhttp.Handler())
+	httpBlockServer.RegisterServer(r, "/blockws")
+	httpServer.RegisterServer(r, "/pointws")
+
+	srv := &http.Server{
+		Handler:           r,
+		Addr:              fmt.Sprintf("0.0.0.0:%d", envVal.ClientSideServer.Port),
+		ReadHeaderTimeout: 5 * time.Second,
+		ReadTimeout:       5 * time.Second,
+		WriteTimeout:      5 * time.Second,
+	}
+
+	logger.Info("start listening")
+	if err := srv.ListenAndServe(); err != nil {
+		logger.Panic("failed to serve", zap.Error(err))
+	}
 }

@@ -2,10 +2,11 @@ resources:
   - ./frontend
   - ./python-webrtc-server
   - ./external
+  # internalは学内サーバで管理
+  # - ./internal/
   - ./receiver-test
   - ./webrtc-sender
   - ./logviewer
-  - ./internal
 #  - ./positioning
   - ./frontend-camera-sender
   - ./auto-operation
