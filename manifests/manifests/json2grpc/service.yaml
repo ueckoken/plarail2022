@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: soft-backend-json2grpc
+  namespace: plarail2021
+  labels:
+    app: soft-backend-json2grpc
+spec:
+  type: ClusterIP
+  selector:
+    app: soft-backend-json2grpc
+  ports:
+  - name: web
+    port: 80
+    protocol: TCP
+    targetPort: 8080
