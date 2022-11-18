@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: soft-backend-json2grpc
-          image: ghcr.io/ueckoken/plarail2022-json2grpc:99f21a6-1668771879 # {"$imagepolicy": "plarail2021:json2grpc"}
+          image: ghcr.io/ueckoken/plarail2022-json2grpc:6aa5ebb-1668772583 # {"$imagepolicy": "plarail2021:json2grpc"}
           imagePullPolicy: Always
           ports:
             - containerPort: 8080
