@@ -10,6 +10,15 @@ from Components import Section, Stop
 from Connection import Connection
 from Operation import Operation
 
+from Connection import AtsServicer, PointStateNotificationServicer
+import grpc
+from concurrent import futures
+import spec.ats_pb2 as ats_pb2
+import spec.ats_pb2_grpc as ats_pb2_grpc
+import spec.block_pb2 as block_pb2
+import spec.block_pb2_grpc as block_pb2_grpc
+import spec.statesync_pb2 as statesync_pb2
+import spec.statesync_pb2_grpc as statesync_pb2_grpc
 
 class Conf(pydantic.BaseSettings):
     esp_eye_endpoint: str
@@ -119,7 +128,15 @@ def index():
         esp_eye_ip_addr=conf.esp_eye_endpoint,
         max_speed=Operation.MAXSPEED,
     )
-
+    
+# gRPCサーバーを起動する
+def serve():
+    server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
+    block_pb2_grpc.add_BlockStateSyncServicer_to_server(AtsServicer(), server)
+    statesync_pb2_grpc.add_ControlServicer_to_server(PointStateNotificationServicer(), server)
+    server.add_insecure_port("[::]:6543")
+    server.start()
+    server.wait_for_termination()
 
 if __name__ == "__main__":
     operationThread = threading.Thread(target=operation_loop, daemon=True)
@@ -127,3 +144,4 @@ if __name__ == "__main__":
     signalThread = threading.Thread(target=send_signal_to_browser, daemon=True)
     signalThread.start()  # ブラウザへデータを送信するタスクの開始
     socketio.run(app, host="0.0.0.0", port=50050)  # Flaskソケットを起動
+    serve()  # gRPCサーバーを起動
