@@ -1,0 +1,18 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: auto-operation-nginx
+  namespace: plarail2021
+spec:
+  ingressClassName: ingress-nginx
+  rules:
+    - host: operate.chofufes2022.ueckoken.club
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: auto-operation
+                port:
+                  number: 8080
