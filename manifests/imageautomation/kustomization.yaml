@@ -4,7 +4,6 @@ resources:
   - ./frontend-python
   - ./internal
   - ./json2grpc
-  - ./webrtc-sender
   - ./receiver
   - ./automation.yaml
   - ./positioning

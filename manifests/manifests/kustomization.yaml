@@ -5,7 +5,6 @@ resources:
   # internalは学内サーバで管理
   # - ./internal/
   - ./receiver-test
-  - ./webrtc-sender
   - ./logviewer
 #  - ./positioning
   - ./frontend-camera-sender
