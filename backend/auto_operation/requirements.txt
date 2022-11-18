@@ -24,3 +24,4 @@ Werkzeug==2.2.2
 zope.event==4.5.0
 zope.interface==5.5.2
 grpcio-tools==1.50.0
+certifi==2022.9.24
