@@ -27,3 +27,14 @@ spec:
               value: "[::]:8080"
             - name: EXTERNAL_SERVER_ADDRESS
               value: soft-backend-external:8080
+          volumeMounts:
+            - mountPath: "/app/root.crt"
+              name: root-crt
+              readOnly: true
+      volumes:
+        - name: root-crt
+          secret:
+            secretName: letsencrypt-prod
+            items:
+              - key: tls.crt
+                path: .
