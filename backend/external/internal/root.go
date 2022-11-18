@@ -21,31 +21,19 @@ import (
 func Run(logger *zap.Logger) {
 	ctx := context.Background()
 	synccontrollerInput := make(chan synccontroller.KV[spec.StationId, spec.PointStateEnum])
-	synccontrollerOutput := make(chan synccontroller.KV[spec.StationId, spec.PointStateEnum], 32)
+	synccontrollerOutput := make(chan synccontroller.KV[spec.StationId, spec.PointStateEnum])
 	grpcHandlerInput := make(chan synccontroller.KV[spec.StationId, spec.PointStateEnum])
-	main2autooperation := make(chan synccontroller.KV[spec.StationId, spec.PointStateEnum], 32)
-	main2internal := make(chan synccontroller.KV[spec.StationId, spec.PointStateEnum], 32)
-	httpInputKV := make(chan synccontroller.KV[spec.StationId, spec.PointStateEnum], 32)
-	httpInput := make(chan *spec.PointAndState, 32)
+	main2autooperation := make(chan synccontroller.KV[spec.StationId, spec.PointStateEnum])
+	main2internal := make(chan synccontroller.KV[spec.StationId, spec.PointStateEnum])
+	httpInputKV := make(chan synccontroller.KV[spec.StationId, spec.PointStateEnum])
+	httpInput := make(chan *spec.PointAndState)
 	httpOutput := make(chan *spec.PointAndState)
 
 	go func() {
 		for c := range synccontrollerOutput {
-			select {
-			case main2autooperation <- c:
-			default:
-				logger.Info("buffer full", zap.String("buffer", "main2grpcHandler"))
-			}
-			select {
-			case httpInputKV <- c:
-			default:
-				logger.Info("buffer full", zap.String("buffer", "httpInputKV"))
-			}
-			select {
-			case main2internal <- c:
-			default:
-				logger.Info("buffer full", zap.String("buffer", "internal"))
-			}
+			main2autooperation <- c
+			httpInputKV <- c
+			main2internal <- c
 		}
 	}()
 
@@ -121,16 +109,8 @@ func Run(logger *zap.Logger) {
 
 	go func() {
 		for c := range blocksyncOutput {
-			select {
-			case grpcBlockHandlerInput <- c:
-			default:
-				logger.Info("buffer full", zap.String("buffer", "grpcblockhandlerinput-blocksync"))
-			}
-			select {
-			case httpBlockInput <- &spec.BlockAndState{BlockId: c.Key, State: c.Value}:
-			default:
-				logger.Info("buffer full", zap.String("buffer", "httpblockinput-blocksync"))
-			}
+			grpcBlockHandlerInput <- c
+			httpBlockInput <- &spec.BlockAndState{BlockId: c.Key, State: c.Value}
 		}
 	}()
 

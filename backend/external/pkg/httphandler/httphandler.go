@@ -89,12 +89,7 @@ func (h *HTTPServer[T]) broadcastChanges() {
 		h.clients.mtx.Lock()
 		h.totalCLientCommands.With(prometheus.Labels{}).Inc()
 		for _, c := range h.clients.clients {
-			select {
-			case c.SyncToClient <- d:
-			default:
-				h.logger.Info("client buffer is full...")
-				continue
-			}
+			c.SyncToClient <- d
 		}
 		h.clients.mtx.Unlock()
 	}
