@@ -1,6 +1,5 @@
 resources:
   - ./frontend
-  - ./python-webrtc-server
   - ./external
   # internalは学内サーバで管理
   # - ./internal/

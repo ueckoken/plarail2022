@@ -44,24 +44,3 @@ jobs:
         with:
           message: format by black
           default_author: github_actions
-
-  black-multicaster:
-    runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: "backend/multicaster"
-    steps:
-      - name: checkout
-        uses: actions/checkout@v3
-      - uses: actions/setup-python@v4
-        with:
-          python-version-file: ./backend/multicaster/.python-version
-          cache: pip
-          cache-dependency-path: ./backend/multicaster/requirements-dev.txt
-      - run: pip install -r requirements-dev.txt
-      - run: black .
-      - uses: EndBug/add-and-commit@v9
-        with:
-          author_name: format BOT
-          author_email: bot@example.com
-          message: format by black
