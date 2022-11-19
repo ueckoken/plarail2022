@@ -24,7 +24,7 @@ func TestSyncController_update(t *testing.T) {
 	station2 := KV[spec.StationId, spec.PointStateEnum]{Key: spec.StationId(2), Value: spec.PointStateEnum(1)}
 	kvs := newStationKVS[spec.StationId, spec.PointStateEnum]()
 	changed := kvs.update(station1)
-	if !changed{
+	if !changed {
 		t.Errorf("kvs is not changed")
 	}
 	if !kvs.contain(station1) {

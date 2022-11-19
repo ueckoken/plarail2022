@@ -74,7 +74,7 @@ func (s *SyncController[T, U]) triggeredSync() {
 	for c := range s.stateInput {
 		s.logger.Info("state input received", zap.Any("state", c))
 		changed := s.kvs.update(c)
-		if changed{
+		if changed {
 			s.stateOutput <- c
 		}
 	}
