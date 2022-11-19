@@ -23,18 +23,18 @@ func TestSyncController_update(t *testing.T) {
 	station1 := KV[spec.StationId, spec.PointStateEnum]{Key: spec.StationId(1), Value: spec.PointStateEnum(1)}
 	station2 := KV[spec.StationId, spec.PointStateEnum]{Key: spec.StationId(2), Value: spec.PointStateEnum(1)}
 	kvs := newStationKVS[spec.StationId, spec.PointStateEnum]()
-	err := kvs.update(station1)
-	if err != nil {
-		t.Errorf("validate failed. `%v`", err)
+	changed := kvs.update(station1)
+	if !changed {
+		t.Errorf("kvs is not changed")
 	}
 	if !kvs.contain(station1) {
 		t.Errorf("append failed")
 	}
 
 	// new station append
-	err = kvs.update(station2)
-	if err != nil {
-		t.Errorf("validate failed. `%v`", err)
+	changed = kvs.update(station2)
+	if !changed {
+		t.Errorf("kvs is not changed")
 	}
 	if !kvs.contain(station2) {
 		t.Errorf("station add failed")
@@ -51,9 +51,9 @@ func TestSyncController_update(t *testing.T) {
 
 	// update exist station data
 	station1 = KV[spec.StationId, spec.PointStateEnum]{Key: spec.StationId(1), Value: spec.PointStateEnum(0)}
-	err = kvs.update(station1)
-	if err != nil {
-		t.Errorf("validate failed. `%v`", err)
+	changed = kvs.update(station1)
+	if !changed {
+		t.Errorf("kvs is not changed")
 	}
 	if len(kvs.values) != 2 {
 		t.Errorf("append failed")
@@ -75,9 +75,9 @@ func TestSyncController_get(t *testing.T) {
 	}
 
 	kvs = newStationKVS[spec.StationId, spec.PointStateEnum]()
-	err = kvs.update(station1)
-	if err != nil {
-		t.Errorf("return err is not nil: %e", err)
+	changed := kvs.update(station1)
+	if !changed {
+		t.Errorf("kvs is not changed")
 	}
 	station, err := kvs.get(spec.StationId(1))
 	if err != nil {
@@ -87,9 +87,9 @@ func TestSyncController_get(t *testing.T) {
 		t.Errorf("'station1' is expect but called station%d", station)
 	}
 
-	err = kvs.update(station2)
-	if err != nil {
-		t.Errorf("return err is not nil: %e", err)
+	changed = kvs.update(station2)
+	if !changed {
+		t.Errorf("kvs is not changed")
 	}
 	station, err = kvs.get(2)
 	if err != nil {
