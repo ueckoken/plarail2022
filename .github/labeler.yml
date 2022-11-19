@@ -18,12 +18,6 @@ ats:
   - any:
     - "backend/ats/**"
     - "!backend/ats/spec/**"
-momo_sender:
-  - any:
-      - "frontend/momo_sender/**"
-skyway_receiver:
-  - any:
-      - "frontend/skyway_receiver/**"
 site:
   - any:
       - "frontend/site/**"

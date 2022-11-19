@@ -10,7 +10,11 @@ spec:
   selector:
     app: soft-backend-external
   ports:
-  - name: web
-    port: 80
-    protocol: TCP
-    targetPort: 8080
+    - name: web
+      port: 80
+      protocol: TCP
+      targetPort: 8080
+    - name: grpc
+      port: 9000
+      protocol: TCP
+      targetPort: 9000

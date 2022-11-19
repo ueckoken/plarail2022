@@ -14,7 +14,7 @@ spec:
         app: logviewer
     spec:
       containers:
-      - image: asia-northeast1-docker.pkg.dev/gotti-dev/plarail-logviewer/logviewer-401bd39657a23ac59c9a6cfad7dfbc52@sha256:1efc8ec1469c5c12902f775489546609c99e3d4f09d8abf695c799b98d861333
+      - image: ghcr.io/ueckoken/plarail2022-logviewer:b1e097a-1668799336 # {"$imagepolicy": "plarail2021:logviewer"}
         name: logviewer
         ports:
         - containerPort: 8080
@@ -27,4 +27,7 @@ spec:
           requests:
             cpu: 5m
             memory: 64Mi
+        envFrom:
+        - configMapRef:
+            name: logviewer-env
       serviceAccountName: logviewer

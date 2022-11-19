@@ -1,16 +1,12 @@
 package httphandler
 
 import (
-	"fmt"
-	"net/http"
+	"github.com/ueckoken/plarail2022/backend/external/pkg/envStore"
+	"github.com/ueckoken/plarail2022/backend/external/pkg/websockethandler"
 	"sync"
-	"time"
-	"ueckoken/plarail2022-external/pkg/envStore"
-	"ueckoken/plarail2022-external/pkg/websockethandler"
 
 	"github.com/gorilla/mux"
 	"github.com/prometheus/client_golang/prometheus"
-	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"go.uber.org/zap"
 	"google.golang.org/protobuf/proto"
 )
@@ -28,8 +24,7 @@ type HTTPServer[T proto.Message] struct {
 }
 
 // NewHTTPServer creates HTTP server.
-func NewHTTPServer[T proto.Message](logger *zap.Logger, httpOutput chan<- T, httpInput <-chan T, env *envStore.Env) *HTTPServer[T] {
-	const namespace = "plarailexternal"
+func NewHTTPServer[T proto.Message](logger *zap.Logger, httpOutput chan<- T, httpInput <-chan T, env *envStore.Env, namespace string) *HTTPServer[T] {
 	clientConn := prometheus.NewGaugeVec(
 		prometheus.GaugeOpts{
 			Namespace: namespace,
@@ -72,51 +67,33 @@ func NewHTTPServer[T proto.Message](logger *zap.Logger, httpOutput chan<- T, htt
 // When client is disconnected, this will remove it and stop sending data.
 type ClientsCollection[T proto.Message] struct {
 	clients []websockethandler.ClientChannel[T]
-	mtx     sync.Mutex
+	mtx     sync.RWMutex
 }
 
 // StartServer starts HTTP server and websocket server.
-func (h *HTTPServer[T]) StartServer() {
+func (h *HTTPServer[T]) RegisterServer(r *mux.Router, endpoint string) {
 	clientChannelSend := make(chan websockethandler.ClientChannel[T])
 	handlerInput := make(chan T)
 	go h.registerClient(clientChannelSend)
 	go h.broadcastChanges()
 	go h.unregisterClients()
-	r := mux.NewRouter()
 	prometheus.MustRegister(h.numberOfClientConnection)
 	prometheus.MustRegister(h.totalClientConnection)
 	prometheus.MustRegister(h.totalCLientCommands)
-	r.HandleFunc("/", websockethandler.HandleStatic)
-	r.Handle("/ws", websockethandler.NewClientHandler(h.logger.Named("ws-handler"), handlerInput, clientChannelSend))
-	r.Handle("/metrics", promhttp.Handler())
-	srv := &http.Server{
-		Handler:           r,
-		Addr:              fmt.Sprintf("0.0.0.0:%d", h.environment.ClientSideServer.Port),
-		ReadHeaderTimeout: 5 * time.Second,
-		ReadTimeout:       5 * time.Second,
-		WriteTimeout:      5 * time.Second,
-	}
-
-	h.logger.Info("start listening")
-	if err := srv.ListenAndServe(); err != nil {
-		h.logger.Panic("failed to serve", zap.Error(err))
-	}
+	r.Handle(endpoint, websockethandler.NewClientHandler(h.logger.Named("ws-handler"), handlerInput, clientChannelSend))
 }
 
 // broadcastChanges receives the change from main channel and broadcast it to clients.
 func (h *HTTPServer[T]) broadcastChanges() {
 	for d := range h.httpInput {
-		h.clients.mtx.Lock()
-		h.totalCLientCommands.With(prometheus.Labels{}).Inc()
-		for _, c := range h.clients.clients {
-			select {
-			case c.SyncToClient <- d:
-			default:
-				h.logger.Info("client buffer is full...")
-				continue
+		go func(d T) {
+			h.clients.mtx.RLock()
+			defer h.clients.mtx.RUnlock()
+			h.totalCLientCommands.With(prometheus.Labels{}).Inc()
+			for _, c := range h.clients.clients {
+				c.SyncToClient <- d
 			}
-		}
-		h.clients.mtx.Unlock()
+		}(d)
 	}
 }
 

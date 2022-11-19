@@ -1,0 +1,20 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: soft-camera-sender
+  namespace: plarail2021
+spec:
+  selector:
+    matchLabels:
+      app: soft-camera-sender
+  template:
+    metadata:
+      labels:
+        app: soft-camera-sender
+    spec:
+      containers:
+        - name: soft-camera-sender
+          image: ghcr.io/ueckoken/plarail2022-camera_sender:df4f652-1668679369 # FIXME
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8080

@@ -18,86 +18,175 @@ import (
 // Requires gRPC-Go v1.32.0 or later.
 const _ = grpc.SupportPackageIsVersion7
 
-// BlockStateSyncClient is the client API for BlockStateSync service.
+// BlockStateManagerClient is the client API for BlockStateManager service.
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
-type BlockStateSyncClient interface {
-	NotifyState(ctx context.Context, in *NotifyStateRequest, opts ...grpc.CallOption) (*NotifyStateResponse, error)
+type BlockStateManagerClient interface {
+	// UpdateBlockStateはサーバのBlockStateを変更します。
+	UpdateBlockState(ctx context.Context, in *UpdateBlockStateRequest, opts ...grpc.CallOption) (*UpdateBlockStateResponse, error)
 }
 
-type blockStateSyncClient struct {
+type blockStateManagerClient struct {
 	cc grpc.ClientConnInterface
 }
 
-func NewBlockStateSyncClient(cc grpc.ClientConnInterface) BlockStateSyncClient {
-	return &blockStateSyncClient{cc}
+func NewBlockStateManagerClient(cc grpc.ClientConnInterface) BlockStateManagerClient {
+	return &blockStateManagerClient{cc}
 }
 
-func (c *blockStateSyncClient) NotifyState(ctx context.Context, in *NotifyStateRequest, opts ...grpc.CallOption) (*NotifyStateResponse, error) {
-	out := new(NotifyStateResponse)
-	err := c.cc.Invoke(ctx, "/BlockStateSync/NotifyState", in, out, opts...)
+func (c *blockStateManagerClient) UpdateBlockState(ctx context.Context, in *UpdateBlockStateRequest, opts ...grpc.CallOption) (*UpdateBlockStateResponse, error) {
+	out := new(UpdateBlockStateResponse)
+	err := c.cc.Invoke(ctx, "/BlockStateManager/UpdateBlockState", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-// BlockStateSyncServer is the server API for BlockStateSync service.
-// All implementations must embed UnimplementedBlockStateSyncServer
+// BlockStateManagerServer is the server API for BlockStateManager service.
+// All implementations must embed UnimplementedBlockStateManagerServer
 // for forward compatibility
-type BlockStateSyncServer interface {
-	NotifyState(context.Context, *NotifyStateRequest) (*NotifyStateResponse, error)
-	mustEmbedUnimplementedBlockStateSyncServer()
+type BlockStateManagerServer interface {
+	// UpdateBlockStateはサーバのBlockStateを変更します。
+	UpdateBlockState(context.Context, *UpdateBlockStateRequest) (*UpdateBlockStateResponse, error)
+	mustEmbedUnimplementedBlockStateManagerServer()
 }
 
-// UnimplementedBlockStateSyncServer must be embedded to have forward compatible implementations.
-type UnimplementedBlockStateSyncServer struct {
+// UnimplementedBlockStateManagerServer must be embedded to have forward compatible implementations.
+type UnimplementedBlockStateManagerServer struct {
 }
 
-func (UnimplementedBlockStateSyncServer) NotifyState(context.Context, *NotifyStateRequest) (*NotifyStateResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method NotifyState not implemented")
+func (UnimplementedBlockStateManagerServer) UpdateBlockState(context.Context, *UpdateBlockStateRequest) (*UpdateBlockStateResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateBlockState not implemented")
 }
-func (UnimplementedBlockStateSyncServer) mustEmbedUnimplementedBlockStateSyncServer() {}
+func (UnimplementedBlockStateManagerServer) mustEmbedUnimplementedBlockStateManagerServer() {}
 
-// UnsafeBlockStateSyncServer may be embedded to opt out of forward compatibility for this service.
-// Use of this interface is not recommended, as added methods to BlockStateSyncServer will
+// UnsafeBlockStateManagerServer may be embedded to opt out of forward compatibility for this service.
+// Use of this interface is not recommended, as added methods to BlockStateManagerServer will
 // result in compilation errors.
-type UnsafeBlockStateSyncServer interface {
-	mustEmbedUnimplementedBlockStateSyncServer()
+type UnsafeBlockStateManagerServer interface {
+	mustEmbedUnimplementedBlockStateManagerServer()
 }
 
-func RegisterBlockStateSyncServer(s grpc.ServiceRegistrar, srv BlockStateSyncServer) {
-	s.RegisterService(&BlockStateSync_ServiceDesc, srv)
+func RegisterBlockStateManagerServer(s grpc.ServiceRegistrar, srv BlockStateManagerServer) {
+	s.RegisterService(&BlockStateManager_ServiceDesc, srv)
 }
 
-func _BlockStateSync_NotifyState_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(NotifyStateRequest)
+func _BlockStateManager_UpdateBlockState_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UpdateBlockStateRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(BlockStateSyncServer).NotifyState(ctx, in)
+		return srv.(BlockStateManagerServer).UpdateBlockState(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/BlockStateSync/NotifyState",
+		FullMethod: "/BlockStateManager/UpdateBlockState",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(BlockStateSyncServer).NotifyState(ctx, req.(*NotifyStateRequest))
+		return srv.(BlockStateManagerServer).UpdateBlockState(ctx, req.(*UpdateBlockStateRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-// BlockStateSync_ServiceDesc is the grpc.ServiceDesc for BlockStateSync service.
+// BlockStateManager_ServiceDesc is the grpc.ServiceDesc for BlockStateManager service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
-var BlockStateSync_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "BlockStateSync",
-	HandlerType: (*BlockStateSyncServer)(nil),
+var BlockStateManager_ServiceDesc = grpc.ServiceDesc{
+	ServiceName: "BlockStateManager",
+	HandlerType: (*BlockStateManagerServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "NotifyState",
-			Handler:    _BlockStateSync_NotifyState_Handler,
+			MethodName: "UpdateBlockState",
+			Handler:    _BlockStateManager_UpdateBlockState_Handler,
+		},
+	},
+	Streams:  []grpc.StreamDesc{},
+	Metadata: "proto/block.proto",
+}
+
+// BlockStateNotificationClient is the client API for BlockStateNotification service.
+//
+// For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
+type BlockStateNotificationClient interface {
+	NotifyBlockState(ctx context.Context, in *NotifyBlockStateRequest, opts ...grpc.CallOption) (*NotifyBlockStateResponse, error)
+}
+
+type blockStateNotificationClient struct {
+	cc grpc.ClientConnInterface
+}
+
+func NewBlockStateNotificationClient(cc grpc.ClientConnInterface) BlockStateNotificationClient {
+	return &blockStateNotificationClient{cc}
+}
+
+func (c *blockStateNotificationClient) NotifyBlockState(ctx context.Context, in *NotifyBlockStateRequest, opts ...grpc.CallOption) (*NotifyBlockStateResponse, error) {
+	out := new(NotifyBlockStateResponse)
+	err := c.cc.Invoke(ctx, "/BlockStateNotification/NotifyBlockState", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+// BlockStateNotificationServer is the server API for BlockStateNotification service.
+// All implementations must embed UnimplementedBlockStateNotificationServer
+// for forward compatibility
+type BlockStateNotificationServer interface {
+	NotifyBlockState(context.Context, *NotifyBlockStateRequest) (*NotifyBlockStateResponse, error)
+	mustEmbedUnimplementedBlockStateNotificationServer()
+}
+
+// UnimplementedBlockStateNotificationServer must be embedded to have forward compatible implementations.
+type UnimplementedBlockStateNotificationServer struct {
+}
+
+func (UnimplementedBlockStateNotificationServer) NotifyBlockState(context.Context, *NotifyBlockStateRequest) (*NotifyBlockStateResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method NotifyBlockState not implemented")
+}
+func (UnimplementedBlockStateNotificationServer) mustEmbedUnimplementedBlockStateNotificationServer() {
+}
+
+// UnsafeBlockStateNotificationServer may be embedded to opt out of forward compatibility for this service.
+// Use of this interface is not recommended, as added methods to BlockStateNotificationServer will
+// result in compilation errors.
+type UnsafeBlockStateNotificationServer interface {
+	mustEmbedUnimplementedBlockStateNotificationServer()
+}
+
+func RegisterBlockStateNotificationServer(s grpc.ServiceRegistrar, srv BlockStateNotificationServer) {
+	s.RegisterService(&BlockStateNotification_ServiceDesc, srv)
+}
+
+func _BlockStateNotification_NotifyBlockState_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(NotifyBlockStateRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(BlockStateNotificationServer).NotifyBlockState(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/BlockStateNotification/NotifyBlockState",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(BlockStateNotificationServer).NotifyBlockState(ctx, req.(*NotifyBlockStateRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+// BlockStateNotification_ServiceDesc is the grpc.ServiceDesc for BlockStateNotification service.
+// It's only intended for direct use with grpc.RegisterService,
+// and not to be introspected or modified (even as a copy)
+var BlockStateNotification_ServiceDesc = grpc.ServiceDesc{
+	ServiceName: "BlockStateNotification",
+	HandlerType: (*BlockStateNotificationServer)(nil),
+	Methods: []grpc.MethodDesc{
+		{
+			MethodName: "NotifyBlockState",
+			Handler:    _BlockStateNotification_NotifyBlockState_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

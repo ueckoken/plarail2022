@@ -1,7 +1,9 @@
 resources:
   - ./external
   - ./frontend
-  - ./webrtc-sender
-  - ./receiver
+  - ./internal
+  - ./json2grpc
   - ./automation.yaml
   - ./positioning
+  - ./auto-operation
+  - ./logviewer

@@ -60,7 +60,7 @@ func (m ClientHandler[T]) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		return c.SetReadDeadline(time.Now().Add(20 * time.Second))
 	})
 	c.SetCloseHandler(func(code int, text string) error {
-		m.logger.Info("connection closed")
+		m.logger.Info("connection closed", zap.Int("code", code), zap.String("text", text))
 		cancel()
 		return nil
 	})

@@ -1,10 +1,10 @@
-from ATO import *
-from ATS import *
-from DiaPlanner import *
-from PointInterlock import *
-from PointSwitcher import *
-from SignalSystem import *
-from State import *
+from ATO import ATO
+from ATS import ATS
+from DiaPlanner import DiaPlanner
+from PointInterlock import PointInterlock
+from PointSwitcher import PointSwitcher
+from SignalSystem import SignalSystem
+from State import State
 
 
 class Operation:
@@ -19,7 +19,7 @@ class Operation:
         self.pointInterlock = PointInterlock(self.state, Operation.TRAINLENGTH)
         self.pointSwitcher = PointSwitcher(self.state, self.diaPlanner, self.pointInterlock)
         self.ato = ATO(self.state, self.signalSystem, self.ats, self.diaPlanner, Operation.MAXSPEED)
-        
+
         self.diaPlanner.setup()
 
     def update(self) -> None:

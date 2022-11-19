@@ -1,7 +1,9 @@
 resources:
   - ./frontend
   - ./external
-  - ./receiver-test
-  - ./webrtc-sender
+  # internalは学内サーバで管理
+  # - ./internal/
   - ./logviewer
 #  - ./positioning
+  - ./frontend-camera-sender
+  - ./auto-operation
