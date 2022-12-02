@@ -5,7 +5,7 @@
     "skyway-js": "4.4.5"
   },
   "devDependencies": {
-    "prettier": "2.7.1",
+    "prettier": "2.8.0",
     "webpack": "5.75.0",
     "webpack-cli": "4.10.0",
     "webpack-dev-server": "4.11.1"
