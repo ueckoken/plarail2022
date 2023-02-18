@@ -1,5 +1,5 @@
 # Build the source code
-FROM node:16.18.0-buster-slim AS builder
+FROM node:16.19.1-buster-slim AS builder
 WORKDIR /app
 COPY package.json yarn.lock ./
 RUN yarn install --frozen-lockfile --immutable
