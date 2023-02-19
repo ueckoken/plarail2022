@@ -21,6 +21,6 @@ typing_extensions==4.5.0
 types-protobuf==3.20.4.6
 types-Flask-Cors
 Werkzeug==2.2.3
-zope.event==4.5.0
+zope.event==4.6
 zope.interface==5.5.2
 grpcio-tools==1.51.1
