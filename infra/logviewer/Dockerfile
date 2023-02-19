@@ -1,4 +1,4 @@
-FROM golang:1.19.3-bullseye AS builder
+FROM golang:1.20.1-bullseye AS builder
 
 ENV CGO_ENABLED=0
 WORKDIR /app
