@@ -7,8 +7,8 @@ require (
 	github.com/gorilla/websocket v1.5.0
 	google.golang.org/grpc v1.54.0
 	google.golang.org/protobuf v1.30.0
-	gorm.io/driver/postgres v1.4.8
-	gorm.io/gorm v1.24.6
+	gorm.io/driver/postgres v1.5.0
+	gorm.io/gorm v1.24.7-0.20230306060331-85eaf9eeda11
 )
 
 require (
