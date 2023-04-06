@@ -6,7 +6,7 @@ require (
 	github.com/go-playground/validator/v10 v10.12.0
 	github.com/kelseyhightower/envconfig v1.4.0
 	google.golang.org/grpc v1.54.0
-	google.golang.org/protobuf v1.28.1
+	google.golang.org/protobuf v1.30.0
 )
 
 require (
