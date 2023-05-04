@@ -36,3 +36,4 @@ docker イメージの更新やるぞ!と思ったら main から deployment に
 - [External<->Internal で用いるプロトコルに関するドキュメント(未整備)](./docs/protocolBuf.md)
 - [エンドポイントに関するドキュメント](./docs/endpoints.md)
 - [配線図](./docs/map.md)
+- [システムアーキテクチャ](./docs/archtecture.png)

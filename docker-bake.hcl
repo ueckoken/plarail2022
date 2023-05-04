@@ -6,10 +6,8 @@ group "default" {
     "json2grpc",
     "multicaster",
     "positioning",
-    "webrtc-sender",
     "camera_sender",
     "frontend",
-    "receiver-test",
     "logviewer",
   ]
 }
@@ -68,24 +66,10 @@ target "positioning" {
   ]
 }
 
-target "webrtc-sender" {
-  context = "./frontend/momo_sender"
-  tags = [
-    GET_TAG("webrtc-sender")
-  ]
-}
-
 target "camera_sender" {
   context = "./frontend/camera_sender/"
   tags = [
     GET_TAG("camera_sender")
-  ]
-}
-
-target "receiver-test" {
-  context = "./frontend/skyway_receiver"
-  tags = [
-    GET_TAG("receiver-test")
   ]
 }
 

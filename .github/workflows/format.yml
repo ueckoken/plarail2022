@@ -24,47 +24,6 @@ jobs:
       - uses: EndBug/add-and-commit@v9
         with:
           message: format by prettier
-  prettier-momo-sender:
-    runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: "frontend/momo_sender"
-    steps:
-      - name: checkout
-        uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
-        with:
-          node-version-file: ./frontend/momo_sender/.nvmrc
-          cache: npm
-          cache-dependency-path: ./frontend/momo_sender/package-lock.json
-      - run: npm ci
-      - run: npm run fmt
-      - uses: EndBug/add-and-commit@v9
-        with:
-          author_name: format BOT
-          author_email: bot@example.com
-          message: format by prettier
-
-  prettier-skyway-receiver:
-    runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: "frontend/skyway_receiver"
-    steps:
-      - name: checkout
-        uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
-        with:
-          node-version-file: ./frontend/skyway_receiver/.nvmrc
-          cache: npm
-          cache-dependency-path: ./frontend/skyway_receiver/package-lock.json
-      - run: npm ci
-      - run: npm run fmt
-      - uses: EndBug/add-and-commit@v9
-        with:
-          author_name: format BOT
-          author_email: bot@example.com
-          message: format by prettier
 
   black-auto_operation:
     runs-on: ubuntu-latest

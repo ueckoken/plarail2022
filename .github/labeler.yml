@@ -21,12 +21,6 @@ ats:
 multicaster:
   - any:
       - "backend/multicaster/**"
-momo_sender:
-  - any:
-      - "frontend/momo_sender/**"
-skyway_receiver:
-  - any:
-      - "frontend/skyway_receiver/**"
 site:
   - any:
       - "frontend/site/**"

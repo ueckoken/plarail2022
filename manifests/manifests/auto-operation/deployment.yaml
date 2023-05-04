@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: soft-backend-auto-operation
-          image: ghcr.io/ueckoken/plarail2022-auto-operation:e238eb5-1668789236 # {"$imagepolicy": "plarail2021:auto-operation"}
+          image: ghcr.io/ueckoken/plarail2022-auto-operation:10a02b0-1668823810 # {"$imagepolicy": "plarail2021:auto-operation"}
           imagePullPolicy: Always
           ports:
             - containerPort: 8080

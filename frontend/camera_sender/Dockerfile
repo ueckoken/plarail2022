@@ -7,7 +7,7 @@ RUN npm ci
 COPY *.js ./
 RUN npm run build
 
-FROM nginxinc/nginx-unprivileged:1.23.2-alpine
+FROM nginxinc/nginx-unprivileged:1.24.0-alpine
 WORKDIR /usr/share/nginx/html/
 COPY --from=builder /app/sender.bundle.js ./
 COPY ./index.html ./
