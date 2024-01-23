@@ -211,13 +211,19 @@ async def handler(websocket: WebSocketServerProtocol, path: str) -> None:
                 room["sender_socket"] = None
                 room["peer_id"] = None
 
-    async with lock:
-        rooms = {
-            room_id: room
-            for room_id, room in rooms.items()
-            if len(room["connections"]) != 0
-        }
     # ルームに人がいなくなったら削除
+    # ただしroomsに再代入すると
+    # from one_to_multiple_cast_skyway import rooms
+    # してる別の個所が壊れることがあるので
+    # in placeな操作をするためにdel 文を使う
+    room_ids_to_delete = set()
+    for room_id in rooms.keys():
+        room = rooms[room_id]
+        if len(room["connections"]) == 0:
+            room_ids_to_delete.add(room_id)
+    async with lock:
+        for room_id in room_ids_to_delete:
+            del rooms[room_id]
 
     async with lock:
         connections.remove(websocket)
