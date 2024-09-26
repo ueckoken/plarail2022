@@ -11,19 +11,23 @@ import { Blocks } from "../types";
 
 const Home: NextPage = () => {
   const [blocks, setBlocks] = useState<Blocks>({
-    s0: false,
-    s1: false,
-    s2: false,
-    s3: false,
-    s4: false,
-    s5: false,
-    s6: false,
-    s7: false,
-    s8: false,
-    s9: false,
-    s10: false,
-    s11: false,
-    s12: false,
+    "shinjuku_b1": false,
+    "shinjuku_b2": false,
+    "sakurajosui_b1": false,
+    "sakurajosui_b2": false,
+    "sakurajosui_b3": false,
+    "sakurajosui_b4": false,
+    "sakurajosui_b5": false,
+    "sakurajosui_b6": false,
+    "chofu_b1": false,
+    "chofu_b2": false,
+    "chofu_b3": false,
+    "chofu_b4": false,
+    "chofu_b5": false,
+    "hashimoto_b1": false,
+    "hashimoto_b2": false,
+    "hachioji_b1": false,
+    "hachioji_b2": false,
   });
 
   useEffect(() => {
@@ -89,14 +93,14 @@ const Home: NextPage = () => {
         <title>自動運転ビジュアライザ</title>
       </Head>
       <BlocksContext.Provider value={blocks}>
-        <svg width="100%" viewBox="0 0 480 200">
-          <rect width={480} height={200} fill="#222222" />
+        <svg width="100%" viewBox="0 0 540 200">
+          <rect width={540} height={200} fill="#222222" />
           {/* 新宿 */}
-          <Platform position={{ x: 420, y: 110 }} />
-          <Platform position={{ x: 420, y: 170 }} />
+          <Platform position={{ x: 480, y: 110 }} />
+          <Platform position={{ x: 480, y: 170 }} />
           {/* 桜上水 */}
-          <Platform position={{ x: 340, y: 110 }} />
-          <Platform position={{ x: 340, y: 170 }} />
+          <Platform position={{ x: 360, y: 110 }} />
+          <Platform position={{ x: 360, y: 170 }} />
           {/* 調布 */}
           <Platform position={{ x: 220, y: 110 }} />
           <Platform position={{ x: 220, y: 150 }} />
@@ -109,36 +113,68 @@ const Home: NextPage = () => {
 
           {/* 新宿方面 */}
           <Section
-            id="s11"
+            id="chofu_b5"
             points={[
               { x: 260, y: 120 },
-              { x: 360, y: 120 },
+              { x: 320, y: 120 },
             ]}
           />
           <Section
-            id="s12"
+            id="sakurajosui_b3"
             points={[
-              { x: 360, y: 120 },
-              { x: 440, y: 120 },
+              { x: 320, y: 120 },
+              { x: 400, y: 120 },
             ]}
           />
           <Section
-            id="s0"
+            id="sakurajosui_b4"
             points={[
-              { x: 440, y: 120 },
-              { x: 440, y: 160 },
+              { x: 320, y: 120 },
+              { x: 340, y: 100 },
+              { x: 380, y: 100 },
+              { x: 400, y: 120 },
+            ]}
+          />
+          <Section
+            id="sakurajosui_b6"
+            points={[
+              { x: 400, y: 120 },
+              { x: 500, y: 120 },
+            ]}
+          />
+          <Section
+            id="shinjuku_b2"
+            points={[
+              { x: 500, y: 120 },
+              { x: 500, y: 160 },
+              { x: 460, y: 160 },
+            ]}
+          />
+          <Section
+            id="shinjuku_b1"
+            points={[
+              { x: 460, y: 160 },
               { x: 400, y: 160 },
             ]}
           />
           <Section
-            id="s1"
+            id="sakurajosui_b1"
+            points={[
+              { x: 400, y: 160 },
+              { x: 380, y: 180 },
+              { x: 340, y: 180 },
+              { x: 320, y: 160 },
+            ]}
+          />
+          <Section
+            id="sakurajosui_b2"
             points={[
               { x: 400, y: 160 },
               { x: 320, y: 160 },
             ]}
           />
           <Section
-            id="s2"
+            id="sakurajosui_b5"
             points={[
               { x: 320, y: 160 },
               { x: 260, y: 160 },
@@ -146,7 +182,7 @@ const Home: NextPage = () => {
           />
           {/* 八王子方面 */}
           <Section
-            id="s3"
+            id="chofu_b2"
             points={[
               { x: 260, y: 160 },
               { x: 240, y: 140 },
@@ -154,7 +190,7 @@ const Home: NextPage = () => {
             ]}
           />
           <Section
-            id="s4"
+            id="chofu_b4"
             points={[
               { x: 200, y: 140 },
               { x: 140, y: 80 },
@@ -162,7 +198,7 @@ const Home: NextPage = () => {
             ]}
           />
           <Section
-            id="s5"
+            id="hachioji_b1"
             points={[
               { x: 40, y: 80 },
               { x: 40, y: 40 },
@@ -170,7 +206,7 @@ const Home: NextPage = () => {
             ]}
           />
           <Section
-            id="s6"
+            id="hachioji_b2"
             points={[
               { x: 80, y: 40 },
               { x: 140, y: 40 },
@@ -181,21 +217,21 @@ const Home: NextPage = () => {
           />
           {/* 橋本方面 */}
           <Section
-            id="s7"
+            id="chofu_b1"
             points={[
               { x: 260, y: 160 },
               { x: 200, y: 160 },
             ]}
           />
           <Section
-            id="s8"
+            id="chofu_b3"
             points={[
               { x: 200, y: 160 },
               { x: 40, y: 160 },
             ]}
           />
           <Section
-            id="s9"
+            id="hashimoto_b1"
             points={[
               { x: 40, y: 160 },
               { x: 40, y: 120 },
@@ -203,7 +239,7 @@ const Home: NextPage = () => {
             ]}
           />
           <Section
-            id="s10"
+            id="hashimoto_b2"
             points={[
               { x: 80, y: 120 },
               { x: 260, y: 120 },
