@@ -32,7 +32,9 @@ class SignalSystem:
                 return None
         # 信号判定
         if junction.getInSection().id == sourceSectionId:  # 分岐器が開通している
-            train = self.__state.getTrainInSection(junction.getOutSection())  # 前方セクションにいる列車を取得
+            train = self.__state.getTrainInSection(
+                junction.getOutSection()
+            )  # 前方セクションにいる列車を取得
             if train is None:  # 前方セクションに在線なし
                 return Signal(sourceSectionId, targetSectionId, "G")
         return Signal(sourceSectionId, targetSectionId, "R")
