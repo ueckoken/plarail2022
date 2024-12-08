@@ -25,7 +25,9 @@ class ATO:
         self.__diaPlanner = diaPlanner
         self.__prevUpdate = 0.0
         self.__enabled = {}  # 各列車の、ATO有効,無効が入る辞書. key=trainId, valued=enabled
-        self.__arriveTime = {}  # 各列車が、直近に駅に到着した時刻を記録する辞書. key=trainId, value=float
+        self.__arriveTime = (
+            {}
+        )  # 各列車が、直近に駅に到着した時刻を記録する辞書. key=trainId, value=float
         self.__MAXSPEED = MAXSPEED
         self.__MERGIN = MERGIN
         for train in state.trainList:
@@ -74,7 +76,9 @@ class ATO:
         while True:
             # 現在のセクションに駅がある
             if testSection.station is not None:
-                diaOfThisStation = self.__diaPlanner.getDia(train.id, testSection.station.id)  # ダイヤ
+                diaOfThisStation = self.__diaPlanner.getDia(
+                    train.id, testSection.station.id
+                )  # ダイヤ
                 # 当該駅に列車がすでに到着/通過済みの場合
                 if (
                     train.currentSection.id == testSection.id
