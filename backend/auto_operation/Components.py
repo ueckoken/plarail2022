@@ -120,7 +120,9 @@ class Junction:
     ]
 
     id: JunctionId
-    pointId: Optional[Point.PointId]  # junctionにサーボモータがついている場合のみ対応するPointIdを代入
+    pointId: Optional[
+        Point.PointId
+    ]  # junctionにサーボモータがついている場合のみ対応するPointIdを代入
     inSectionStraight: Optional["Section"]
     inSectionCurve: Optional["Section"]
     outSectionStraight: Optional["Section"]
@@ -171,9 +173,13 @@ class Junction:
             self.toggleRequested = True
 
     def setServoState(self, servoState: ServoState) -> None:
-        if self.inSectionStraight and self.inSectionCurve:  # IN側に2本入ってくる分岐点の場合inServoStateをセット
+        if (
+            self.inSectionStraight and self.inSectionCurve
+        ):  # IN側に2本入ってくる分岐点の場合inServoStateをセット
             self.inServoState = servoState
-        if self.outSectionStraight and self.outSectionCurve:  # OUT側に2本入ってくる分岐点の場合outServoStateをセット
+        if (
+            self.outSectionStraight and self.outSectionCurve
+        ):  # OUT側に2本入ってくる分岐点の場合outServoStateをセット
             self.outServoState = servoState
 
     def getOutSection(self) -> Optional[Section]:
