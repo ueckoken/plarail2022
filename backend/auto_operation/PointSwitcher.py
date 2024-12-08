@@ -122,9 +122,13 @@ class PointSwitcher:
                     trains,
                 )
             )  # 駅で退避するつもりのないtrainをfilter
-            if len(trainsWantToGo) == 0:  # 全列車が退避したい場合、どれを先に出すか決めようがないので、とりあえず0番を返す
+            if (
+                len(trainsWantToGo) == 0
+            ):  # 全列車が退避したい場合、どれを先に出すか決めようがないので、とりあえず0番を返す
                 return trains[0]
-            elif len(trainsWantToGo) == 1:  # 退避するつもりのない(追い抜きたい)列車が1つのとき、それを先に行かせる
+            elif (
+                len(trainsWantToGo) == 1
+            ):  # 退避するつもりのない(追い抜きたい)列車が1つのとき、それを先に行かせる
                 return trainsWantToGo[0]
             else:  # 退避するつもりのない列車が2つ以上のとき、最もjunctionに近いものを返す
                 trainsWantToGo.sort(
