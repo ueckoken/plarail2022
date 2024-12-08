@@ -24,8 +24,12 @@ class ATS:
         self.__MAXSPEED = MAXSPEED
         self.__MERGIN = MERGIN
         self.__BREAKING_DISTANCE = BREAKING_DISTANCE
-        self.__enabled: dict[int, bool] = {}  # 各列車の、ATS有効,無効が入る辞書. key=trainId, value=enabled
-        self.__activated: dict[int, bool] = {}  # ATSが作動したときにTrueが入る. key=trainId, value=activated
+        self.__enabled: dict[int, bool] = (
+            {}
+        )  # 各列車の、ATS有効,無効が入る辞書. key=trainId, value=enabled
+        self.__activated: dict[int, bool] = (
+            {}
+        )  # ATSが作動したときにTrueが入る. key=trainId, value=activated
         for train in state.trainList:
             self.__enabled[train.id] = True
             self.__activated[train.id] = False
@@ -41,7 +45,9 @@ class ATS:
             distance = self.__state.getDistance(
                 train.currentSection, train.mileage, atsStopPoint.section, atsStopPoint.mileage
             )  # 絶対停止点までの距離を計算
-            if train.stopPoint is None:  # 停止点が代入されていない場合、ATSで計算した停止点を代入する
+            if (
+                train.stopPoint is None
+            ):  # 停止点が代入されていない場合、ATSで計算した停止点を代入する
                 train.stopPoint = atsStopPoint
 
             if distance > self.__BREAKING_DISTANCE:
@@ -51,7 +57,9 @@ class ATS:
             else:
                 speedLimit = 0
 
-            if speedLimit < speedCommand:  # 非常停止できる速度を超えた速度が指示された場合、速度を強制的にspeedLimitに落とす
+            if (
+                speedLimit < speedCommand
+            ):  # 非常停止できる速度を超えた速度が指示された場合、速度を強制的にspeedLimitに落とす
                 train.targetSpeed = speedLimit
                 if not self.__activated[train.id]:  # ATS作動フラグ(activated)を立てる
                     print(f"[ATS.setSpeedCommand] ATS activated on train {train.id} !")
